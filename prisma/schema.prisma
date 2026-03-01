@@ -24,6 +24,7 @@ model User {
 
   accounts Account[]
   sessions Session[]
+  trades        Trade[]
 
   @@index([email])
 }
@@ -65,4 +66,20 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Trade {
+  id          String  @id @default(cuid())
+  userId      String
+  pair        String
+  direction   String
+  entryPrice  Float
+  stopLoss    Float
+  takeProfit  Float
+  resultR     Float
+  notes       String?
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
 }
