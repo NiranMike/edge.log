@@ -4,7 +4,7 @@ export { auth as proxy } from "#/auth"
 // Imports auth.config (Edge-safe, no Prisma/bcrypt) NOT auth.ts (Node-only).
 
 import NextAuth         from "next-auth";
-import authConfig       from "./auth.config";
+import authConfig from "./auth.config";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -33,5 +33,6 @@ export default auth(function middleware(
 });
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)","/dashboard/:path*", "/trades/:path*"],
 };
+

@@ -6,7 +6,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL_DEV")
   // NO url here — Prisma 7 + Neon adapter handles the connection in db.ts
   // CLI migrations use prisma.config.ts which reads DIRECT_URL
 }
@@ -68,18 +68,41 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Trade {
-  id          String  @id @default(cuid())
-  userId      String
-  pair        String
-  direction   String
-  entryPrice  Float
-  stopLoss    Float
-  takeProfit  Float
-  resultR     Float
-  notes       String?
-  createdAt   DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id])
-
+enum Direction {
+  LONG
+  SHORT
 }
+
+// V1 fields only — no session, strategy, emotion.
+// Those are V2 behavioural layer additions.
+
+model Trade {
+  id           Int       @id @default(autoincrement())
+  userId       String
+
+  // Core fields — Decimal prevents float rounding on pip values
+  pair         String       // e.g. "EURUSD", "BTCUSDT"
+  direction    Direction
+  entryPrice   Decimal   @db.Decimal(18, 8)
+  stopLoss     Decimal   @db.Decimal(18, 8)
+  takeProfit   Decimal   @db.Decimal(18, 8)
+  exitPrice    Decimal   @db.Decimal(18, 8)
+
+  // Outcome — rMultiple computed server-side and stored
+  rMultiple    Decimal   @db.Decimal(8, 4)  // e.g. +2.35, -1.00
+  won          Boolean
+
+  // Optional
+  notes        String?
+  tradedAt     DateTime  @default(now())    // when the trade was taken (user-editable)
+  createdAt    DateTime  @default(now())    // record creation time
+  updatedAt    DateTime  @updatedAt
+
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Indexes: user+date for ordered list, user+won for stats
+  @@index([userId, tradedAt(sort: Desc)])
+  @@index([userId, won])
+  @@map("trades")
+}
+

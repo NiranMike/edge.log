@@ -9,13 +9,13 @@ const globalForPrisma = globalThis as unknown as {
 
 function createPrismaClient(): PrismaClient {
   const adapter = new PrismaNeon({
-    connectionString: process.env.DATABASE_URL!,
+    connectionString: process.env.DATABASE_URL_DEV!,
   });
 
   return new PrismaClient({
     adapter,
     log: process.env.NODE_ENV === "development"
-      ? ["error", "warn"]   // removed "query" — reduces terminal noise in dev
+      ? ["error", "warn"]   
       : ["error"],
   });
 }

@@ -1,4 +1,5 @@
 
+import { auth, authOptions } from "#/auth";
 import { CtaSection } from "@/components/landing-page/cta-section";
 import { FeaturesSection } from "@/components/landing-page/feature-section";
 import { HeroSection } from "@/components/landing-page/hero-section";
@@ -9,6 +10,8 @@ import { MetricsSection } from "@/components/landing-page/matric-section";
 import { TestimonialsSection } from "@/components/landing-page/testimonials-section";
 import { TickerTape } from "@/components/landing-page/ticker-tape";
 import type { Metadata } from "next";
+import  getServerSession from 'next-auth';
+import { redirect } from "next/navigation";
 
 
 export const metadata: Metadata = {
@@ -17,7 +20,12 @@ export const metadata: Metadata = {
   viewport: "width=device-width, initial-scale=1",
 };
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const session = await auth();
+
+  if (session) {
+    redirect("/dashboard");
+  }
   return (
     <div className="bg-black text-slate-200 min-h-screen overflow-x-hidden selection:bg-emerald-400/20 selection:text-emerald-300">
       <LandingNav />

@@ -1,6 +1,6 @@
 // auth.ts  (project root — Node runtime only, never imported in middleware)
 
-import NextAuth,       { type DefaultSession } from "next-auth";
+import NextAuth,       { Account, JWT, NextAuthConfig, Profile, Session, User, type DefaultSession } from "next-auth";
 import Credentials                             from "next-auth/providers/credentials";
 import Google                                  from "next-auth/providers/google";
 import { PrismaAdapter }                       from "@auth/prisma-adapter";
@@ -9,6 +9,7 @@ import bcrypt                                  from "bcryptjs";
 import { db }          from "@/lib/db";
 import { loginSchema } from "@/lib/validations/auth";
 import authConfig      from "./auth.config";
+import { AdapterSession, AdapterUser } from "next-auth/adapters";
 
 // ─── Type augmentation ────────────────────────────────────────────────────────
 // In the latest next-auth v5 beta, JWT fields are extended inside "next-auth"
@@ -88,7 +89,8 @@ async function findOrCreateGoogleUser(profile: {
 
 // ─── NextAuth config ──────────────────────────────────────────────────────────
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+
+export const authOptions:NextAuthConfig = {
   ...authConfig,
 
   adapter: PrismaAdapter(db),
@@ -168,4 +170,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return session;
     },
   },
-});
+}
+
+export const { handlers, auth, signIn, signOut } = NextAuth(authOptions);

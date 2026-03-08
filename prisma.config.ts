@@ -25,7 +25,7 @@ export default defineConfig({
   },
 
   datasource: {
-    url: env("DIRECT_URL"), // direct (non-pooled) connection for CLI
+    url: env("DIRECT_URL_DEV"), // direct (non-pooled) connection for CLI
   },
 });
 
