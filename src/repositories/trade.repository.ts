@@ -62,12 +62,12 @@ function toTrade(row: Prisma.TradeGetPayload<object>): Trade {
 
 export const tradeRepository = {
   async findById(id: number, userId: string): Promise<Trade | null> {
-    const row = await db?.trade?.findFirst({ where: { id, userId } });
+    const row = await db.trade.findFirst({ where: { id, userId } });
     return row ? toTrade(row) : null;
   },
 
   async findAllByUser(userId: string): Promise<Trade[]> {
-    const rows = await db?.trade?.findMany({
+    const rows = await db.trade.findMany({
       where:   { userId },
       orderBy: { tradedAt: "desc" },
     });
@@ -80,13 +80,13 @@ export const tradeRepository = {
     total:  number;
   }> {
     const [rows, total] = await db.$transaction([
-      db?.trade?.findMany({
+      db.trade.findMany({
         where:   { userId },
         orderBy: { tradedAt: "desc" },
         skip:    (page - 1) * perPage,
         take:    perPage,
       }),
-      db?.trade?.count({ where: { userId } }),
+      db.trade.count({ where: { userId } }),
     ]);
     return { trades: rows.map(toTrade), total };
   },
@@ -98,7 +98,7 @@ export const tradeRepository = {
 
   async update(id: number, userId: string, input: UpdateTradeRow): Promise<Trade> {
     const row = await db.trade.update({
-      where: { id },
+      where: { id, userId },
       data:  input,
     });
     return toTrade(row);

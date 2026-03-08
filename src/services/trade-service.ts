@@ -104,6 +104,10 @@ export const tradeService = {
     return tradeRepository.findAllByUser(userId);
   },
 
+  async getById(userId: string, id: number): Promise<Trade | null> {
+    return tradeRepository.findById(id, userId);
+  },
+
   async getPage(userId: string, page: number): Promise<{ trades: Trade[]; total: number }> {
     return tradeRepository.findPage(userId, page, 25);
   },
