@@ -47,7 +47,6 @@ export function GoogleButton({
   );
 }
 
-// ─── Google "G" SVG logo (official brand colours) ─────────────────────────────
 
 function GoogleIcon() {
   return (

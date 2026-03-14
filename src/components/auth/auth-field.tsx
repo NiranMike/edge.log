@@ -4,7 +4,6 @@
 import { cx, ds } from "@/style";
 import { forwardRef, useState } from "react";
 
-// ─── AuthInput ────────────────────────────────────────────────────────────────
 
 interface AuthInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label:  string;
@@ -66,19 +65,18 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
 );
 AuthInput.displayName = "AuthInput";
 
-// ─── PasswordStrength ─────────────────────────────────────────────────────────
 
 export function PasswordStrength({ value }: { value: string }) {
   if (!value) return null;
 
   const checks = [
-    { label: "8+ chars",  ok: value.length >= 8           },
-    { label: "Uppercase", ok: /[A-Z]/.test(value)         },
-    { label: "Number",    ok: /[0-9]/.test(value)         },
-    { label: "Special",   ok: /[^A-Za-z0-9]/.test(value) },
+    { label: "8+ chars",  ok: value.length >= 8},
+    { label: "Uppercase", ok: /[A-Z]/.test(value)},
+    { label: "Number",    ok: /[0-9]/.test(value)},
+    { label: "Special",   ok: /[^A-Za-z0-9]/.test(value)},
   ];
   const score = checks.filter((c) => c.ok).length;
-  const barColor = (["bg-red-500", "bg-amber-500", "bg-yellow-400", "bg-emerald-400"] as const)[
+  const barColor = (["bg-red-500", "bg-teal-500", "bg-yellow-400", "bg-emerald-400"] as const)[
     Math.min(score - 1, 3)
   ] ?? "bg-white/10";
 
@@ -99,8 +97,8 @@ export function PasswordStrength({ value }: { value: string }) {
             className={cx(
               "font-mono text-[9px] px-1.5 py-0.5 border transition-colors duration-200",
               ok
-                ? "border-emerald-400/25 text-emerald-400/70 bg-emerald-400/[0.06]"
-                : "border-white/[0.06] text-white/20",
+                ? "border-emerald-400/25 text-emerald-400/70 bg-emerald-400/6"
+                : "border-white/6 text-white/20",
             )}
           >
             {ok && "✓ "}{label}
@@ -146,19 +144,17 @@ export function AuthButton({
   );
 }
 
-// ─── AuthDivider ──────────────────────────────────────────────────────────────
 
 export function AuthDivider({ label = "or" }: { label?: string }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="flex-1 h-px bg-white/[0.06]" />
+      <div className="flex-1 h-px bg-white/6" />
       <span className="font-mono text-[9px] uppercase tracking-widest text-white/18">{label}</span>
-      <div className="flex-1 h-px bg-white/[0.06]" />
+      <div className="flex-1 h-px bg-white/6" />
     </div>
   );
 }
 
-// ─── FormError / FormSuccess ──────────────────────────────────────────────────
 
 export function FormError({ message }: { message?: string | null }) {
   if (!message) return null;
@@ -180,7 +176,6 @@ export function FormSuccess({ message }: { message?: string | null }) {
   );
 }
 
-// ─── Icons ────────────────────────────────────────────────────────────────────
 
 function EyeOn() {
   return (

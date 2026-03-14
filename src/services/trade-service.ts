@@ -2,7 +2,8 @@
 // ─── Trade Service ────────────────────────────────────────────────────────────
 
 import { tradeRepository } from "@/repositories/trade.repository";
-import type { Trade, TradeFormValues, TradeMetrics, Result } from "@/types";
+import type { Trade, TradeFormValues, TradeMetrics, Result, MarketSession, AnalyticsFilters, TradeAnalytics, AnalyticsOverview, PairStat, DirectionStat, RBucket, SessionStat, EquityPoint, WeekdayStat } from "@/types";
+import { getWeekday } from "@/util";
 
 function calcRMultiple(
   direction: "LONG" | "SHORT",
@@ -19,28 +20,43 @@ interface ValidationErrors {
   stopLoss?: string; takeProfit?: string; exitPrice?: string;
 }
 
-function validate(v: TradeFormValues): ValidationErrors | null {
+function validate(value: TradeFormValues): ValidationErrors | null {
   const errors: ValidationErrors = {};
-  if (!v.pair.trim()) errors.pair = "Pair is required";
+  if (!value.pair.trim()) errors.pair = "Pair is required";
 
-  const entry = Number(v.entryPrice), stop = Number(v.stopLoss);
-  const tp = Number(v.takeProfit), exit = Number(v.exitPrice);
+  const entry = Number(value.entryPrice), stop = Number(value.stopLoss);
+  const tp = Number(value.takeProfit), exit = Number(value.exitPrice);
 
-  if (!v.entryPrice || isNaN(entry) || entry <= 0) errors.entryPrice = "Valid entry price required";
-  if (!v.stopLoss   || isNaN(stop)  || stop  <= 0) errors.stopLoss   = "Valid stop loss required";
-  if (!v.takeProfit || isNaN(tp)    || tp    <= 0) errors.takeProfit = "Valid take profit required";
-  if (!v.exitPrice  || isNaN(exit)  || exit  <= 0) errors.exitPrice  = "Valid exit price required";
+  if (!value.entryPrice || isNaN(entry) || entry <= 0) errors.entryPrice = "Valid entry price required";
+  if (!value.stopLoss   || isNaN(stop)  || stop  <= 0) errors.stopLoss   = "Valid stop loss required";
+  if (!value.takeProfit || isNaN(tp)    || tp    <= 0) errors.takeProfit = "Valid take profit required";
+  if (!value.exitPrice  || isNaN(exit)  || exit  <= 0) errors.exitPrice  = "Valid exit price required";
 
   if (!errors.entryPrice && !errors.stopLoss) {
-    if (v.direction === "LONG"  && stop >= entry) errors.stopLoss = "Stop loss must be below entry for LONG";
-    if (v.direction === "SHORT" && stop <= entry) errors.stopLoss = "Stop loss must be above entry for SHORT";
+    if (value.direction === "LONG"  && stop >= entry) errors.stopLoss = "Stop loss must be below entry for LONG";
+    if (value.direction === "SHORT" && stop <= entry) errors.stopLoss = "Stop loss must be above entry for SHORT";
   }
   if (!errors.entryPrice && !errors.takeProfit) {
-    if (v.direction === "LONG"  && tp <= entry) errors.takeProfit = "Take profit must be above entry for LONG";
-    if (v.direction === "SHORT" && tp >= entry) errors.takeProfit = "Take profit must be below entry for SHORT";
+    if (value.direction === "LONG"  && tp <= entry) errors.takeProfit = "Take profit must be above entry for LONG";
+    if (value.direction === "SHORT" && tp >= entry) errors.takeProfit = "Take profit must be below entry for SHORT";
   }
   return Object.keys(errors).length > 0 ? errors : null;
 }
+
+function getSession(isoDate: string): MarketSession {
+  const hour = new Date(isoDate).getUTCHours();
+  const inAsia    = hour >= 23 || hour < 8;
+  const inLondon  = hour >= 7  && hour < 16;
+  const inNY      = hour >= 13 && hour < 21;
+
+  if (inLondon && inNY) return "Overlap";   // 13:00–16:00 UTC
+  if (inNY)             return "New York";
+  if (inLondon)         return "London";
+  if (inAsia)           return "Asia";
+  return "Closed";
+}
+
+
 
 export const tradeService = {
   async create(userId: string, values: TradeFormValues): Promise<Result<Trade>> {
@@ -109,7 +125,7 @@ export const tradeService = {
   },
 
   async getPage(userId: string, page: number): Promise<{ trades: Trade[]; total: number }> {
-    return tradeRepository.findPage(userId, page, 25);
+    return tradeRepository.findPage(userId, page, 10);
   },
 
   computeMetrics(trades: Trade[]): TradeMetrics {
@@ -132,4 +148,213 @@ export const tradeService = {
       expectancy: Math.round(expectancy * 100) / 100,
     };
   },
+
+  computeAnalytics(trades: Trade[], filters: AnalyticsFilters): TradeAnalytics {
+
+  // ── 1. Overview ─────────────────────────────────────────────────────────────
+
+  const wins   = trades.filter(t => t.won);
+  const losses = trades.filter(t => !t.won);
+
+  const grossWins   = wins.reduce((s, t)   => s + t.rMultiple, 0);
+  const grossLosses = losses.reduce((s, t) => s + Math.abs(t.rMultiple), 0);
+
+  // Profit factor: how much you make for every 1R you lose
+  // e.g. 2.0 means for every $1 risked and lost, you make $2 back
+  const profitFactor = grossLosses === 0 ? grossWins : Math.round((grossWins / grossLosses) * 100) / 100;
+
+  const sortedR    = [...trades].sort((a, b) => b.rMultiple - a.rMultiple);
+  const bestTrade  = sortedR[0]?.rMultiple  ?? 0;
+  const worstTrade = sortedR[sortedR.length - 1]?.rMultiple ?? 0;
+
+  const avgWinR  = wins.length   ? Math.round((grossWins   / wins.length)   * 100) / 100 : 0;
+  const avgLossR = losses.length ? Math.round((grossLosses / losses.length) * 100) / 100 : 0;
+
+  // Win/loss streaks — single pass
+  let currentStreak = 0;
+  let largestWinStreak  = 0;
+  let largestLossStreak = 0;
+  let lastWon: boolean | null = null;
+
+  for (const t of trades) {
+    if (lastWon === null || t.won === lastWon) {
+      currentStreak++;
+    } else {
+      currentStreak = 1;
+    }
+    if (t.won)  largestWinStreak  = Math.max(largestWinStreak,  currentStreak);
+    if (!t.won) largestLossStreak = Math.max(largestLossStreak, currentStreak);
+    lastWon = t.won;
+  }
+
+  // Most active pair
+  const pairCounts = trades.reduce<Record<string, number>>((acc, t) => {
+    acc[t.pair] = (acc[t.pair] ?? 0) + 1;
+    return acc;
+  }, {});
+  const mostActivePair = Object.entries(pairCounts)
+    .sort((a, b) => b[1] - a[1])[0]?.[0] ?? "";
+
+  // Most active session
+  const sessionCounts = trades.reduce<Record<string, number>>((acc, t) => {
+    const s = getSession(t.tradedAt);
+    acc[s] = (acc[s] ?? 0) + 1;
+    return acc;
+  }, {});
+  const mostActiveSession = (Object.entries(sessionCounts)
+    .sort((a, b) => b[1] - a[1])[0]?.[0] ?? "Closed") as MarketSession;
+
+  const overview: AnalyticsOverview = {
+    profitFactor,
+    bestTrade,
+    worstTrade,
+    largestWinStreak,
+    largestLossStreak,
+    avgWinR,
+    avgLossR,
+    mostActivePair,
+    mostActiveSession,
+  };
+
+  // ── 2. By pair ───────────────────────────────────────────────────────────────
+
+  const pairMap = trades.reduce<Record<string, Trade[]>>((acc, t) => {
+    (acc[t.pair] ??= []).push(t);
+    return acc;
+  }, {});
+
+  const byPair: PairStat[] = Object.entries(pairMap).map(([pair, ts]) => {
+    const w = ts.filter(t => t.won);
+    const total = ts.reduce((s, t) => s + t.rMultiple, 0);
+    const sorted = [...ts].sort((a, b) => b.rMultiple - a.rMultiple);
+    return {
+      pair,
+      trades:   ts.length,
+      wins:     w.length,
+      losses:   ts.length - w.length,
+      winRate:  Math.round((w.length / ts.length) * 1000) / 10,
+      avgR:     Math.round((total / ts.length) * 100) / 100,
+      totalR:   Math.round(total * 100) / 100,
+      bestR:    sorted[0]?.rMultiple ?? 0,
+      worstR:   sorted[sorted.length - 1]?.rMultiple ?? 0,
+    };
+  }).sort((a, b) => b.totalR - a.totalR); // best pairs first
+
+  // ── 3. By direction ──────────────────────────────────────────────────────────
+
+  const byDirection: DirectionStat[] = (["LONG", "SHORT"] as const).map(dir => {
+    const ts = trades.filter(t => t.direction === dir);
+    const w  = ts.filter(t => t.won);
+    const total = ts.reduce((s, t) => s + t.rMultiple, 0);
+    return {
+      direction: dir,
+      trades:    ts.length,
+      wins:      w.length,
+      winRate:   ts.length ? Math.round((w.length / ts.length) * 1000) / 10 : 0,
+      avgR:      ts.length ? Math.round((total / ts.length) * 100) / 100 : 0,
+      totalR:    Math.round(total * 100) / 100,
+    };
+  });
+
+  // ── 4. R distribution buckets ────────────────────────────────────────────────
+
+  const bucketDefs = [
+    { label: "< -2R",    min: -Infinity, max: -2     },
+    { label: "-2R → -1R", min: -2,       max: -1     },
+    { label: "-1R → 0R",  min: -1,       max: 0      },
+    { label: "0R → 1R",   min: 0,        max: 1      },
+    { label: "1R → 2R",   min: 1,        max: 2      },
+    { label: "2R → 3R",   min: 2,        max: 3      },
+    { label: "> 3R",      min: 3,        max: Infinity},
+  ];
+
+  const rBuckets: RBucket[] = bucketDefs.map(({ label, min, max }) => {
+    const count = trades.filter(t => t.rMultiple > min && t.rMultiple <= max).length;
+    return {
+      label,
+      min,
+      max,
+      count,
+      pct: trades.length ? Math.round((count / trades.length) * 1000) / 10 : 0,
+    };
+  });
+
+  // ── 5. By session ────────────────────────────────────────────────────────────
+
+  const sessionMap = trades.reduce<Record<string, Trade[]>>((acc, t) => {
+    const s = getSession(t.tradedAt);
+    (acc[s] ??= []).push(t);
+    return acc;
+  }, {});
+
+  const bySessions: SessionStat[] = (
+    ["Asia", "London", "Overlap", "New York", "Closed"] as MarketSession[]
+  ).map(session => {
+    const ts = sessionMap[session] ?? [];
+    const w  = ts.filter(t => t.won);
+    const total = ts.reduce((s, t) => s + t.rMultiple, 0);
+    return {
+      session,
+      trades:  ts.length,
+      wins:    w.length,
+      winRate: ts.length ? Math.round((w.length / ts.length) * 1000) / 10 : 0,
+      avgR:    ts.length ? Math.round((total / ts.length) * 100) / 100 : 0,
+      totalR:  Math.round(total * 100) / 100,
+    };
+  });
+
+  // ── 6. Equity curve ──────────────────────────────────────────────────────────
+  // trades is already sorted asc by tradedAt (from the repository query)
+
+  let cumulative  = 0;
+  let peak        = 0;
+
+  const equityCurve: EquityPoint[] = trades.map(t => {
+    cumulative += t.rMultiple;
+    peak        = Math.max(peak, cumulative);
+    return {
+      date:        t.tradedAt.slice(0, 10),  // "YYYY-MM-DD"
+      cumulativeR: Math.round(cumulative * 100) / 100,
+      tradeR:      t.rMultiple,
+      pair:        t.pair,
+      drawdown:    Math.round((cumulative - peak) * 100) / 100,
+    };
+  });
+
+  // ── 7. By weekday ────────────────────────────────────────────────────────────
+
+  const weekdayMap = trades.reduce<Record<string, Trade[]>>((acc, t) => {
+    const d = getWeekday(t.tradedAt);
+    (acc[d] ??= []).push(t);
+    return acc;
+  }, {});
+
+  const byWeekday: WeekdayStat[] = (
+    ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const
+  ).map(day => {
+    const ts = weekdayMap[day] ?? [];
+    const w  = ts.filter(t => t.won);
+    const total = ts.reduce((s, t) => s + t.rMultiple, 0);
+    return {
+      day,
+      trades:  ts.length,
+      winRate: ts.length ? Math.round((w.length / ts.length) * 1000) / 10 : 0,
+      avgR:    ts.length ? Math.round((total / ts.length) * 100) / 100 : 0,
+    };
+  });
+
+  // ── Return ───────────────────────────────────────────────────────────────────
+
+  return {
+    overview,
+    byPair,
+    byDirection,
+    rBuckets,
+    bySessions,
+    equityCurve,
+    byWeekday,
+    totalTrades: trades.length,
+    filteredBy:  filters,
+  };
+},
 };

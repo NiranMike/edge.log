@@ -11,11 +11,11 @@ const FEATURES: {
   accent: AccentKey;
 }[] = [
   { icon: "⚡", num: "01", title: "30-Second Logging",  desc: "Quick mode: asset, direction, entry, stop, exit, size. P&L, R-multiple, win/loss — all instant.",                   tag: "< 30s to log",   accent: "emerald" },
-  { icon: "🧠", num: "02", title: "Behavioral Engine",  desc: "Discover your best session, worst emotion, and which setups print vs which ones bleed you dry.",                     tag: "AI Patterns",    accent: "sky"     },
-  { icon: "📈", num: "03", title: "Equity Curve",       desc: "Every trade plotted. Watch your account compound — or see exactly where discipline broke down.",                      tag: "Real-time",      accent: "amber"   },
+  { icon: "🧠", num: "02", title: "Behavioral Engine",  desc: "Discover your best session, worst emotion, and which setups print vs which ones bleed you dry.",                     tag: "AI Patterns",    accent: "violet"     },
+  { icon: "📈", num: "03", title: "Equity Curve",       desc: "Every trade plotted. Watch your account compound — or see exactly where discipline broke down.",                      tag: "Real-time",      accent: "teal"   },
   { icon: "⚖️", num: "04", title: "R Calculations",     desc: "Risk-to-reward, R-multiple, profit factor, expectancy — auto-calculated on every entry.",                            tag: "Automatic",      accent: "emerald" },
-  { icon: "🎯", num: "05", title: "Strategy Tracker",   desc: "Tag every trade. Your Breakout vs Reversal edge surfaces after 10 trades, not 10 months.",                           tag: "Per-setup stats", accent: "sky"    },
-  { icon: "🪞", num: "06", title: "Weekly Review",      desc: "Auto-generated summaries. Guided prompts. Revenge trading warnings before they destroy a week.",                     tag: "Behavioral",     accent: "amber"   },
+  { icon: "🎯", num: "05", title: "Strategy Tracker",   desc: "Tag every trade. Your Breakout vs Reversal edge surfaces after 10 trades, not 10 months.",                           tag: "Per-setup stats", accent: "violet"    },
+  { icon: "🪞", num: "06", title: "Weekly Review",      desc: "Auto-generated summaries. Guided prompts. Revenge trading warnings before they destroy a week.",                     tag: "Behavioral",     accent: "teal"   },
 ];
 
 // ─── Component ───────────────────────────────────────────────────────────────

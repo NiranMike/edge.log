@@ -24,7 +24,7 @@ function PasswordStrength({ value }: { value: string }) {
     { label: "Special",   ok: /[^A-Za-z0-9]/.test(value) },
   ];
   const score     = checks.filter((c) => c.ok).length;
-  const barColors = ["bg-red-500", "bg-amber-500", "bg-yellow-400", "bg-emerald-400"] as const;
+  const barColors = ["bg-red-500", "bg-teal-500", "bg-yellow-400", "bg-emerald-400"] as const;
   const barColor  = score > 0 ? barColors[Math.min(score - 1, 3)] : "bg-white/10";
 
   return (
@@ -63,7 +63,6 @@ function PasswordStrength({ value }: { value: string }) {
   );
 }
 
-// ─── RegisterForm ─────────────────────────────────────────────────────────────
 
 interface RegisterFormProps {
   /** Pre-filled email — passed from landing page CTA via ?email= query param */
@@ -110,7 +109,6 @@ export function RegisterForm({ defaultEmail }: RegisterFormProps) {
   return (
     <div className="flex flex-col gap-5">
 
-      {/* ── Google — fastest path ── */}
       <GoogleButton label="Sign up with Google" />
 
       <AuthDivider label="or sign up with email" />

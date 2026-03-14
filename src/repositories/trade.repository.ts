@@ -5,7 +5,7 @@
 // Prisma's Decimal → JS number conversion happens here at the boundary.
 
 import type { Prisma } from "@prisma/client";
-import type { Trade } from "@/types";
+import type { AnalyticsFilters, Trade } from "@/types";
 import { db } from "@/lib/db";
 
 // ─── Input types (raw numbers from service layer) ─────────────────────────────
@@ -106,5 +106,36 @@ export const tradeRepository = {
 
   async delete(id: number, userId: string): Promise<void> {
     await db.trade.deleteMany({ where: { id, userId } });
+  },
+
+  async findFiltered(userId: string, filters: AnalyticsFilters): Promise<Trade[]> {
+    const now   = new Date();
+    const since: Date | undefined = filters.dateRange === "all" ? undefined : {
+      "30d":  new Date(now.getTime() - 30  * 24 * 60 * 60 * 1000),
+      "90d":  new Date(now.getTime() - 90  * 24 * 60 * 60 * 1000),
+      "6mo":  new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000),
+      "1yr":  new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000),
+    }[filters.dateRange];
+
+    const rows = await db.trade.findMany({
+      where: {
+        userId,
+        // Date filter — only added when not "all"
+        ...(since && {
+          tradedAt: { gte: since },
+        }),
+        // Pair filter — only added when specific pairs are selected
+        ...(filters.pairs.length > 0 && {
+          pair: { in: filters.pairs },
+        }),
+        // Direction filter — only added when not "ALL"
+        ...(filters.direction !== "ALL" && {
+          direction: filters.direction,
+        }),
+      },
+      orderBy: { tradedAt: "asc" }, // asc for equity curve — chronological order matters
+    });
+
+    return rows.map(toTrade);
   },
 };

@@ -1,9 +1,9 @@
 "use client";
-// components/forms/TradeForm.tsx
-
+import { DateTimePicker } from "../ui/date-time-picker";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import type { TradeFormValues, TradeFormErrors, Direction, Trade } from "@/types";
+import { PairSelect } from "../ui/pair-select";
 
 interface Props {
   initialValues?: Partial<TradeFormValues>;
@@ -11,11 +11,6 @@ interface Props {
   submitLabel?: string;
   title?: string;
 }
-
-const COMMON_PAIRS = [
-  "EURUSD","GBPUSD","USDJPY","XAUUSD","BTCUSDT","ETHUSDT",
-  "USDCHF","AUDUSD","NZDUSD","USDCAD","NAS100","SPX500",
-];
 
 function calcLiveR(dir: Direction, entry: string, stop: string, exit: string): number | null {
   const e = Number(entry), s = Number(stop), x = Number(exit);
@@ -69,7 +64,7 @@ function AnimatedR({ value }: { value: number }) {
   return (
     <span
       className={[
-        "font-mono text-[28px] font-medium tracking-[-0.04em] inline-block transition-all duration-200",
+        "font-mono text-[22px] sm:text-[28px] font-medium tracking-[-0.04em] inline-block transition-all duration-200",
         value >= 0 ? "text-emerald-400" : "text-red-400",
         flash ? "scale-110 opacity-85" : "scale-100 opacity-100",
       ].join(" ")}
@@ -119,7 +114,7 @@ function Field({
           {label}
           {optional && <span className="ml-[6px] text-white/18 normal-case tracking-normal">optional</span>}
         </label>
-        {hint && <span className="font-mono text-[10px] text-white/22">{hint}</span>}
+        {hint && <span className="font-mono text-[10px] text-white/22 hidden sm:inline">{hint}</span>}
       </div>
       {children}
       <div className={["overflow-hidden transition-all duration-200", error ? "max-h-[30px] mt-[5px]" : "max-h-0"].join(" ")}>
@@ -138,7 +133,8 @@ function Input({ hasError, ...props }: React.InputHTMLAttributes<HTMLInputElemen
       onFocus={e => { setFocused(true); props.onFocus?.(e); }}
       onBlur={e  => { setFocused(false); props.onBlur?.(e); }}
       className={[
-        "w-full px-[14px] py-[11px] rounded-[6px] font-mono text-[13px] text-white/88 outline-none",
+        // Larger tap target and text on mobile
+        "w-full px-[14px] py-[13px] sm:py-[11px] rounded-[6px] font-mono text-[14px] sm:text-[13px] text-white/88 outline-none",
         "transition-all duration-200 placeholder:text-white/18 [color-scheme:dark]",
         "[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
         focused
@@ -165,7 +161,7 @@ function Textarea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
         onBlur={e  => { setFocused(false); props.onBlur?.(e); }}
         onChange={e => { setCharCount(e.target.value.length); props.onChange?.(e); }}
         className={[
-          "w-full px-[14px] py-[12px] rounded-[6px] font-mono text-[13px] text-white/88 outline-none",
+          "w-full px-[14px] py-[13px] sm:py-[12px] rounded-[6px] font-mono text-[14px] sm:text-[13px] text-white/88 outline-none",
           "resize-vertical leading-[1.65] transition-all duration-200 placeholder:text-white/18",
           focused
             ? "bg-white/[0.04] border border-emerald-400/40 shadow-[0_0_0_3px_rgba(74,222,128,0.06)]"
@@ -231,7 +227,7 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
 
   if (submitted) {
     return (
-      <div className="max-w-[560px] flex flex-col items-center justify-center gap-4 py-16 animate-[fadeIn_0.4s_ease]">
+      <div className="max-w-[560px] mx-auto flex flex-col items-center justify-center gap-4 py-16 animate-[fadeIn_0.4s_ease]">
         <div className="w-[52px] h-[52px] rounded-full bg-emerald-400/10 border border-emerald-400/30 flex items-center justify-center text-[22px] text-emerald-400 animate-[popIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
           ✓
         </div>
@@ -250,11 +246,18 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
         .form-section { animation: fadeIn 0.35s ease both; }
       `}</style>
 
-      <form onSubmit={handleSubmit} className="max-w-[560px]">
+      {/*
+        Outer wrapper: full bleed on mobile (px-4), constrained + centered on sm+.
+        pb-safe adds extra padding on mobile to clear the system home bar.
+      */}
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-[560px] mx-auto px-4 sm:px-0 pb-8 sm:pb-0"
+      >
 
         {/* ── Header ── */}
-        <div className="mb-9 animate-[fadeIn_0.4s_ease]">
-          <div className="flex items-center gap-[6px] mb-5">
+        <div className="mb-7 sm:mb-9 animate-[fadeIn_0.4s_ease]">
+          <div className="flex items-center gap-[6px] mb-4 sm:mb-5">
             <StepDot active={!step1done} done={step1done} />
             <StepDot active={step1done && !step2done} done={step2done} />
             <StepDot active={step2done && !step3done} done={step3done} />
@@ -263,37 +266,31 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
             </span>
           </div>
           <div className="flex items-start gap-3">
-            <div className="w-[3px] h-11 mt-1 rounded-full shrink-0 bg-gradient-to-b from-emerald-400 to-transparent" />
+            <div className="w-[3px] h-10 sm:h-11 mt-1 rounded-full shrink-0 bg-gradient-to-b from-emerald-400 to-transparent" />
             <div>
-              <h1 className="font-display font-normal text-[24px] tracking-[-0.03em] text-white/95 mb-[5px] leading-[1.15]">
+              <h1 className="font-display font-normal text-[20px] sm:text-[24px] tracking-[-0.03em] text-white/95 mb-[5px] leading-[1.15]">
                 {title}
               </h1>
-              <p className="font-mono text-[12px] text-white/30 leading-[1.6]">
+              <p className="font-mono text-[11px] sm:text-[12px] text-white/30 leading-[1.6]">
                 Accurate data builds accurate self-knowledge.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-white/[0.05] mb-7" />
+        <div className="border-t border-white/[0.05] mb-6 sm:mb-7" />
 
         {/* ══ Section 1: Identity ══ */}
-        <div className="form-section mb-7" style={{ animationDelay: "0.05s" }}>
+        <div className="form-section mb-6 sm:mb-7" style={{ animationDelay: "0.05s" }}>
           <SectionLabel label="Identity" />
-          <div className="grid grid-cols-2 gap-[14px]">
+          {/* Stack on mobile, 2-col on sm+ */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-[14px]">
             <Field label="Pair" error={errors.pair}>
-              <div className="relative">
-                <Input
-                  list="pairs-list"
-                  value={values.pair}
-                  onChange={e => set("pair", e.target.value.toUpperCase())}
-                  placeholder="EURUSD"
-                  hasError={!!errors.pair}
-                />
-                <datalist id="pairs-list">
-                  {COMMON_PAIRS.map(p => <option key={p} value={p} />)}
-                </datalist>
-              </div>
+              <PairSelect
+                value={values.pair}
+                onChange={val => set("pair", val)}
+                hasError={!!errors.pair}
+              />
               <div className={["overflow-hidden transition-all duration-300", pairMood ? "max-h-[22px] mt-[5px]" : "max-h-0"].join(" ")}>
                 {pairMood && (
                   <p className="font-mono text-[10px] text-emerald-400/55 animate-[slideDown_0.25s_ease]">
@@ -303,13 +300,16 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
               </div>
             </Field>
             <Field label="Date & Time">
-              <Input type="datetime-local" value={values.tradedAt} onChange={e => set("tradedAt", e.target.value)} />
+              <DateTimePicker
+                value={values.tradedAt}
+                onChange={val => set("tradedAt", val)}
+              />
             </Field>
           </div>
         </div>
 
-        {/* ══ Section 2: Direction ══ */}
-        <div className="form-section mb-7" style={{ animationDelay: "0.1s" }}>
+        {/* ══ Direction ══ */}
+        <div className="form-section mb-6 sm:mb-7" style={{ animationDelay: "0.1s" }}>
           <SectionLabel label="Direction" />
           <div className="grid grid-cols-2 gap-[10px]">
             {(["LONG", "SHORT"] as Direction[]).map(d => {
@@ -320,7 +320,7 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
                   key={d} type="button"
                   onClick={() => set("direction", d)}
                   className={[
-                    "relative overflow-hidden flex items-center justify-center gap-2 px-4 py-[13px]",
+                    "relative overflow-hidden flex items-center justify-center gap-2 px-4 py-[15px] sm:py-[13px]",
                     "rounded-[6px] font-mono text-[12px] tracking-[0.08em] uppercase cursor-pointer transition-all duration-200",
                     active
                       ? isLong
@@ -340,10 +340,11 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
           </div>
         </div>
 
-        {/* ══ Section 3: Price Levels ══ */}
-        <div className="form-section mb-7" style={{ animationDelay: "0.15s" }}>
+        {/* ══ Price Levels ══ */}
+        <div className="form-section mb-6 sm:mb-7" style={{ animationDelay: "0.15s" }}>
           <SectionLabel label="Price Levels" />
-          <div className="grid grid-cols-2 gap-[14px]">
+          {/* 2-col on all sizes — numbers are short enough, but bump to 1-col on very small screens */}
+          <div className="grid grid-cols-2 gap-[12px] sm:gap-[14px]">
             {([
               { key: "entryPrice", label: "Entry",       placeholder: "1.08450", hint: "where you got in"  },
               { key: "stopLoss",   label: "Stop Loss",   placeholder: "1.08200", hint: "max risk"           },
@@ -353,6 +354,7 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
               <Field key={key} label={label} hint={hint} error={(errors as Record<string, string | undefined>)[key]}>
                 <Input
                   type="number" step="any"
+                  inputMode="decimal"      // mobile: show numeric keyboard
                   value={values[key] as string}
                   onChange={e => set(key, e.target.value)}
                   placeholder={placeholder}
@@ -363,14 +365,14 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
           </div>
         </div>
 
-        {/* ══ Live R Preview ══ */}
+        {/* ══ Live R display ══ */}
         <div
-          className={["overflow-hidden transition-all", liveR !== null ? "max-h-[140px] mb-7" : "max-h-0 mb-0"].join(" ")}
+          className={["overflow-hidden transition-all", liveR !== null ? "max-h-[160px] mb-6 sm:mb-7" : "max-h-0 mb-0"].join(" ")}
           style={{ transitionDuration: "400ms", transitionTimingFunction: "cubic-bezier(0.4,0,0.2,1)" }}
         >
           {liveR !== null && rComment && (
             <div className={[
-              "relative overflow-hidden flex items-center justify-between gap-4 px-5 py-[18px] rounded-[8px] border",
+              "relative overflow-hidden flex items-center justify-between gap-3 px-4 sm:px-5 py-4 sm:py-[18px] rounded-[8px] border",
               liveR >= 0 ? "bg-emerald-400/[0.05] border-emerald-400/15" : "bg-red-400/[0.05] border-red-400/15",
             ].join(" ")}>
               <div className={[
@@ -379,11 +381,11 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
                   ? "bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent"
                   : "bg-gradient-to-r from-transparent via-red-400/40 to-transparent",
               ].join(" ")} />
-              <div className="flex-1">
-                <p className={["font-mono text-[12px] font-medium mb-1", liveR >= 0 ? "text-emerald-400/90" : "text-red-400/90"].join(" ")}>
+              <div className="flex-1 min-w-0">
+                <p className={["font-mono text-[12px] font-medium mb-1 truncate", liveR >= 0 ? "text-emerald-400/90" : "text-red-400/90"].join(" ")}>
                   {rComment.text}
                 </p>
-                <p className="font-mono text-[11px] text-white/30 leading-[1.5]">{rComment.sub}</p>
+                <p className="font-mono text-[10px] sm:text-[11px] text-white/30 leading-[1.5]">{rComment.sub}</p>
               </div>
               <div className="text-right shrink-0">
                 <AnimatedR value={liveR} />
@@ -393,8 +395,8 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
           )}
         </div>
 
-        {/* ══ Section 4: Notes ══ */}
-        <div className="form-section mb-7" style={{ animationDelay: "0.2s" }}>
+        {/* ══ Notes ══ */}
+        <div className="form-section mb-6 sm:mb-7" style={{ animationDelay: "0.2s" }}>
           <SectionLabel label="Notes" optional />
           <Field label="What happened" optional>
             <Textarea
@@ -406,24 +408,24 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
           </Field>
         </div>
 
-        {/* ── Server error ── */}
-        <div className={["overflow-hidden transition-all duration-200", serverErr ? "max-h-[60px] mb-4" : "max-h-0 mb-0"].join(" ")}>
+        {/* ══ Server error ══ */}
+        <div className={["overflow-hidden transition-all duration-200", serverErr ? "max-h-15 mb-4" : "max-h-0 mb-0"].join(" ")}>
           {serverErr && (
-            <div className="px-[14px] py-3 rounded-[6px] bg-red-400/[0.06] border border-red-400/20 font-mono text-[12px] text-red-400">
+            <div className="px-3.5 py-3 rounded-md bg-red-400/6 border border-red-400/20 font-mono text-[12px] text-red-400">
               ↳ {serverErr}
             </div>
           )}
         </div>
 
-        {/* ── Actions ── */}
-        <div
-          className="form-section grid gap-[10px]"
-          style={{ gridTemplateColumns: "auto 1fr", animationDelay: "0.25s" }}
-        >
+        {/* ══ Actions ══
+            On mobile: stack Cancel above Submit (full-width) for easier thumb access.
+            On sm+:    Cancel auto, Submit fills remaining width (original layout).
+        */}
+        <div className="form-section flex flex-col-reverse sm:grid sm:gap-2.5 gap-2" style={{ gridTemplateColumns: "auto 1fr", animationDelay: "0.25s" }}>
           <button
             type="button"
             onClick={() => router.back()}
-            className="px-5 py-[13px] rounded-[6px] bg-transparent border border-white/[0.08] font-mono text-[12px] tracking-[0.06em] text-white/35 cursor-pointer transition-all duration-150 hover:border-white/18 hover:text-white/55"
+            className="w-full sm:w-auto px-5 py-[14px] sm:py-[13px] rounded-md bg-transparent border border-white/8 font-mono text-[12px] tracking-[0.06em] text-white/35 cursor-pointer transition-all duration-150 hover:border-white/18 hover:text-white/55"
           >
             Cancel
           </button>
@@ -431,7 +433,7 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
             type="submit"
             disabled={loading}
             className={[
-              "py-[13px] rounded-[6px] font-mono text-[12px] font-semibold tracking-[0.1em] uppercase",
+              "w-full py-[15px] sm:py-[13px] rounded-[6px] font-mono text-[12px] font-semibold tracking-[0.1em] uppercase",
               "transition-all duration-200 border border-transparent",
               loading
                 ? "bg-white/[0.04] text-white/30 cursor-not-allowed"

@@ -16,7 +16,7 @@ const STATS = [
 ];
 
 const QUOTES = [
-  { text: "Cutting my Asia session alone turned me profitable overnight.", author: "Alex K. · Forex"    },
+  { text: "Cutting my Asia session alone turned me profitable overnight.", author: "Alex K. · Forex"       },
   { text: "I had no idea my reversal WR was 22%. I only trade breakouts now.", author: "Marcus R. · Futures" },
 ];
 
@@ -24,7 +24,7 @@ export function AuthShell({ children, badge, title, description }: AuthShellProp
   return (
     <div className={cx("min-h-screen flex flex-col lg:flex-row", ds.bgBase)}>
 
-      {/* ── Left branding panel (desktop only) ───────────────────────────── */}
+      {/* ── Left branding panel (lg+) ── */}
       <aside className="hidden lg:flex lg:w-[44%] xl:w-[40%] flex-col justify-between relative overflow-hidden p-12 xl:p-16 border-r border-white/[0.05]">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 opacity-[0.18]" style={ds.dotGrid} />
@@ -82,13 +82,15 @@ export function AuthShell({ children, badge, title, description }: AuthShellProp
         <p className={ds.micro}>Trade Smarter. Journal Faster.</p>
       </aside>
 
-      {/* ── Right form panel ──────────────────────────────────────────────── */}
-      <main className="flex-1 flex flex-col items-center justify-center px-5 py-14 sm:px-8 lg:p-12 xl:p-16 relative">
+      {/* ── Right form panel ── */}
+      <main className="flex-1 flex flex-col items-center justify-center relative px-4 py-10 sm:px-8 sm:py-14 lg:px-12 lg:py-16 xl:px-16">
+
+        {/* Corner accents — desktop only */}
         <div className="hidden lg:block absolute top-0 right-0 w-20 h-20 border-r border-t border-white/[0.04]" />
         <div className="hidden lg:block absolute bottom-0 left-0 w-20 h-20 border-l border-b border-white/[0.03]" />
 
         {/* Mobile logo */}
-        <Link href="/" className="lg:hidden flex items-center gap-2.5 mb-10 group">
+        <Link href="/" className="lg:hidden flex items-center gap-2.5 mb-8 group">
           <div className="relative w-6 h-6">
             <div className="absolute inset-0 border border-emerald-400/40 rotate-45 group-hover:rotate-[135deg] transition-transform duration-500" />
             <div className="absolute inset-[4px] bg-emerald-400/20 rotate-45" />
@@ -98,19 +100,35 @@ export function AuthShell({ children, badge, title, description }: AuthShellProp
           </span>
         </Link>
 
-        <div className="w-full max-w-md">
+        {/* Mobile stats strip — social proof since left panel is hidden */}
+        <div className="lg:hidden w-full max-w-[440px] mb-8">
+          <div className="grid grid-cols-3 gap-2">
+            {STATS.map(({ value, label }) => (
+              <div key={label} className="flex flex-col items-center py-3 px-2 border border-white/[0.06] bg-white/[0.02] rounded-lg">
+                <p className="font-display font-black text-emerald-400 text-[18px] leading-none mb-1"
+                  style={{ textShadow: "0 0 16px rgba(16,185,129,0.4)" }}>
+                  {value}
+                </p>
+                <p className="font-mono text-[8px] uppercase tracking-widest text-white/25 text-center">{label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Form content — constrained width, centered */}
+        <div className="w-full max-w-[440px]">
           {badge && (
-            <div className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 border border-emerald-400/18 bg-emerald-400/[0.06]">
+            <div className="inline-flex items-center gap-2 mb-5 sm:mb-6 px-3 py-1.5 border border-emerald-400/18 bg-emerald-400/[0.06]">
               <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
               <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-emerald-400/70">{badge}</span>
             </div>
           )}
 
           <h1 className="font-display font-extrabold text-white tracking-tight leading-tight mb-2"
-            style={{ fontSize: "clamp(22px,3vw,30px)" }}>
+            style={{ fontSize: "clamp(20px,3vw,30px)" }}>
             {title}
           </h1>
-          <p className={cx(ds.body, "mb-8 text-[13px]")}>{description}</p>
+          <p className={cx(ds.body, "mb-6 sm:mb-8 text-[13px]")}>{description}</p>
 
           {children}
         </div>

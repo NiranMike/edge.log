@@ -40,10 +40,10 @@ export async function updateTradeAction(id: number, values: TradeFormValues): Pr
 }
 
 export async function deleteTradeAction(id: number): Promise<Result<void>> {
-  const userId = await getUserId();
-  if (!userId) return { ok: false, error: "Not authenticated" };
+  const session = await auth();
+  if (!session?.user?.id) return { ok: false, error: "Unauthorized" };
 
-  const result = await tradeService.delete(userId, id);
+  const result = await tradeService.delete(session.user.id, id);
   if (result.ok) {
     revalidatePath("/dashboard");
     revalidatePath("/trades");

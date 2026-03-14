@@ -57,3 +57,107 @@ export interface TradeFormErrors {
 export type Result<T = void> =
   | { ok: true;  data: T }
   | { ok: false; error: string };
+
+
+  // ─── Filters (URL params → server) ───────────────────────────────────────────
+
+export interface AnalyticsFilters {
+  dateRange: "30d" | "90d" | "6mo" | "1yr" | "all";
+  pairs:     string[];           // empty = all pairs
+  direction: "ALL" | "LONG" | "SHORT";
+}
+
+// ─── Per-pair breakdown ───────────────────────────────────────────────────────
+
+export interface PairStat {
+  pair:      string;
+  trades:    number;
+  wins:      number;
+  losses:    number;
+  winRate:   number;             // 0–100
+  avgR:      number;
+  totalR:    number;
+  bestR:     number;
+  worstR:    number;
+}
+
+// ─── Direction bias ───────────────────────────────────────────────────────────
+
+export interface DirectionStat {
+  direction: "LONG" | "SHORT";
+  trades:    number;
+  wins:      number;
+  winRate:   number;
+  avgR:      number;
+  totalR:    number;
+}
+
+// ─── R distribution bucket ────────────────────────────────────────────────────
+
+export interface RBucket {
+  label:  string;                // e.g. "1R → 2R"
+  min:    number;
+  max:    number;
+  count:  number;
+  pct:    number;                // % of total trades
+}
+
+// ─── Session breakdown ────────────────────────────────────────────────────────
+
+export type MarketSession = "Asia" | "London" | "New York" | "Overlap" | "Closed";
+
+export interface SessionStat {
+  session:  MarketSession;
+  trades:   number;
+  wins:     number;
+  winRate:  number;
+  avgR:     number;
+  totalR:   number;
+}
+
+// ─── Equity curve point ───────────────────────────────────────────────────────
+
+export interface EquityPoint {
+  date:        string;           // ISO date string for the x-axis
+  cumulativeR: number;           // running total R at this point
+  tradeR:      number;           // the individual trade's R (for tooltip)
+  pair:        string;           // for tooltip
+  drawdown:    number;           // drawdown from peak at this point (always <= 0)
+}
+
+// ─── Day of week ─────────────────────────────────────────────────────────────
+
+export interface WeekdayStat {
+  day:     "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun";
+  trades:  number;
+  winRate: number;
+  avgR:    number;
+}
+
+// ─── Overview stats ───────────────────────────────────────────────────────────
+
+export interface AnalyticsOverview {
+  profitFactor:    number;       // gross wins / gross losses (0 if no losses)
+  bestTrade:       number;       // highest single R
+  worstTrade:      number;       // lowest single R
+  largestWinStreak:  number;
+  largestLossStreak: number;
+  avgWinR:         number;
+  avgLossR:        number;       // expressed as positive number
+  mostActivePair:  string;
+  mostActiveSession: MarketSession;
+}
+
+// ─── Root analytics object ────────────────────────────────────────────────────
+
+export interface TradeAnalytics {
+  overview:    AnalyticsOverview;
+  byPair:      PairStat[];
+  byDirection: DirectionStat[];  // always 2 items max — LONG and SHORT
+  rBuckets:    RBucket[];        // always 7 buckets
+  bySessions:  SessionStat[];
+  equityCurve: EquityPoint[];    // sorted by date ascending
+  byWeekday:   WeekdayStat[];    // sorted Mon → Sun
+  totalTrades: number;
+  filteredBy:  AnalyticsFilters; // echo back what filters produced this data
+}

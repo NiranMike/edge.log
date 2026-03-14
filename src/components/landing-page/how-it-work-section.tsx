@@ -169,8 +169,8 @@ export function HowItWorksSection() {
                       <span className={cx("font-mono text-[10px] font-bold", t.dir === "Buy" ? "text-emerald-400" : "text-rose-400")}>
                         {t.dir === "Buy" ? "▲" : "▼"} {t.dir}
                       </span>
-                      <span className="font-mono text-[9px] text-amber-400/70 hidden sm:block">{t.sess}</span>
-                      <span className="font-mono text-[9px] text-sky-400/70 hidden sm:block">{t.strat}</span>
+                      <span className="font-mono text-[9px] text-teal-400/70 hidden sm:block">{t.sess}</span>
+                      <span className="font-mono text-[9px] text-violet-400/70 hidden sm:block">{t.strat}</span>
                       <span
                         className={cx("font-mono text-[11px] sm:text-[12px] font-black", t.win ? "text-emerald-400" : "text-rose-400")}
                         style={{ textShadow: t.win ? "0 0 14px rgba(16,185,129,0.5)" : "0 0 14px rgba(239,68,68,0.5)" }}
@@ -212,7 +212,7 @@ export function HowItWorksSection() {
                   {[4, 1, 5, 4].map((c, i) => (
                     <div key={i} className="flex gap-0.5">
                       {[1, 2, 3, 4, 5].map(n => (
-                        <span key={n} className={cx("text-[10px]", n <= c ? "text-amber-400" : "text-white/10")}>★</span>
+                        <span key={n} className={cx("text-[10px]", n <= c ? "text-teal-400" : "text-white/10")}>★</span>
                       ))}
                     </div>
                   ))}

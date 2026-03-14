@@ -1,9 +1,9 @@
-
 import { notFound, redirect } from "next/navigation";
 import { auth } from "#/auth";
 import { tradeService } from "@/services/trade-service";
 import { AppShell } from "@/components/layout/app-shell";
 import { EditTradeClient } from "@/components/trades/edit-trade-client";
+import { DeleteTradeButton } from "@/components/ui/delete-trade-button";
 
 export default async function EditTradePage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
@@ -14,44 +14,78 @@ export default async function EditTradePage({ params }: { params: Promise<{ id: 
   const trade = trades.find(t => t.id === parseInt(id));
   if (!trade) notFound();
 
+  const rPositive = trade.rMultiple >= 0;
+
   return (
     <AppShell>
-      <div className="px-10 py-9">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 mb-8">
-          <a
-            href="/trades"
-            className="font-mono text-[11px] text-white/25 no-underline hover:text-white/45 transition-colors duration-150 tracking-[0.04em]"
-          >
-            Trades
-          </a>
-          <span className="font-mono text-[11px] text-white/15">/</span>
-          <span className="font-mono text-[11px] text-white/40 tracking-[0.04em]">
-            {trade.pair}
-          </span>
-          <span className="font-mono text-[11px] text-white/15">/</span>
-          <span className="font-mono text-[11px] text-white/25 tracking-[0.04em]">Edit</span>
-        </div>
+      {/* Full-height scroll container, centers the column */}
+      <div className="min-h-full px-4 py-6 sm:px-6 sm:py-10 lg:py-14 flex flex-col items-center">
 
-        {/* Danger context banner — shows original R so user knows what they're editing */}
-        <div className="max-w-[560px] mb-7 flex items-center justify-between px-4 py-[10px] rounded-[6px] bg-white/[0.02] border border-white/[0.06]">
-          <div className="flex items-center gap-3">
-            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/20">
-              Original result
+        {/* Single centered content column, constrained width */}
+        <div className="w-full max-w-[640px]">
+
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-1.5 mb-8 sm:mb-10">
+            <a
+              href="/trades"
+              className="font-mono text-[11px] text-white/25 no-underline hover:text-white/50 transition-colors duration-150 tracking-[0.04em]"
+            >
+              Trades
+            </a>
+            <span className="font-mono text-[11px] text-white/15">/</span>
+            <span className="font-mono text-[11px] text-white/50 tracking-[0.04em]">
+              {trade.pair}
             </span>
-            <span className={[
-              "font-mono text-[13px] font-medium tracking-[-0.02em]",
-              trade.rMultiple >= 0 ? "text-emerald-400" : "text-red-400",
-            ].join(" ")}>
-              {trade.rMultiple >= 0 ? "+" : ""}{trade.rMultiple}R
-            </span>
+            <span className="font-mono text-[11px] text-white/15">/</span>
+            <span className="font-mono text-[11px] text-white/25 tracking-[0.04em]">Edit</span>
+          </nav>
+
+          {/* Original result banner */}
+          <div className="w-full mb-7 sm:mb-9 rounded-[6px] bg-white/[0.02] border border-white/[0.06] px-4 py-3">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-2.5">
+                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/20">
+                  Original result
+                </span>
+                <span className={[
+                  "font-mono text-[14px] font-medium tracking-[-0.02em]",
+                  rPositive ? "text-emerald-400" : "text-red-400",
+                ].join(" ")}>
+                  {rPositive ? "+" : ""}{trade.rMultiple}R
+                </span>
+              </div>
+              <span className="font-mono text-[10px] text-white/25">
+                <span className="sm:hidden">
+                  {new Date(trade.tradedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                </span>
+                <span className="hidden sm:inline">
+                  {new Date(trade.tradedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                </span>
+              </span>
+            </div>
           </div>
-          <span className="font-mono text-[10px] text-white/18">
-            {new Date(trade.tradedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-          </span>
-        </div>
 
-        <EditTradeClient trade={trade} />
+          {/* Edit form */}
+          <EditTradeClient trade={trade} />
+
+          {/* Danger zone */}
+          <div className="w-full mt-10 sm:mt-12 pt-7 sm:pt-8 border-t border-white/[0.05]">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-mono text-[11px] text-white/30 mb-[3px] tracking-[0.04em]">
+                  Delete trade
+                </p>
+                <p className="font-mono text-[10px] text-white/18">
+                  This cannot be undone.
+                </p>
+              </div>
+              <div className="w-full sm:w-auto">
+                <DeleteTradeButton tradeId={trade.id} pair={trade.pair} />
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </AppShell>
   );

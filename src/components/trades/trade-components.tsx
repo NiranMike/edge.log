@@ -112,7 +112,7 @@ export function RecentTrades({ trades }: { trades: Trade[] }) {
               <td className={cx(TD_CLASS, "whitespace-nowrap")}>
                 <Link
                   href={`/trades/${t.id}/edit`}
-                  className="font-mono text-[10px] text-white/20 no-underline group-hover:text-amber-400/60 hover:!text-amber-400 transition-colors duration-150 tracking-[0.06em] uppercase"
+                  className="font-mono text-[10px] text-white/20 no-underline group-hover:text-teal-400/60 hover:!text-teal-400 transition-colors duration-150 tracking-[0.06em] uppercase"
                 >
                   Edit
                 </Link>

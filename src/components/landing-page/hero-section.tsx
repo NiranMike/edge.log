@@ -250,7 +250,7 @@ export function HeroSection() {
               ))}
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="text-amber-400 text-[9px]">★★★★★</span>
+              <span className="text-teal-400 text-[9px]">★★★★★</span>
               <span className="mono text-[10px]" style={{ color: "var(--muted)" }}>4.9 · 1,247 traders</span>
             </div>
           </div>

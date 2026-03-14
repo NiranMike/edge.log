@@ -24,7 +24,7 @@ const TESTIMONIALS: {
     role:     "Crypto Trader · 2 years",
     initials: "SL",
     result:   "58% → 71% WR",
-    accent:   "sky",
+    accent:   "violet",
   },
   {
     quote:    "Breakout: 71% win rate. Reversal: 22% win rate. I had no idea. I only trade breakouts now. It's that simple.",
@@ -32,7 +32,7 @@ const TESTIMONIALS: {
     role:     "Futures Trader · 5 years",
     initials: "MR",
     result:   "+$7,400/mo",
-    accent:   "amber",
+    accent:   "teal",
   },
 ];
 

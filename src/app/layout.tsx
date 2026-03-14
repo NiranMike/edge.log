@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${jetBrainsMono.variable} ${syne.variable} antialiased`}
+        className={`${jetBrainsMono.variable} ${syne.variable} font-display antialiased`}
       >
         <Providers>{children}</Providers>
       </body>
