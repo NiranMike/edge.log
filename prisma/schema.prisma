@@ -6,7 +6,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL_DEV")
+  url      = env("DATABASE_URL")
   // NO url here — Prisma 7 + Neon adapter handles the connection in db.ts
   // CLI migrations use prisma.config.ts which reads DIRECT_URL
 }
