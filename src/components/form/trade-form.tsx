@@ -87,7 +87,6 @@ function StepDot({ active, done }: { active: boolean; done: boolean }) {
   );
 }
 
-// ── SectionLabel ──────────────────────────────────────────────────────────────
 function SectionLabel({ label, optional }: { label: string; optional?: boolean }) {
   return (
     <div className="flex items-center gap-[10px] mb-[14px]">
@@ -101,7 +100,6 @@ function SectionLabel({ label, optional }: { label: string; optional?: boolean }
   );
 }
 
-// ── Field ─────────────────────────────────────────────────────────────────────
 function Field({
   label, hint, error, children, optional,
 }: {
@@ -124,7 +122,6 @@ function Field({
   );
 }
 
-// ── Input ─────────────────────────────────────────────────────────────────────
 function Input({ hasError, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { hasError?: boolean }) {
   const [focused, setFocused] = useState(false);
   return (
@@ -133,7 +130,6 @@ function Input({ hasError, ...props }: React.InputHTMLAttributes<HTMLInputElemen
       onFocus={e => { setFocused(true); props.onFocus?.(e); }}
       onBlur={e  => { setFocused(false); props.onBlur?.(e); }}
       className={[
-        // Larger tap target and text on mobile
         "w-full px-[14px] py-[13px] sm:py-[11px] rounded-[6px] font-mono text-[14px] sm:text-[13px] text-white/88 outline-none",
         "transition-all duration-200 placeholder:text-white/18 [color-scheme:dark]",
         "[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
@@ -149,7 +145,6 @@ function Input({ hasError, ...props }: React.InputHTMLAttributes<HTMLInputElemen
   );
 }
 
-// ── Textarea ──────────────────────────────────────────────────────────────────
 function Textarea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   const [focused, setFocused] = useState(false);
   const [charCount, setCharCount] = useState((props.value as string)?.length ?? 0);
@@ -175,7 +170,6 @@ function Textarea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   );
 }
 
-// ── Main Form ─────────────────────────────────────────────────────────────────
 export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade", title = "Log a trade" }: Props) {
   const router = useRouter();
 
@@ -246,16 +240,12 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
         .form-section { animation: fadeIn 0.35s ease both; }
       `}</style>
 
-      {/*
-        Outer wrapper: full bleed on mobile (px-4), constrained + centered on sm+.
-        pb-safe adds extra padding on mobile to clear the system home bar.
-      */}
+
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-[560px] mx-auto px-4 sm:px-0 pb-8 sm:pb-0"
       >
 
-        {/* ── Header ── */}
         <div className="mb-7 sm:mb-9 animate-[fadeIn_0.4s_ease]">
           <div className="flex items-center gap-[6px] mb-4 sm:mb-5">
             <StepDot active={!step1done} done={step1done} />
@@ -280,10 +270,8 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
 
         <div className="border-t border-white/[0.05] mb-6 sm:mb-7" />
 
-        {/* ══ Section 1: Identity ══ */}
         <div className="form-section mb-6 sm:mb-7" style={{ animationDelay: "0.05s" }}>
           <SectionLabel label="Identity" />
-          {/* Stack on mobile, 2-col on sm+ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-[14px]">
             <Field label="Pair" error={errors.pair}>
               <PairSelect
@@ -340,10 +328,8 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
           </div>
         </div>
 
-        {/* ══ Price Levels ══ */}
         <div className="form-section mb-6 sm:mb-7" style={{ animationDelay: "0.15s" }}>
           <SectionLabel label="Price Levels" />
-          {/* 2-col on all sizes — numbers are short enough, but bump to 1-col on very small screens */}
           <div className="grid grid-cols-2 gap-[12px] sm:gap-[14px]">
             {([
               { key: "entryPrice", label: "Entry",       placeholder: "1.08450", hint: "where you got in"  },
@@ -354,7 +340,7 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
               <Field key={key} label={label} hint={hint} error={(errors as Record<string, string | undefined>)[key]}>
                 <Input
                   type="number" step="any"
-                  inputMode="decimal"      // mobile: show numeric keyboard
+                  inputMode="decimal"     
                   value={values[key] as string}
                   onChange={e => set(key, e.target.value)}
                   placeholder={placeholder}
@@ -365,7 +351,6 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
           </div>
         </div>
 
-        {/* ══ Live R display ══ */}
         <div
           className={["overflow-hidden transition-all", liveR !== null ? "max-h-[160px] mb-6 sm:mb-7" : "max-h-0 mb-0"].join(" ")}
           style={{ transitionDuration: "400ms", transitionTimingFunction: "cubic-bezier(0.4,0,0.2,1)" }}
@@ -395,7 +380,6 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
           )}
         </div>
 
-        {/* ══ Notes ══ */}
         <div className="form-section mb-6 sm:mb-7" style={{ animationDelay: "0.2s" }}>
           <SectionLabel label="Notes" optional />
           <Field label="What happened" optional>
@@ -408,7 +392,6 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
           </Field>
         </div>
 
-        {/* ══ Server error ══ */}
         <div className={["overflow-hidden transition-all duration-200", serverErr ? "max-h-15 mb-4" : "max-h-0 mb-0"].join(" ")}>
           {serverErr && (
             <div className="px-3.5 py-3 rounded-md bg-red-400/6 border border-red-400/20 font-mono text-[12px] text-red-400">
@@ -417,10 +400,7 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
           )}
         </div>
 
-        {/* ══ Actions ══
-            On mobile: stack Cancel above Submit (full-width) for easier thumb access.
-            On sm+:    Cancel auto, Submit fills remaining width (original layout).
-        */}
+
         <div className="form-section flex flex-col-reverse sm:grid sm:gap-2.5 gap-2" style={{ gridTemplateColumns: "auto 1fr", animationDelay: "0.25s" }}>
           <button
             type="button"

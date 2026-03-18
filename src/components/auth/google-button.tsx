@@ -18,7 +18,6 @@ export function GoogleButton({
 
   function handleClick() {
     startTransition(async () => {
-      // This triggers a server-side redirect to Google — the page navigates away
       await googleSignInAction(callbackUrl);
     });
   }

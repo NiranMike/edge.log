@@ -1,4 +1,3 @@
-// components/auth/LoginForm.tsx
 "use client";
 
 import { useState, useTransition } from "react";
@@ -60,7 +59,6 @@ export function LoginForm({ callbackUrl, urlError }: LoginFormProps) {
   return (
     <div className="flex flex-col gap-5">
 
-      {/* Google sign-in — top of form, most prominent */}
       <GoogleButton callbackUrl={callbackUrl} label="Continue with Google" />
 
       <AuthDivider label="or sign in with email" />

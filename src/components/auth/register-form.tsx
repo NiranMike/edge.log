@@ -29,7 +29,6 @@ function PasswordStrength({ value }: { value: string }) {
 
   return (
     <div className="mt-2 space-y-2">
-      {/* Strength bars */}
       <div className="flex gap-1">
         {[0, 1, 2, 3].map((i) => (
           <div
@@ -42,7 +41,6 @@ function PasswordStrength({ value }: { value: string }) {
         ))}
       </div>
 
-      {/* Requirement chips */}
       <div className="flex flex-wrap gap-1.5">
         {checks.map(({ label, ok }) => (
           <span
@@ -113,25 +111,22 @@ export function RegisterForm({ defaultEmail }: RegisterFormProps) {
 
       <AuthDivider label="or sign up with email" />
 
-      {/* ── Credentials form ── */}
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
 
         <FormError   message={serverError}   />
         <FormSuccess message={serverSuccess} />
 
-        {/* Name */}
         <AuthInput
           label="Full name"
           type="text"
           placeholder="Alex Kim"
           autoComplete="name"
-          autoFocus={!defaultEmail} // don't steal focus if email is pre-filled
+          autoFocus={!defaultEmail} 
           disabled={isLoading}
           error={errors.name?.message}
           {...register("name")}
         />
 
-        {/* Email — auto-focused if pre-filled from landing CTA */}
         <AuthInput
           label="Email address"
           type="email"
@@ -143,7 +138,6 @@ export function RegisterForm({ defaultEmail }: RegisterFormProps) {
           {...register("email")}
         />
 
-        {/* Password + live strength meter */}
         <div>
           <AuthInput
             label="Password"
@@ -157,7 +151,6 @@ export function RegisterForm({ defaultEmail }: RegisterFormProps) {
           <PasswordStrength value={passwordValue} />
         </div>
 
-        {/* Confirm */}
         <AuthInput
           label="Confirm password"
           type="password"
@@ -173,7 +166,6 @@ export function RegisterForm({ defaultEmail }: RegisterFormProps) {
         </AuthButton>
       </form>
 
-      {/* ── Switch to login ── */}
       <p className="font-mono text-[11px] text-center text-white/22">
         Already have an account?{" "}
         <Link
@@ -184,7 +176,6 @@ export function RegisterForm({ defaultEmail }: RegisterFormProps) {
         </Link>
       </p>
 
-      {/* ── Legal ── */}
       <p className={cx(ds.micro, "text-center")}>
         By creating an account you agree to our{" "}
         <a

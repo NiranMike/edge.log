@@ -1,7 +1,4 @@
 "use client";
-// components/analytics/equity-curve.tsx
-// Uses TradingView Lightweight Charts — purpose-built for financial time-series.
-// Install: npm install lightweight-charts
 
 import { useEffect, useRef, useState } from "react";
 import {
@@ -47,7 +44,6 @@ export function EquityCurve({ curve }: Props) {
   useEffect(() => {
     if (!mounted || !containerRef.current || curve.length === 0) return;
 
-    // ── Create chart ──────────────────────────────────────────────────────────
     const chart = createChart(containerRef.current, {
       width:  containerRef.current.clientWidth,
       height: containerRef.current.clientHeight,
@@ -84,10 +80,6 @@ export function EquityCurve({ curve }: Props) {
       },
       timeScale: {
         borderVisible: false,
-        // ✅ No custom tickMarkFormatter — passing "YYYY-MM-DD" strings means
-        // Lightweight Charts handles date formatting natively and correctly.
-        // A custom formatter that treats the time as a Unix timestamp number
-        // will produce NaN/NaN when the time is actually a date string.
       },
       handleScroll: { mouseWheel: false, pressedMouseMove: true },
       handleScale:  { mouseWheel: false, pinch: true },
@@ -95,7 +87,6 @@ export function EquityCurve({ curve }: Props) {
 
     chartRef.current = chart;
 
-    // ── Add area series ───────────────────────────────────────────────────────
     const series = chart.addSeries(AreaSeries, {
       lineColor,
       topColor:                       areaTop,
@@ -146,7 +137,6 @@ export function EquityCurve({ curve }: Props) {
     series.setData(lineData);
     chart.timeScale().fitContent();
 
-    // ── Zero reference line ───────────────────────────────────────────────────
     series.createPriceLine({
       price:            0,
       color:            "rgba(255,255,255,0.08)",
@@ -155,7 +145,6 @@ export function EquityCurve({ curve }: Props) {
       axisLabelVisible: false,
     });
 
-    // ── Crosshair tooltip ─────────────────────────────────────────────────────
     chart.subscribeCrosshairMove(param => {
       if (!param.point || !param.time || param.point.x < 0 || param.point.y < 0) {
         setTooltip(null);
@@ -176,7 +165,6 @@ export function EquityCurve({ curve }: Props) {
       });
     });
 
-    // ── Responsive resize ─────────────────────────────────────────────────────
     const ro = new ResizeObserver(entries => {
       const { width, height } = entries[0].contentRect;
       chart.applyOptions({ width, height });
@@ -203,7 +191,6 @@ export function EquityCurve({ curve }: Props) {
   return (
     <div className="rounded-xl bg-[#0d1117] border border-white/[0.065] overflow-hidden">
 
-      {/* ── Header ── */}
       <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4 border-b border-white/[0.05]">
         <div className="flex items-center gap-3">
           <div className="w-4 h-px bg-teal-400/50" />
@@ -229,11 +216,9 @@ export function EquityCurve({ curve }: Props) {
         </div>
       </div>
 
-      {/* ── Chart ── */}
       <div className="relative h-[200px] sm:h-[260px] lg:h-[300px]">
         <div ref={containerRef} className="absolute inset-0" />
 
-        {/* ── Floating tooltip ── */}
         {tooltip && (
           <div
             className="absolute z-10 pointer-events-none"

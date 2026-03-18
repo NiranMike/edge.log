@@ -1,5 +1,4 @@
 "use client";
-// components/analytics/pair-breakdown.tsx
 
 import { useState } from "react";
 import { cx } from "@/style";

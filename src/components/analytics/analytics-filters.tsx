@@ -1,5 +1,4 @@
 "use client";
-// components/analytics/analytics-filters.tsx
 
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useTransition, useRef, useEffect } from "react";
@@ -26,7 +25,6 @@ const DIRECTIONS: { value: Filters["direction"]; label: string }[] = [
   { value: "SHORT", label: "▼ Short" },
 ];
 
-// ─── Serialise filters → URL search string ────────────────────────────────────
 
 export function toQueryString(filters: Filters): string {
   const params = new URLSearchParams();
@@ -36,7 +34,6 @@ export function toQueryString(filters: Filters): string {
   return params.toString();
 }
 
-// ─── Active filter count (for mobile badge) ───────────────────────────────────
 
 export function activeFilterCount(filters: Filters): number {
   let n = 0;
@@ -46,7 +43,6 @@ export function activeFilterCount(filters: Filters): number {
   return n;
 }
 
-// ─── Pair multi-select dropdown ───────────────────────────────────────────────
 
 interface PairSelectProps {
   selected:  string[];
@@ -160,8 +156,6 @@ export function PairSelect({ selected, allPairs, onChange }: PairSelectProps) {
   );
 }
 
-// ─── Filter bar inner content ─────────────────────────────────────────────────
-// Extracted so it can render both in the desktop sticky bar and mobile sheet
 
 interface FilterContentProps {
   filters:     Filters;
@@ -174,7 +168,6 @@ export function FilterContent({ filters, allPairs, onUpdate, isPending }: Filter
   return (
     <div className="flex flex-wrap items-center gap-2">
 
-      {/* Date range pills */}
       <div className="flex items-center gap-1 p-1 rounded-[7px] bg-white/[0.03] border border-white/[0.06]">
         {DATE_RANGES.map(({ value, label }) => {
           const active = filters.dateRange === value;
@@ -197,7 +190,6 @@ export function FilterContent({ filters, allPairs, onUpdate, isPending }: Filter
         })}
       </div>
 
-      {/* Direction toggle */}
       <div className="flex items-center gap-1 p-1 rounded-[7px] bg-white/[0.03] border border-white/[0.06]">
         {DIRECTIONS.map(({ value, label }) => {
           const active = filters.direction === value;
@@ -224,14 +216,12 @@ export function FilterContent({ filters, allPairs, onUpdate, isPending }: Filter
         })}
       </div>
 
-      {/* Pair multi-select */}
       <PairSelect
         selected={filters.pairs}
         allPairs={allPairs}
         onChange={pairs => onUpdate({ pairs })}
       />
 
-      {/* Loading indicator */}
       {isPending && (
         <span className="w-[8px] h-[8px] rounded-full border border-teal-400/40 border-t-teal-400 animate-[spin_0.7s_linear_infinite] ml-1" />
       )}
@@ -239,7 +229,6 @@ export function FilterContent({ filters, allPairs, onUpdate, isPending }: Filter
   );
 }
 
-// ─── Mobile bottom sheet ──────────────────────────────────────────────────────
 
 interface BottomSheetProps {
   open:      boolean;
@@ -254,7 +243,6 @@ export function BottomSheet({ open, onClose, children }: BottomSheetProps) {
 
   return createPortal(
     <>
-      {/* Backdrop */}
       <div
         onClick={onClose}
         className={cx(
@@ -262,7 +250,6 @@ export function BottomSheet({ open, onClose, children }: BottomSheetProps) {
           open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
         )}
       />
-      {/* Sheet */}
       <div
         className={cx(
           "fixed bottom-0 left-0 right-0 z-50 rounded-t-[16px] border-t border-white/[0.08] p-5 transition-transform duration-300 ease-out",
@@ -290,7 +277,6 @@ export function BottomSheet({ open, onClose, children }: BottomSheetProps) {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
 
 export function AnalyticsFilters({ filters, allPairs }: Props) {
   const router             = useRouter();
@@ -308,7 +294,6 @@ export function AnalyticsFilters({ filters, allPairs }: Props) {
 
   return (
     <>
-      {/* ── Desktop — inline in sticky bar ── */}
       <div className="hidden sm:block">
         <FilterContent
           filters={filters}
@@ -318,7 +303,6 @@ export function AnalyticsFilters({ filters, allPairs }: Props) {
         />
       </div>
 
-      {/* ── Mobile — trigger button + bottom sheet ── */}
       <div className="flex items-center justify-between sm:hidden">
         <span className="font-mono text-[11px] text-white/30 tracking-[0.06em]">
           {filters.dateRange !== "all" ? `Last ${filters.dateRange}` : "All time"}
@@ -350,7 +334,6 @@ export function AnalyticsFilters({ filters, allPairs }: Props) {
         </button>
       </div>
 
-      {/* Mobile bottom sheet */}
       <BottomSheet open={sheetOpen} onClose={() => setSheetOpen(false)}>
         <FilterContent
           filters={filters}

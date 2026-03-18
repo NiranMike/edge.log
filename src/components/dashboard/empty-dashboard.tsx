@@ -11,7 +11,6 @@ export function EmptyDashboard() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[380px] sm:min-h-[440px] text-center px-4 sm:px-8 py-10 sm:py-14 animate-fade-up">
  
-      {/* Chart illustration */}
       <div className="mb-6 sm:mb-8">
         <svg width="72" height="52" viewBox="0 0 72 52" fill="none" className="opacity-30">
         <path d="M4 46 L16 30 L28 36 L42 16 L56 24 L68 8" stroke="#4ade80" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -30,7 +29,6 @@ export function EmptyDashboard() {
         conditions they perform best in. The data is in your trades.
       </p>
  
-      {/* Insight list — full width on mobile, constrained on sm+ */}
       <div className="w-full max-w-[380px] sm:max-w-[320px] mb-7 sm:mb-8 text-left">
         <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/20 mb-3">
           Once you log trades, you'll see →

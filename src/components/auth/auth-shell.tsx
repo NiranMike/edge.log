@@ -1,4 +1,3 @@
-// components/auth/AuthShell.tsx
 import Link       from "next/link";
 import { cx, ds } from "@/style";
 
@@ -24,7 +23,6 @@ export function AuthShell({ children, badge, title, description }: AuthShellProp
   return (
     <div className={cx("min-h-screen flex flex-col lg:flex-row", ds.bgBase)}>
 
-      {/* ── Left branding panel (lg+) ── */}
       <aside className="hidden lg:flex lg:w-[44%] xl:w-[40%] flex-col justify-between relative overflow-hidden p-12 xl:p-16 border-r border-white/[0.05]">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 opacity-[0.18]" style={ds.dotGrid} />
@@ -36,7 +34,6 @@ export function AuthShell({ children, badge, title, description }: AuthShellProp
           <div className="absolute bottom-0 right-0 w-28 h-28 border-r border-b border-white/[0.04]" />
         </div>
 
-        {/* Logo */}
         <Link href="/" className="relative flex items-center gap-3 w-fit group">
           <div className="relative w-7 h-7 shrink-0">
             <div className="absolute inset-0 border border-emerald-400/40 rotate-45 group-hover:rotate-[135deg] transition-transform duration-500" />
@@ -82,14 +79,11 @@ export function AuthShell({ children, badge, title, description }: AuthShellProp
         <p className={ds.micro}>Trade Smarter. Journal Faster.</p>
       </aside>
 
-      {/* ── Right form panel ── */}
       <main className="flex-1 flex flex-col items-center justify-center relative px-4 py-10 sm:px-8 sm:py-14 lg:px-12 lg:py-16 xl:px-16">
 
-        {/* Corner accents — desktop only */}
         <div className="hidden lg:block absolute top-0 right-0 w-20 h-20 border-r border-t border-white/[0.04]" />
         <div className="hidden lg:block absolute bottom-0 left-0 w-20 h-20 border-l border-b border-white/[0.03]" />
 
-        {/* Mobile logo */}
         <Link href="/" className="lg:hidden flex items-center gap-2.5 mb-8 group">
           <div className="relative w-6 h-6">
             <div className="absolute inset-0 border border-emerald-400/40 rotate-45 group-hover:rotate-[135deg] transition-transform duration-500" />
@@ -100,7 +94,6 @@ export function AuthShell({ children, badge, title, description }: AuthShellProp
           </span>
         </Link>
 
-        {/* Mobile stats strip — social proof since left panel is hidden */}
         <div className="lg:hidden w-full max-w-[440px] mb-8">
           <div className="grid grid-cols-3 gap-2">
             {STATS.map(({ value, label }) => (
@@ -115,7 +108,6 @@ export function AuthShell({ children, badge, title, description }: AuthShellProp
           </div>
         </div>
 
-        {/* Form content — constrained width, centered */}
         <div className="w-full max-w-[440px]">
           {badge && (
             <div className="inline-flex items-center gap-2 mb-5 sm:mb-6 px-3 py-1.5 border border-emerald-400/18 bg-emerald-400/[0.06]">
