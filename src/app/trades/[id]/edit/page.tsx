@@ -18,13 +18,9 @@ export default async function EditTradePage({ params }: { params: Promise<{ id: 
 
   return (
     <AppShell>
-      {/* Full-height scroll container, centers the column */}
       <div className="min-h-full px-4 py-6 sm:px-6 sm:py-10 lg:py-14 flex flex-col items-center">
 
-        {/* Single centered content column, constrained width */}
         <div className="w-full max-w-[640px]">
-
-          {/* Breadcrumb */}
           <nav className="flex items-center gap-1.5 mb-8 sm:mb-10">
             <a
               href="/trades"
@@ -40,7 +36,6 @@ export default async function EditTradePage({ params }: { params: Promise<{ id: 
             <span className="font-mono text-[11px] text-white/25 tracking-[0.04em]">Edit</span>
           </nav>
 
-          {/* Original result banner */}
           <div className="w-full mb-7 sm:mb-9 rounded-[6px] bg-white/[0.02] border border-white/[0.06] px-4 py-3">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-2.5">
@@ -65,10 +60,8 @@ export default async function EditTradePage({ params }: { params: Promise<{ id: 
             </div>
           </div>
 
-          {/* Edit form */}
           <EditTradeClient trade={trade} />
 
-          {/* Danger zone */}
           <div className="w-full mt-10 sm:mt-12 pt-7 sm:pt-8 border-t border-white/[0.05]">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>

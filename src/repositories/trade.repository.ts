@@ -1,8 +1,6 @@
-// lib/db/trade-repository.ts
 // ─── Trade Repository ─────────────────────────────────────────────────────────
 // Responsibility: talk to Prisma. Nothing else.
-// No R calculation, no validation, no business rules here.
-// Prisma's Decimal → JS number conversion happens here at the boundary.
+// No R calculation, no validation, no business rules here
 
 import type { Prisma } from "@prisma/client";
 import type { AnalyticsFilters, Trade } from "@/types";
@@ -37,8 +35,7 @@ export interface UpdateTradeRow {
   tradedAt?:   Date;
 }
 
-// ─── Prisma row → domain Trade ───────────────────────────────────────────────
-// Centralised here so the rest of the app never touches Prisma types.
+
 
 function toTrade(row: Prisma.TradeGetPayload<object>): Trade {
   return {

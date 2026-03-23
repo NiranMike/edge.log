@@ -1,32 +1,29 @@
 "use client";
-// components/analytics/analytics-filters.tsx
 
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useTransition, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { cx } from "@/style";
 import type { AnalyticsFilters as Filters } from "@/types";
+import { DATE_RANGES, DIRECTIONS } from "@/const/analytics-const";
 
 interface Props {
   filters:  Filters;
   allPairs: string[];
 }
 
-const DATE_RANGES: { value: Filters["dateRange"]; label: string }[] = [
-  { value: "30d",  label: "30d"    },
-  { value: "90d",  label: "90d"    },
-  { value: "6mo",  label: "6mo"    },
-  { value: "1yr",  label: "1yr"    },
-  { value: "all",  label: "All"    },
-];
+interface BottomSheetProps {
+  open:      boolean;
+  onClose:   () => void;
+  children:  React.ReactNode;
+}
 
-const DIRECTIONS: { value: Filters["direction"]; label: string }[] = [
-  { value: "ALL",   label: "All"   },
-  { value: "LONG",  label: "▲ Long"  },
-  { value: "SHORT", label: "▼ Short" },
-];
-
-// ─── Serialise filters → URL search string ────────────────────────────────────
+interface FilterContentProps {
+  filters:     Filters;
+  allPairs:    string[];
+  onUpdate:    (next: Partial<Filters>) => void;
+  isPending:   boolean;
+}
 
 export function toQueryString(filters: Filters): string {
   const params = new URLSearchParams();
@@ -36,7 +33,6 @@ export function toQueryString(filters: Filters): string {
   return params.toString();
 }
 
-// ─── Active filter count (for mobile badge) ───────────────────────────────────
 
 export function activeFilterCount(filters: Filters): number {
   let n = 0;
@@ -46,7 +42,6 @@ export function activeFilterCount(filters: Filters): number {
   return n;
 }
 
-// ─── Pair multi-select dropdown ───────────────────────────────────────────────
 
 interface PairSelectProps {
   selected:  string[];
@@ -98,10 +93,10 @@ export function PairSelect({ selected, allPairs, onChange }: PairSelectProps) {
           setOpen(v => !v);
         }}
         className={cx(
-          "flex items-center gap-2 px-3 py-[7px] rounded-[6px] font-mono text-[11px] border transition-all duration-150",
+          "flex items-center gap-2 px-3 py-1.75 rounded-md font-mono text-[11px] border transition-all duration-150",
           open || selected.length > 0
-            ? "bg-teal-400/[0.08] border-teal-400/25 text-teal-400"
-            : "bg-white/[0.025] border-white/[0.08] text-white/40 hover:border-white/15 hover:text-white/60",
+            ? "bg-teal-400/8 border-teal-400/25 text-teal-400"
+            : "bg-white/2.5 border-white/8 text-white/40 hover:border-white/15 hover:text-white/60",
         )}
       >
         {label}
@@ -124,7 +119,6 @@ export function PairSelect({ selected, allPairs, onChange }: PairSelectProps) {
           }}
           className="rounded-[8px] border border-white/[0.1] shadow-[0_16px_48px_rgba(0,0,0,0.8)] py-1.5 overflow-hidden"
         >
-          {/* Clear all */}
           {selected.length > 0 && (
             <button
               type="button"
@@ -142,7 +136,7 @@ export function PairSelect({ selected, allPairs, onChange }: PairSelectProps) {
                 type="button"
                 onMouseDown={e => e.preventDefault()}
                 onClick={() => toggle(pair)}
-                className="w-full flex items-center justify-between px-3 py-[8px] font-mono text-[12px] text-white/60 hover:bg-white/[0.04] hover:text-white/80 transition-colors cursor-pointer"
+                className="w-full flex items-center justify-between px-3 py-2 font-mono text-[12px] text-white/60 hover:bg-white/4 hover:text-white/80 transition-colors cursor-pointer"
               >
                 <span className="tracking-[0.04em]">{pair}</span>
                 {active && (
@@ -160,22 +154,11 @@ export function PairSelect({ selected, allPairs, onChange }: PairSelectProps) {
   );
 }
 
-// ─── Filter bar inner content ─────────────────────────────────────────────────
-// Extracted so it can render both in the desktop sticky bar and mobile sheet
-
-interface FilterContentProps {
-  filters:     Filters;
-  allPairs:    string[];
-  onUpdate:    (next: Partial<Filters>) => void;
-  isPending:   boolean;
-}
-
 export function FilterContent({ filters, allPairs, onUpdate, isPending }: FilterContentProps) {
   return (
     <div className="flex flex-wrap items-center gap-2">
 
-      {/* Date range pills */}
-      <div className="flex items-center gap-1 p-1 rounded-[7px] bg-white/[0.03] border border-white/[0.06]">
+      <div className="flex items-center gap-1 p-1 rounded-[7px] bg-white/3 border border-white/6">
         {DATE_RANGES.map(({ value, label }) => {
           const active = filters.dateRange === value;
           return (
@@ -185,9 +168,9 @@ export function FilterContent({ filters, allPairs, onUpdate, isPending }: Filter
               disabled={isPending}
               onClick={() => onUpdate({ dateRange: value })}
               className={cx(
-                "px-3 py-[5px] rounded-[5px] font-mono text-[11px] tracking-[0.06em] transition-all duration-150 cursor-pointer disabled:cursor-not-allowed",
+                "px-3 py-1.25 rounded-[5px] font-mono text-[11px] tracking-[0.06em] transition-all duration-150 cursor-pointer disabled:cursor-not-allowed",
                 active
-                  ? "bg-white/[0.08] text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+                  ? "bg-white/8 text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
                   : "text-white/30 hover:text-white/55",
               )}
             >
@@ -197,8 +180,7 @@ export function FilterContent({ filters, allPairs, onUpdate, isPending }: Filter
         })}
       </div>
 
-      {/* Direction toggle */}
-      <div className="flex items-center gap-1 p-1 rounded-[7px] bg-white/[0.03] border border-white/[0.06]">
+      <div className="flex items-center gap-1 p-1 rounded-[7px] bg-white/3 border border-white/6">
         {DIRECTIONS.map(({ value, label }) => {
           const active = filters.direction === value;
           return (
@@ -208,13 +190,13 @@ export function FilterContent({ filters, allPairs, onUpdate, isPending }: Filter
               disabled={isPending}
               onClick={() => onUpdate({ direction: value })}
               className={cx(
-                "px-3 py-[5px] rounded-[5px] font-mono text-[11px] tracking-[0.04em] transition-all duration-150 cursor-pointer disabled:cursor-not-allowed",
+                "px-3 py-1.25 rounded-[5px] font-mono text-[11px] tracking-[0.04em] transition-all duration-150 cursor-pointer disabled:cursor-not-allowed",
                 active
                   ? value === "LONG"
-                    ? "bg-emerald-400/[0.12] text-emerald-400"
+                    ? "bg-emerald-400/12 text-emerald-400"
                     : value === "SHORT"
-                    ? "bg-red-400/[0.10] text-red-400"
-                    : "bg-white/[0.08] text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+                    ? "bg-red-400/10 text-red-400"
+                    : "bg-white/8 text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
                   : "text-white/30 hover:text-white/55",
               )}
             >
@@ -224,28 +206,21 @@ export function FilterContent({ filters, allPairs, onUpdate, isPending }: Filter
         })}
       </div>
 
-      {/* Pair multi-select */}
       <PairSelect
         selected={filters.pairs}
         allPairs={allPairs}
         onChange={pairs => onUpdate({ pairs })}
       />
 
-      {/* Loading indicator */}
       {isPending && (
-        <span className="w-[8px] h-[8px] rounded-full border border-teal-400/40 border-t-teal-400 animate-[spin_0.7s_linear_infinite] ml-1" />
+        <span className="w-2 h-2 rounded-full border border-teal-400/40 border-t-teal-400 animate-[spin_0.7s_linear_infinite] ml-1" />
       )}
     </div>
   );
 }
 
-// ─── Mobile bottom sheet ──────────────────────────────────────────────────────
 
-interface BottomSheetProps {
-  open:      boolean;
-  onClose:   () => void;
-  children:  React.ReactNode;
-}
+
 
 export function BottomSheet({ open, onClose, children }: BottomSheetProps) {
   const [mounted, setMounted] = useState(false);
@@ -254,7 +229,6 @@ export function BottomSheet({ open, onClose, children }: BottomSheetProps) {
 
   return createPortal(
     <>
-      {/* Backdrop */}
       <div
         onClick={onClose}
         className={cx(
@@ -262,17 +236,16 @@ export function BottomSheet({ open, onClose, children }: BottomSheetProps) {
           open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
         )}
       />
-      {/* Sheet */}
       <div
         className={cx(
-          "fixed bottom-0 left-0 right-0 z-50 rounded-t-[16px] border-t border-white/[0.08] p-5 transition-transform duration-300 ease-out",
+          "fixed bottom-0 left-0 right-0 z-50 rounded-t-2xl border-t border-white/8 p-5 transition-transform duration-300 ease-out",
         )}
         style={{
           backgroundColor: "#0d1117",
           transform: open ? "translateY(0)" : "translateY(100%)",
         }}
       >
-        <div className="w-8 h-[3px] rounded-full bg-white/15 mx-auto mb-5" />
+        <div className="w-8 h-0.75 rounded-full bg-white/15 mx-auto mb-5" />
         <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/25 mb-4">
           Filters
         </p>
@@ -280,7 +253,7 @@ export function BottomSheet({ open, onClose, children }: BottomSheetProps) {
         <button
           type="button"
           onClick={onClose}
-          className="mt-5 w-full py-[11px] rounded-[8px] bg-white/[0.04] border border-white/[0.08] font-mono text-[12px] text-white/40 hover:text-white/60 transition-colors"
+          className="mt-5 w-full py-2.75 rounded-lg bg-white/4 border border-white/8 font-mono text-[12px] text-white/40 hover:text-white/60 transition-colors"
         >
           Done
         </button>
@@ -290,7 +263,6 @@ export function BottomSheet({ open, onClose, children }: BottomSheetProps) {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
 
 export function AnalyticsFilters({ filters, allPairs }: Props) {
   const router             = useRouter();
@@ -308,7 +280,6 @@ export function AnalyticsFilters({ filters, allPairs }: Props) {
 
   return (
     <>
-      {/* ── Desktop — inline in sticky bar ── */}
       <div className="hidden sm:block">
         <FilterContent
           filters={filters}
@@ -318,7 +289,6 @@ export function AnalyticsFilters({ filters, allPairs }: Props) {
         />
       </div>
 
-      {/* ── Mobile — trigger button + bottom sheet ── */}
       <div className="flex items-center justify-between sm:hidden">
         <span className="font-mono text-[11px] text-white/30 tracking-[0.06em]">
           {filters.dateRange !== "all" ? `Last ${filters.dateRange}` : "All time"}
@@ -330,10 +300,10 @@ export function AnalyticsFilters({ filters, allPairs }: Props) {
           type="button"
           onClick={() => setSheetOpen(true)}
           className={cx(
-            "flex items-center gap-2 px-3 py-[7px] rounded-[6px] font-mono text-[11px] border transition-all duration-150",
+            "flex items-center gap-2 px-3 py-1.75 rounded-md font-mono text-[11px] border transition-all duration-150",
             badgeCount > 0
-              ? "bg-teal-400/[0.08] border-teal-400/25 text-teal-400"
-              : "bg-white/[0.025] border-white/[0.08] text-white/40",
+              ? "bg-teal-400/8 border-teal-400/25 text-teal-400"
+              : "bg-white/2.5 border-white/8 text-white/40",
           )}
         >
           <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
@@ -343,14 +313,13 @@ export function AnalyticsFilters({ filters, allPairs }: Props) {
           </svg>
           Filters
           {badgeCount > 0 && (
-            <span className="w-[16px] h-[16px] rounded-full bg-teal-400 text-[#07090d] font-mono text-[9px] font-bold flex items-center justify-center">
+            <span className="w-4 h-4 rounded-full bg-teal-400 text-[#07090d] font-mono text-[9px] font-bold flex items-center justify-center">
               {badgeCount}
             </span>
           )}
         </button>
       </div>
 
-      {/* Mobile bottom sheet */}
       <BottomSheet open={sheetOpen} onClose={() => setSheetOpen(false)}>
         <FilterContent
           filters={filters}

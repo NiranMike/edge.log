@@ -1,5 +1,4 @@
 "use client";
-// components/analytics/weekday-heatmap.tsx
 
 import { cx } from "@/style";
 import type { WeekdayStat } from "@/types";

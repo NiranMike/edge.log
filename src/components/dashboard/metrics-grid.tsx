@@ -79,7 +79,6 @@ function MetricCard({
       className={cx(
         "relative rounded-xl border border-white/[0.065] bg-[#0d1117] overflow-hidden",
         "hover:border-white/10 transition-all duration-200 group",
-        // Tighter padding on mobile, original on sm+
         large ? "px-4 py-4 sm:px-6 sm:py-6" : "px-4 py-4 sm:px-5 sm:py-5",
       )}
       style={{ animationDelay: delay ? `${delay}ms` : "0ms" }}
@@ -92,7 +91,6 @@ function MetricCard({
 
       <div className={cx(
         "font-mono font-medium leading-none tracking-[-0.04em] mb-2",
-        // Smaller value text on mobile
         large ? "text-[24px] sm:text-[34px]" : "text-[20px] sm:text-[26px]",
         colorClass ?? "text-white",
       )}>
@@ -118,12 +116,10 @@ export function MetricsGrid({ metrics, className, rHistory = [] }: Props) {
 
   return (
     <div className={cx(
-      // Mobile: 2-col grid. md+: original 5-col
       "grid grid-cols-2 md:grid-cols-5 gap-2 sm:gap-3",
       className,
     )}>
 
-      {/* Expectancy — spans full width on mobile so it gets prominence */}
       <div className="col-span-2 md:col-span-1">
         <MetricCard
           label="Expectancy"

@@ -1,23 +1,17 @@
 "use client";
-// components/analytics/session-breakdown.tsx
 
+import { SESSION_META } from "@/const/analytics-const";
 import { cx } from "@/style";
-import type { SessionStat, MarketSession } from "@/types";
+import type { SessionStat } from "@/types";
 
 interface Props {
   sessions: SessionStat[];
 }
 
-const SESSION_META: Record<MarketSession, { color: string; dot: string; hours: string }> = {
-  "Asia":     { color: "text-violet-400", dot: "bg-violet-400", hours: "23:00–08:00 UTC" },
-  "London":   { color: "text-teal-400",   dot: "bg-teal-400",   hours: "07:00–16:00 UTC" },
-  "Overlap":  { color: "text-emerald-400",dot: "bg-emerald-400",hours: "13:00–16:00 UTC" },
-  "New York": { color: "text-sky-400",    dot: "bg-sky-400",    hours: "13:00–21:00 UTC" },
-  "Closed":   { color: "text-white/20",   dot: "bg-white/20",   hours: "Off-hours"       },
-};
+
 
 export function SessionBreakdown({ sessions }: Props) {
-  const active = sessions.filter(s => s.trades > 0);
+  const active = sessions?.filter(s => s?.trades > 0);
   return (
     <div className="rounded-xl bg-[#0d1117] border border-white/[0.065] overflow-hidden">
       <div className="flex items-center gap-3 px-5 py-4 border-b border-white/[0.05]">
@@ -25,11 +19,11 @@ export function SessionBreakdown({ sessions }: Props) {
         <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/40">Session Performance</h2>
       </div>
       <div className="p-4">
-        {active.length === 0 ? (
+        {active?.length === 0 ? (
           <p className="font-mono text-[12px] text-white/20 text-center py-6">No data</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {sessions.filter(s => s.trades > 0).map(session => {
+            {sessions?.filter(s => s.trades > 0).map(session => {
               const meta = SESSION_META[session.session];
               return (
                 <div key={session.session} className="flex items-start gap-3 px-4 py-3.5 rounded-[8px] bg-white/[0.02] border border-white/[0.05] hover:border-white/10 transition-colors duration-200">

@@ -1,5 +1,4 @@
 "use client";
-// components/analytics/r-distribution.tsx
 
 import { cx } from "@/style";
 import type { RBucket } from "@/types";
@@ -21,11 +20,9 @@ export function RDistribution({ buckets }: Props) {
       </div>
 
       <div className="px-5 py-5">
-        {/* pt-10 gives room for tooltips to overflow upward without clipping */}
         <div className="relative pt-10">
           <div className="flex items-end gap-2 h-[100px]">
             {buckets.map(bucket => {
-              // px height — percentage heights are unreliable inside flex children
               const heightPx = Math.round((bucket.count / maxCount) * 100);
               const isLoss   = bucket.max <= 0 && bucket.min < 0;
               const isWin    = bucket.min >= 0;
@@ -35,7 +32,6 @@ export function RDistribution({ buckets }: Props) {
                   key={bucket.label}
                   className="flex-1 flex flex-col items-end justify-end group relative h-full"
                 >
-                  {/* Tooltip */}
                   {bucket.count > 0 && (
                     <div className="absolute bottom-[calc(100%+6px)] left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
                       <div
@@ -49,7 +45,6 @@ export function RDistribution({ buckets }: Props) {
                     </div>
                   )}
 
-                  {/* Bar */}
                   <div
                     className={cx(
                       "w-full rounded-t-[3px] transition-all duration-500",
@@ -68,7 +63,6 @@ export function RDistribution({ buckets }: Props) {
           </div>
         </div>
 
-        {/* Labels */}
         <div className="flex gap-2 mt-3">
           {buckets.map(bucket => (
             <div key={bucket.label} className="flex-1 text-center">

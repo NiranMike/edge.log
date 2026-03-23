@@ -21,7 +21,6 @@ function DirectionTag({ dir }: { dir: "LONG" | "SHORT" }) {
       dir === "LONG" ? "text-emerald-400" : "text-red-400",
     )}>
       {dir === "LONG" ? "▲" : "▼"}
-      {/* Hide text label on very small screens */}
       <span className="hidden xs:inline"> {dir}</span>
     </span>
   );
@@ -33,7 +32,6 @@ export function RecentTrades({ trades }: { trades: Trade[] }) {
   return (
     <div className="bg-[#0d1117] border border-white/[0.065] rounded-xl overflow-hidden">
  
-      {/* ── Desktop table (sm+) ── */}
       <div className="hidden sm:block overflow-x-auto">
         <table className="w-full border-collapse min-w-[520px]">
           <thead>
@@ -83,7 +81,6 @@ export function RecentTrades({ trades }: { trades: Trade[] }) {
         </table>
       </div>
  
-      {/* ── Mobile card list (< sm) ── */}
       <div className="sm:hidden divide-y divide-white/[0.05]">
         {trades.map((t) => (
           <Link
@@ -91,7 +88,6 @@ export function RecentTrades({ trades }: { trades: Trade[] }) {
             href={`/trades/${t.id}/edit`}
             className="flex items-center justify-between px-4 py-3.5 no-underline hover:bg-white/[0.025] transition-colors duration-150 gap-3"
           >
-            {/* Left: pair + meta */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-[3px]">
                 <span className="font-mono text-[13px] text-white font-medium tracking-[0.04em]">
@@ -106,7 +102,6 @@ export function RecentTrades({ trades }: { trades: Trade[] }) {
               </span>
             </div>
  
-            {/* Right: R badge + arrow */}
             <div className="flex items-center gap-2 shrink-0">
               <RBadge r={t.rMultiple} />
               <span className="font-mono text-[11px] text-white/20">›</span>

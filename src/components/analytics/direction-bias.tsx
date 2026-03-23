@@ -1,5 +1,4 @@
 "use client";
-// components/analytics/direction-bias.tsx
 
 import { cx } from "@/style";
 import type { DirectionStat } from "@/types";

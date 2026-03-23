@@ -3,8 +3,6 @@
 import { TradeForm } from "@/components/form/trade-form";
 import { createTradeAction } from "@/lib/actions/trade-action";
 
-// app/trades/new/NewTradeClient.tsx
-
 
 export function NewTradeClient() {
   return (

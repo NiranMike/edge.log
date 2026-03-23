@@ -25,13 +25,10 @@ export default async function TradesPage({
 
   return (
     <AppShell>
-      {/* Outer: full width, handles padding */}
       <div className="w-full px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-9">
 
-        {/* Inner: constrained + centered */}
         <div className="w-full max-w-[1120px] mx-auto">
 
-          {/* Header */}
           <div className="animate-fade-up flex items-end justify-between mb-6 sm:mb-7 gap-4">
             <div className="min-w-0">
               <div className="flex items-center gap-3 mb-2 sm:mb-3">

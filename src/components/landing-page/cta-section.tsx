@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { RevealOnScroll } from "./reveal-on-scroll";
 import { cx, ds, palette } from "@/style";
 import { useRouter } from "next/navigation";
 
@@ -36,7 +35,6 @@ export function CtaSection() {
       return;
     }
 
-    // Navigate to register with email pre-filled
     router.push(`/register?email=${encodeURIComponent(email.trim().toLowerCase())}`);
   }
 
@@ -45,21 +43,17 @@ export function CtaSection() {
       id="cta"
       className={cx("relative overflow-hidden", ds.sectionY, ds.pageX)}
     >
-      {/* ── Backgrounds ─────────────────────────────────────────────────── */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 opacity-[0.12]" style={ds.dotGrid} />
 
-        {/* Centre glow */}
         <div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full"
           style={{ background: `radial-gradient(ellipse, ${palette.primaryGlow} 0%, transparent 65%)` }}
         />
 
-        {/* Top / bottom accent lines */}
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-emerald-400/20 to-transparent" />
         <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/[0.05] to-transparent" />
 
-        {/* Corner brackets */}
         <div className="absolute top-8 left-8 w-10 h-10 border-l border-t border-emerald-400/15" />
         <div className="absolute top-8 right-8 w-10 h-10 border-r border-t border-emerald-400/15" />
         <div className="absolute bottom-8 left-8 w-10 h-10 border-l border-b border-white/[0.05]" />
@@ -68,7 +62,6 @@ export function CtaSection() {
 
       <div className={cx(ds.container, "relative flex flex-col items-center text-center")}>
 
-        {/* ── Section label ─────────────────────────────────────────────── */}
         <div className="inline-flex items-center gap-2 mb-6 px-3.5 py-1.5 border border-emerald-400/18 bg-emerald-400/[0.06]">
           <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
           <span className="font-mono text-[9px] uppercase tracking-[0.22em] text-emerald-400/70">
@@ -76,7 +69,6 @@ export function CtaSection() {
           </span>
         </div>
 
-        {/* ── Headline ──────────────────────────────────────────────────── */}
         <h2
           className="font-display font-extrabold text-white tracking-tight leading-[1.06] mb-4"
           style={{
@@ -97,7 +89,6 @@ export function CtaSection() {
           It takes 30 seconds to set up.
         </p>
 
-        {/* ── Email capture ─────────────────────────────────────────────── */}
         {!done ? (
           <div className="w-full max-w-md space-y-3">
             <form
@@ -105,7 +96,6 @@ export function CtaSection() {
               noValidate
               className="flex flex-col sm:flex-row gap-2.5"
             >
-              {/* Email input */}
               <div className="relative flex-1">
                 <input
                   type="email"
@@ -123,7 +113,6 @@ export function CtaSection() {
                 />
               </div>
 
-              {/* Submit */}
               <button
                 type="submit"
                 className={cx(
@@ -141,14 +130,12 @@ export function CtaSection() {
               </button>
             </form>
 
-            {/* Field error */}
             {error && (
               <p className="font-mono text-[10px] text-red-400/80 flex items-center justify-center gap-1.5">
                 <span className="text-[8px]">✕</span> {error}
               </p>
             )}
 
-            {/* Trust badges */}
             <div className="flex items-center justify-center flex-wrap gap-x-5 gap-y-2 pt-1">
               {TRUST_BADGES.map(({ icon, label }) => (
                 <span
@@ -161,7 +148,6 @@ export function CtaSection() {
               ))}
             </div>
 
-            {/* Already have account */}
             <p className="font-mono text-[10px] text-white/18 pt-1">
               Already have an account?{" "}
               <Link
@@ -173,7 +159,6 @@ export function CtaSection() {
             </p>
           </div>
         ) : (
-          /* ── Success state (safety net — normally we navigate away) ── */
           <div
             className="w-full max-w-md p-8 border border-emerald-400/20 bg-emerald-400/[0.05] text-center space-y-3"
             style={ds.clip16}
@@ -187,7 +172,6 @@ export function CtaSection() {
           </div>
         )}
 
-        {/* ── Social proof strip ────────────────────────────────────────── */}
         <div className={cx("w-full max-w-lg mt-14 pt-8 flex items-center justify-center gap-8 flex-wrap", ds.divider)}>
           {[
             { value: "1,247", label: "traders" },

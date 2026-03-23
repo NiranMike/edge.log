@@ -1,5 +1,4 @@
 "use client";
-// components/analytics/analytics-overview-strip.tsx
 
 import { cx } from "@/style";
 import type { AnalyticsOverview } from "@/types";

@@ -1,6 +1,4 @@
-// types/index.ts
 
-// ─── Domain types ─────────────────────────────────────────────────────────────
 
 export type Direction = "LONG" | "SHORT";
 
@@ -13,24 +11,22 @@ export interface Trade {
   stopLoss:    number;
   takeProfit:  number;
   exitPrice:   number;
-  rMultiple:   number;   // +2.35 = won 2.35R, -1.00 = lost 1R
+  rMultiple:   number;   
   won:         boolean;
   notes:       string | null;
-  tradedAt:    string;   // ISO string
-  createdAt:   string;   // ISO string
+  tradedAt:    string; 
+  createdAt:   string; 
 }
 
-// ─── Performance metrics (V1 — the 5 that matter) ───────────────────────────
 
 export interface TradeMetrics {
   totalTrades: number;
-  winRate:     number;   // 0–100
-  avgR:        number;   // average R per trade
-  totalR:      number;   // sum of all R multiples
-  expectancy:  number;   // (winRate/100 * avgWinR) - ((1-winRate/100) * avgLossR)
+  winRate:     number;   
+  avgR:        number;   
+  totalR:      number;   
+  expectancy:  number;   
 }
 
-// ─── Form ────────────────────────────────────────────────────────────────────
 
 export interface TradeFormValues {
   pair:        string;
@@ -59,29 +55,26 @@ export type Result<T = void> =
   | { ok: false; error: string };
 
 
-  // ─── Filters (URL params → server) ───────────────────────────────────────────
 
 export interface AnalyticsFilters {
   dateRange: "30d" | "90d" | "6mo" | "1yr" | "all";
-  pairs:     string[];           // empty = all pairs
+  pairs:     string[]; 
   direction: "ALL" | "LONG" | "SHORT";
 }
 
-// ─── Per-pair breakdown ───────────────────────────────────────────────────────
 
 export interface PairStat {
   pair:      string;
   trades:    number;
   wins:      number;
   losses:    number;
-  winRate:   number;             // 0–100
+  winRate:   number;
   avgR:      number;
   totalR:    number;
   bestR:     number;
   worstR:    number;
 }
 
-// ─── Direction bias ───────────────────────────────────────────────────────────
 
 export interface DirectionStat {
   direction: "LONG" | "SHORT";
@@ -92,7 +85,6 @@ export interface DirectionStat {
   totalR:    number;
 }
 
-// ─── R distribution bucket ────────────────────────────────────────────────────
 
 export interface RBucket {
   label:  string;                // e.g. "1R → 2R"

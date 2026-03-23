@@ -1,4 +1,3 @@
-// app/trades/new/page.tsx
 import { redirect } from "next/navigation";
 import { auth } from "#/auth";
 import { AppShell } from "@/components/layout/app-shell";

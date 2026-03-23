@@ -1,5 +1,3 @@
-// lib/services/trade-service.ts
-// ─── Trade Service ────────────────────────────────────────────────────────────
 
 import { tradeRepository } from "@/repositories/trade.repository";
 import type { Trade, TradeFormValues, TradeMetrics, Result, MarketSession, AnalyticsFilters, TradeAnalytics, AnalyticsOverview, PairStat, DirectionStat, RBucket, SessionStat, EquityPoint, WeekdayStat } from "@/types";
@@ -49,7 +47,7 @@ function getSession(isoDate: string): MarketSession {
   const inLondon  = hour >= 7  && hour < 16;
   const inNY      = hour >= 13 && hour < 21;
 
-  if (inLondon && inNY) return "Overlap";   // 13:00–16:00 UTC
+  if (inLondon && inNY) return "Overlap";  
   if (inNY)             return "New York";
   if (inLondon)         return "London";
   if (inAsia)           return "Asia";
@@ -238,7 +236,7 @@ export const tradeService = {
       bestR:    sorted[0]?.rMultiple ?? 0,
       worstR:   sorted[sorted.length - 1]?.rMultiple ?? 0,
     };
-  }).sort((a, b) => b.totalR - a.totalR); // best pairs first
+  }).sort((a, b) => b.totalR - a.totalR);
 
   // ── 3. By direction ──────────────────────────────────────────────────────────
 
@@ -303,8 +301,6 @@ export const tradeService = {
     };
   });
 
-  // ── 6. Equity curve ──────────────────────────────────────────────────────────
-  // trades is already sorted asc by tradedAt (from the repository query)
 
   let cumulative  = 0;
   let peak        = 0;
@@ -313,7 +309,7 @@ export const tradeService = {
     cumulative += t.rMultiple;
     peak        = Math.max(peak, cumulative);
     return {
-      date:        t.tradedAt.slice(0, 10),  // "YYYY-MM-DD"
+      date:        t.tradedAt.slice(0, 10), 
       cumulativeR: Math.round(cumulative * 100) / 100,
       tradeR:      t.rMultiple,
       pair:        t.pair,
@@ -321,7 +317,6 @@ export const tradeService = {
     };
   });
 
-  // ── 7. By weekday ────────────────────────────────────────────────────────────
 
   const weekdayMap = trades.reduce<Record<string, Trade[]>>((acc, t) => {
     const d = getWeekday(t.tradedAt);
@@ -343,7 +338,6 @@ export const tradeService = {
     };
   });
 
-  // ── Return ───────────────────────────────────────────────────────────────────
 
   return {
     overview,

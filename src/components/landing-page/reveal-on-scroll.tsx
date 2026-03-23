@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/util";
 import { useEffect, useRef, type ReactNode } from "react";
 
 interface RevealOnScrollProps {
@@ -17,10 +16,8 @@ export function RevealOnScroll({ children, delay = 0, className }: RevealOnScrol
     const el = ref.current;
     if (!el) return;
 
-    // Check if already visible (e.g. above fold)
     const rect = el.getBoundingClientRect();
     if (rect.top < window.innerHeight) {
-      // Already visible — skip animation
       el.style.opacity = "1";
       el.style.transform = "none";
       return;
@@ -29,7 +26,6 @@ export function RevealOnScroll({ children, delay = 0, className }: RevealOnScrol
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          // Use CSS transition already on element, just update props
           if (delay) {
             setTimeout(() => {
               el.style.opacity = "1";
@@ -56,9 +52,7 @@ export function RevealOnScroll({ children, delay = 0, className }: RevealOnScrol
       style={{
         opacity: 0,
         transform: "translateY(16px)",
-        // Use transform + opacity only — both compositor-accelerated
         transition: `opacity 0.5s ease, transform 0.5s ease`,
-        // Promote to own layer during animation
         willChange: "opacity, transform",
       }}
     >

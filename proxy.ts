@@ -1,8 +1,5 @@
 export { auth as proxy } from "#/auth"
 
-// middleware.ts  (project root — runs on Edge runtime)
-// Imports auth.config (Edge-safe, no Prisma/bcrypt) NOT auth.ts (Node-only).
-
 import NextAuth         from "next-auth";
 import authConfig from "./auth.config";
 import { NextResponse } from "next/server";
