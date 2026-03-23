@@ -1,23 +1,12 @@
-// Server component — pure CSS animation, zero JS
 
+import { ITEMS } from "@/const/landing-page-const";
 import { cx } from "@/style";
 
 
-const ITEMS = [
-  { sym: "EURUSD",  chg: "+0.42%", pos: true  },
-  { sym: "BTCUSDT", chg: "+2.18%", pos: true  },
-  { sym: "GBPUSD",  chg: "−0.11%", pos: false },
-  { sym: "XAUUSD",  chg: "+0.87%", pos: true  },
-  { sym: "USDJPY",  chg: "−0.23%", pos: false },
-  { sym: "ETHUSDT", chg: "+3.41%", pos: true  },
-  { sym: "NQ1!",    chg: "+0.55%", pos: true  },
-  { sym: "ES1!",    chg: "+0.31%", pos: true  },
-  { sym: "SOLUSDT", chg: "−1.02%", pos: false },
-  { sym: "USDCHF",  chg: "+0.14%", pos: true  },
-];
+
 
 export function TickerTape() {
-  const all = [...ITEMS, ...ITEMS]; // duplicate for seamless loop
+  const all = [...ITEMS, ...ITEMS];
   return (
     <div className={cx("relative overflow-hidden border-y border-white/[0.05] bg-black/80 py-2.5 z-10")}>
       {/* Edge fades */}

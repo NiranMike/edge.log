@@ -1,4 +1,3 @@
-// components/auth/GoogleButton.tsx
 "use client";
 
 import { useTransition } from "react";

@@ -3,21 +3,20 @@
 @tailwind utilities;
 
 
-/* ─── Design tokens ─────────────────────────────────────────────────────────── */
 :root {
   --font-mono:    "JetBrains Mono", ui-monospace, monospace;
   --font-display: "Syne", sans-serif;
 
   /* Background layers */
-  --bg-base:     #0f0e0d;   /* warm near-black, not cool grey */
-  --bg-surface:  #171614;   /* cards, panels */
-  --bg-elevated: #1f1d1b;   /* modals, dropdowns */
-  --bg-input:    #141210;   /* input fields */
+  --bg-base:     #0f0e0d;   
+  --bg-surface:  #171614; 
+  --bg-elevated: #1f1d1b;  
+  --bg-input:    #141210;  
 
   /* Text */
-  --text-primary:   #e8e0d5;  /* warm off-white */
-  --text-secondary: #9b9289;  /* muted warm grey */
-  --text-ghost:     #514c47;  /* very dim */
+  --text-primary:   #e8e0d5;
+  --text-secondary: #9b9289; 
+  --text-ghost:     #514c47;
 
   /* Primary accent — emerald */
   --accent:        #4ade80;
@@ -35,11 +34,11 @@
   --accent-3-glow: rgba(167,139,250,0.20);
 
   /* State colours */
-  --win:      #5cb87a;   /* soft green — not neon */
+  --win:      #5cb87a;
   --win-dim:  rgba(92,184,122,0.1);
-  --loss:     #c0605a;   /* muted red — not alarm red */
+  --loss:     #c0605a;  
   --loss-dim: rgba(192,96,90,0.1);
-  --neutral:  #7a9fc0;   /* cool blue for neutral/info */
+  --neutral:  #7a9fc0;   
 
   /* Borders */
   --border:       rgba(255,255,255,0.06);
@@ -60,7 +59,6 @@
   }
 }
 
-/* ─── Base ──────────────────────────────────────────────────────────────────── */
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -80,7 +78,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ─── Scrollbar ─────────────────────────────────────────────────────────────── */
 
 ::-webkit-scrollbar       { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -126,7 +123,6 @@ body {
 .stagger > *:nth-child(4) { animation-delay: 180ms; }
 .stagger > *:nth-child(5) { animation-delay: 240ms; }
 
-/* ─── Skeleton loading ──────────────────────────────────────────────────────── */
 
 .skeleton {
   background: linear-gradient(

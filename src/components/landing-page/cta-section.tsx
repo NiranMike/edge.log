@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { RevealOnScroll } from "./reveal-on-scroll";
 import { cx, ds, palette } from "@/style";
 import { useRouter } from "next/navigation";
 

@@ -1,4 +1,3 @@
-// app/(auth)/register/page.tsx
 import type { Metadata } from "next";
 import { AuthShell }     from "@/components/auth/auth-shell";
 import { RegisterForm }  from "@/components/auth/register-form";

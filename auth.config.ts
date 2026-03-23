@@ -1,9 +1,4 @@
-// auth.config.ts  (project root — imported by middleware.ts, Edge-safe)
-// ─────────────────────────────────────────────────────────────────────────────
-// EDGE-SAFE: no Prisma, no bcrypt, no Node.js-only modules.
-// We only declare provider shapes here so the Edge runtime knows about them.
-// The real authorize / adapter logic lives in auth.ts (Node runtime only).
-// ─────────────────────────────────────────────────────────────────────────────
+
 
 import type { NextAuthConfig } from "next-auth";
 import Credentials             from "next-auth/providers/credentials";
@@ -11,7 +6,7 @@ import Google                  from "next-auth/providers/google";
 
 export default {
   providers: [
-    Google,          // Edge-safe: no secrets needed here — v5 reads AUTH_GOOGLE_ID/SECRET automatically
+    Google,    
     Credentials({
       credentials: {
         email:    { type: "email"    },

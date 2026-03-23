@@ -17,7 +17,6 @@ import type { Trade } from "@/types";
 
 const col = createColumnHelper<Trade>();
 
-// ── Sort icon ─────────────────────────────────────────────────────────────────
 function SortIcon({ state }: { state: "asc" | "desc" | false }) {
   return (
     <span className="inline-flex flex-col gap-[2px] ml-[5px] opacity-30 group-hover:opacity-60 transition-opacity">
@@ -33,7 +32,6 @@ function SortIcon({ state }: { state: "asc" | "desc" | false }) {
   );
 }
 
-// ── Column defs ───────────────────────────────────────────────────────────────
 const columns = [
   col.accessor("tradedAt", {
     header: "Date",
@@ -122,7 +120,6 @@ function EmptyState() {
   return (
     <div className="relative flex flex-col items-center justify-center px-10 py-20 text-center bg-[#0d1117] border border-white/[0.065]  overflow-hidden">
 
-      {/* Background grid */}
       <div
         className="absolute inset-0 opacity-[0.03]"
         style={{
@@ -131,10 +128,8 @@ function EmptyState() {
         }}
       />
 
-      {/* Emerald glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] rounded-full bg-emerald-400/[0.04] blur-[60px] pointer-events-none" />
+     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] rounded-full bg-emerald-400/[0.04] blur-[60px] pointer-events-none" />
 
-      {/* Icon */}
       <div className="relative mb-6">
         <div className="w-[52px] h-[52px]  bg-emerald-400/[0.06] border border-emerald-400/[0.12] flex items-center justify-center">
           <svg width="22" height="22" viewBox="0 0 48 48" fill="none" className="text-emerald-400/40">
@@ -144,7 +139,6 @@ function EmptyState() {
         </div>
       </div>
 
-      {/* Copy */}
       <p className="relative font-mono text-[13px] text-white/40 mb-1 tracking-[0.02em]">
         No trades logged yet.
       </p>
@@ -152,7 +146,6 @@ function EmptyState() {
         Every trade logged is a data point.<br />Start building your edge.
       </p>
 
-      {/* CTA */}
       <Link
         href="/trades/new"
         className="relative inline-flex items-center gap-2 px-4 py-[9px] bg-emerald-400/[0.08] border border-emerald-400/20 font-mono text-[11px] text-emerald-400 no-underline hover:bg-emerald-400/[0.14] hover:border-emerald-400/30 transition-all duration-150 tracking-[0.04em]"
@@ -164,15 +157,13 @@ function EmptyState() {
   );
 }
 
-// ── Props ─────────────────────────────────────────────────────────────────────
 interface Props {
-  trades:    Trade[];  // current page only
-  total:     number;   // total across all pages
-  page:      number;   // current 1-based page
-  pageCount: number;   // total pages — computed on server so it's always consistent
+  trades:    Trade[];  
+  total:     number;   
+  page:      number;   
+  pageCount: number; 
 }
 
-// ── Main component ────────────────────────────────────────────────────────────
 export function TradesList({ trades, total, page, pageCount }: Props) {
   const [sorting,          setSorting]          = useState<SortingState>([{ id: "tradedAt", desc: true }]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -197,13 +188,11 @@ export function TradesList({ trades, total, page, pageCount }: Props) {
   return (
     <div className="space-y-3">
 
-      {/* ── Toolbar ── */}
       <div className="flex items-center justify-end gap-3">
         <span className="font-mono text-[10px] text-white/20 tracking-[0.06em]">
           {total} {total === 1 ? "trade" : "trades"}
         </span>
 
-        {/* Column visibility */}
         <div className="relative">
           <button
             onClick={() => setShowColMenu(v => !v)}
@@ -262,7 +251,6 @@ export function TradesList({ trades, total, page, pageCount }: Props) {
         </div>
       </div>
 
-      {/* ── Table ── */}
       <div className="bg-[#0d1117] border border-white/[0.065] rounded-xl overflow-hidden">
         <table className="w-full border-collapse">
           <thead>
@@ -305,7 +293,6 @@ export function TradesList({ trades, total, page, pageCount }: Props) {
         </table>
       </div>
 
-      {/* ── Pagination ── plain Links, not router.push — triggers server re-render */}
       {pageCount > 1 && (
         <div className="flex items-center justify-between pt-1">
           <span className="font-mono text-[10px] text-white/20 tracking-[0.06em]">

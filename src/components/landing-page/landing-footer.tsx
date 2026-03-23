@@ -1,5 +1,4 @@
 import { cx, ds } from "@/style";
-import Link from "next/link";
 
 const LINKS  = ["Privacy", "Terms", "Twitter", "Discord"] as const;
 
@@ -16,11 +15,9 @@ export function LandingFooter() {
           ds.container,
           ds.pageX,
           "py-8 sm:py-10",
-          /* Stack on mobile, row on sm+ */
           "flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-4"
         )}
       >
-        {/* Logo + copyright */}
         <div className="flex items-center gap-3">
           <div className="relative w-6 h-6 shrink-0">
             <div className="absolute inset-0 border border-emerald-400/30 rotate-45" />
@@ -34,7 +31,6 @@ export function LandingFooter() {
           </span>
         </div>
 
-        {/* Nav links */}
         <ul className="flex flex-wrap justify-center gap-5 sm:gap-8 list-none">
           {LINKS.map(item => (
             <li key={item}>
@@ -48,7 +44,6 @@ export function LandingFooter() {
           ))}
         </ul>
 
-        {/* Tagline */}
         <p className="font-mono text-[9px] text-white/10 uppercase tracking-widest text-center sm:text-right">
           Trade Smarter. Journal Faster.
         </p>

@@ -1,4 +1,3 @@
-// auth.ts  (project root — Node runtime only, never imported in middleware)
 
 import NextAuth,       { Account, JWT, NextAuthConfig, Profile, Session, User, type DefaultSession } from "next-auth";
 import Credentials                             from "next-auth/providers/credentials";
@@ -9,7 +8,6 @@ import bcrypt                                  from "bcryptjs";
 import { db }          from "@/lib/db";
 import { loginSchema } from "@/lib/validations/auth";
 import authConfig      from "./auth.config";
-import { AdapterSession, AdapterUser } from "next-auth/adapters";
 
 // ─── Type augmentation ────────────────────────────────────────────────────────
 // In the latest next-auth v5 beta, JWT fields are extended inside "next-auth"
@@ -27,7 +25,6 @@ declare module "next-auth" {
     id?: string;
   }
 
-  // Extend the JWT interface here — NOT in "next-auth/jwt"
   interface JWT {
     id:       string;
     picture?: string | null;
@@ -97,7 +94,7 @@ export const authOptions:NextAuthConfig = {
 
   session: {
     strategy: "jwt",
-    maxAge:   30 * 24 * 60 * 60, // 30 days
+    maxAge:   30 * 24 * 60 * 60,
   },
 
   providers: [

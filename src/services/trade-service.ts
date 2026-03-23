@@ -236,7 +236,7 @@ export const tradeService = {
       bestR:    sorted[0]?.rMultiple ?? 0,
       worstR:   sorted[sorted.length - 1]?.rMultiple ?? 0,
     };
-  }).sort((a, b) => b.totalR - a.totalR); // best pairs first
+  }).sort((a, b) => b.totalR - a.totalR);
 
   // ── 3. By direction ──────────────────────────────────────────────────────────
 

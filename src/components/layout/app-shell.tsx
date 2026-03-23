@@ -1,5 +1,4 @@
 "use client";
-// components/layout/AppShell.tsx
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
@@ -55,7 +54,6 @@ function MarketStatus({ compact = false }: { compact?: boolean }) {
   );
 }
 
-// Hamburger / Close icon
 function MenuIcon({ open }: { open: boolean }) {
   return (
     <div className="w-5 h-5 flex flex-col justify-center gap-[5px] shrink-0">
@@ -75,7 +73,6 @@ function MenuIcon({ open }: { open: boolean }) {
   );
 }
 
-// Shared nav link used in sidebar and drawer
 function NavLink({
   href, icon, label, sub, active, compact = false, onClick,
 }: {
@@ -142,7 +139,6 @@ function NavLink({
   );
 }
 
-// Full-width sidebar content (desktop & drawer)
 function SidebarContent({
   pathname, session: userSession, compact = false, onNavClick,
 }: {
@@ -153,7 +149,6 @@ function SidebarContent({
 }) {
   return (
     <>
-      {/* Logo */}
       <div className={cx(
         "border-b border-white/[0.06]",
         compact ? "px-3 pt-5 pb-4 flex flex-col items-center gap-3" : "px-5 pt-6 pb-5",
@@ -176,7 +171,6 @@ function SidebarContent({
         <MarketStatus compact={compact} />
       </div>
 
-      {/* Nav */}
       <nav className={cx(
         "py-4 flex-1 flex flex-col gap-[2px]",
         compact ? "px-2 relative" : "px-3",
@@ -202,7 +196,6 @@ function SidebarContent({
         })}
       </nav>
 
-      {/* Greeting — hide on compact */}
       {!compact && (
         <div className="px-5 py-3 border-t border-white/[0.04]">
           <p className="font-mono text-[10px] text-white/18 tracking-[0.06em]">

@@ -1,6 +1,5 @@
 "use client";
-// components/dashboard/RecentTrades.tsx  &  components/trades/TradesList.tsx
-// Both live here — same table primitive, different context wrappers.
+
 
 import type { Trade } from "@/types";
 import Link from "next/link";
@@ -66,7 +65,6 @@ export function RBar({ r }: { r: number }) {
 export const TH_CLASS = "px-4 py-3 text-left bg-[#0a0e14] font-mono text-[9px] uppercase tracking-[0.16em] text-white/22 font-normal whitespace-nowrap";
 export const TD_CLASS = "px-4 py-[12px]";
 
-// ── RecentTrades ──────────────────────────────────────────────────────────────
 export function RecentTrades({ trades }: { trades: Trade[] }) {
   if (trades.length === 0) return null;
 
@@ -125,4 +123,3 @@ export function RecentTrades({ trades }: { trades: Trade[] }) {
   );
 }
 
-// ── TradesList (full journal) ─────────────────────────────────────────────────

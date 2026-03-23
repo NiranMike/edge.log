@@ -296,7 +296,6 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
           </div>
         </div>
 
-        {/* ══ Direction ══ */}
         <div className="form-section mb-6 sm:mb-7" style={{ animationDelay: "0.1s" }}>
           <SectionLabel label="Direction" />
           <div className="grid grid-cols-2 gap-[10px]">

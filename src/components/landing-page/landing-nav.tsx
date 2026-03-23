@@ -3,16 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { cx, ds } from "@/style";
+import { NAV_LINKS } from "@/const/landing-page-const";
 
 
-const NAV_LINKS = [
-  { label: "Features",    href: "#features"    },
-  { label: "How it works",href: "#how-it-works"},
-  { label: "Pricing",     href: "#pricing"     },
-  { label: "Testimonials",href: "#testimonials"},
-];
 
-// Live clock — updates via direct DOM mutation (zero re-renders)
+
 function useLiveClock(ref: React.RefObject<HTMLSpanElement | null>) {
   useEffect(() => {
     function tick() {
@@ -36,14 +31,12 @@ export function LandingNav() {
   const clockRef = useRef<HTMLSpanElement>(null);
   useLiveClock(clockRef);
 
-  // Scroll-triggered backdrop
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close mobile menu on route change / resize
   useEffect(() => {
     if (!mobileOpen) return;
     const close = () => setMobileOpen(false);
@@ -53,9 +46,7 @@ export function LandingNav() {
 
   return (
     <>
-      {/* ── Micro status bar ──────────────────────────────────────────────── */}
       <div className="hidden lg:flex items-center justify-between px-5 sm:px-8 lg:px-14 py-1.5 border-b border-white/[0.04] bg-[#07090d]">
-        {/* Left: market tickers */}
         <div className="flex items-center gap-5">
           {[
             { sym: "ES1!", val: "+0.42%"  },
@@ -70,13 +61,11 @@ export function LandingNav() {
             </span>
           ))}
         </div>
-        {/* Right: live clock */}
         <span className="font-mono text-[9px] text-white/18 tracking-widest">
           UTC <span ref={clockRef} />
         </span>
       </div>
 
-      {/* ── Main nav ──────────────────────────────────────────────────────── */}
       <header
         className={cx(
           "sticky top-0 z-50 flex items-center justify-between",
@@ -87,7 +76,6 @@ export function LandingNav() {
             : "bg-transparent border-b border-transparent",
         )}
       >
-        {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group shrink-0">
           <div className="relative w-6 h-6">
             <div className="absolute inset-0 border border-emerald-400/40 rotate-45 group-hover:rotate-[135deg] transition-transform duration-500" />
@@ -98,7 +86,6 @@ export function LandingNav() {
           </span>
         </Link>
 
-        {/* Desktop nav links */}
         <nav className="hidden md:flex items-center gap-7">
           {NAV_LINKS.map(({ label, href }) => (
             <a
@@ -107,13 +94,11 @@ export function LandingNav() {
               className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/30 hover:text-white/70 transition-colors duration-150 relative group"
             >
               {label}
-              {/* Underline reveal */}
               <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-emerald-400/50 group-hover:w-full transition-all duration-300" />
             </a>
           ))}
         </nav>
 
-        {/* Desktop CTAs */}
         <div className="hidden md:flex items-center gap-3">
           <Link
             href="/login"
@@ -139,7 +124,6 @@ export function LandingNav() {
           </Link>
         </div>
 
-        {/* Mobile hamburger */}
         <button
           className="md:hidden flex flex-col gap-[5px] p-2 -mr-2"
           onClick={() => setMobileOpen((o) => !o)}
@@ -166,7 +150,6 @@ export function LandingNav() {
         </button>
       </header>
 
-      {/* ── Mobile drawer ─────────────────────────────────────────────────── */}
       <div
         className={cx(
           "md:hidden fixed inset-x-0 top-[calc(2.5rem+3.5rem)] z-40",  // below status bar + nav
@@ -176,7 +159,6 @@ export function LandingNav() {
         )}
       >
         <div className="flex flex-col px-5 py-6 gap-1">
-          {/* Nav links */}
           {NAV_LINKS.map(({ label, href }, i) => (
             <a
               key={href}
@@ -189,7 +171,6 @@ export function LandingNav() {
             </a>
           ))}
 
-          {/* Mobile CTAs */}
           <div className="flex flex-col gap-2.5 mt-5">
             <Link
               href="/register"
@@ -220,7 +201,6 @@ export function LandingNav() {
         </div>
       </div>
 
-      {/* Backdrop overlay — closes drawer on outside click */}
       {mobileOpen && (
         <div
           className="md:hidden fixed inset-0 z-30 bg-black/30"

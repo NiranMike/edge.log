@@ -1,4 +1,3 @@
-// app/analytics/page.tsx
 
 import { redirect }        from "next/navigation";
 import { auth }            from "#/auth";
@@ -17,7 +16,6 @@ import { SessionBreakdown } from "@/components/analytics/session-breakdown";
 import { WeekdayHeatmap } from "@/components/analytics/weekday-heatmap";
 
 
-// ─── Parse + validate searchParams into typed filters ─────────────────────────
 
 function parseFilters(params: Record<string, string | string[] | undefined>): Filters {
   const dateRange = (["30d","90d","6mo","1yr","all"] as const)
@@ -33,7 +31,6 @@ function parseFilters(params: Record<string, string | string[] | undefined>): Fi
   return { dateRange, direction, pairs };
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function AnalyticsPage({
   searchParams,
@@ -53,13 +50,10 @@ export default async function AnalyticsPage({
 
   return (
     <AppShell>
-      {/* Outer: full width, handles all horizontal padding */}
       <div className="w-full px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-9">
 
-        {/* Inner: constrained + centered */}
         <div className="w-full max-w-[1200px] mx-auto">
 
-          {/* ── Header ── */}
           <div className="animate-fade-up mb-6 sm:mb-8">
             <div className="flex items-center gap-3 mb-2 sm:mb-3">
               <div className="w-5 h-px bg-teal-400/50" />
@@ -76,17 +70,13 @@ export default async function AnalyticsPage({
             </p>
           </div>
 
-          {/* ── Sticky filter bar ──
-              Bleeds to the viewport edges by negating the outer padding,
-              then re-applies it so the filter content aligns with the page. */}
+
           <div className="sticky top-0 z-30 -mx-4 sm:-mx-6 lg:-mx-10 px-4 sm:px-6 lg:px-10 py-3 mb-6 sm:mb-8 bg-[#07090d]/90 backdrop-blur-sm border-b border-white/[0.05]">
-            {/* Re-constrain inner content to match the page column */}
             <div className="w-full max-w-[1200px] mx-auto">
               <AnalyticsFilters filters={filters} allPairs={allPairs} />
             </div>
           </div>
 
-          {/* ── Empty state ── */}
           {analytics.totalTrades === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 sm:py-24 text-center">
               <p className="font-mono text-[13px] text-white/30 mb-1">
@@ -99,10 +89,8 @@ export default async function AnalyticsPage({
           ) : (
             <div className="space-y-4 sm:space-y-6">
 
-              {/* Overview strip */}
               <AnalyticsOverviewStrip overview={analytics.overview} />
 
-              {/* Main grid — 1 col mobile, 2 col desktop */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 <PairBreakdown    pairs={analytics.byPair} />
                 <DirectionBias    directions={analytics.byDirection} />
@@ -110,7 +98,6 @@ export default async function AnalyticsPage({
                 <SessionBreakdown sessions={analytics.bySessions} />
               </div>
 
-              {/* Full-width sections */}
               <EquityCurve    curve={analytics.equityCurve} />
               <WeekdayHeatmap weekdays={analytics.byWeekday} />
 
