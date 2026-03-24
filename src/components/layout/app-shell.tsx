@@ -3,8 +3,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import type { ReactNode } from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { cx } from "@/style";
+import { SignOutModal } from "../auth/sign-out-modal";
+import { NavLink } from "./nav-link";
 
 const NAV = [
   { href: "/dashboard",  icon: "◈", label: "Dashboard",  sub: "overview"  },
@@ -73,79 +76,15 @@ function MenuIcon({ open }: { open: boolean }) {
   );
 }
 
-function NavLink({
-  href, icon, label, sub, active, compact = false, onClick,
-}: {
-  href: string; icon: string; label: string; sub: string | null;
-  active: boolean; compact?: boolean; onClick?: () => void;
-}) {
-  const isNew = href === "/trades/new";
-
-  if (isNew) {
-    return (
-      <Link href={href} className="no-underline block mt-2" onClick={onClick}>
-        <div className={cx(
-          "flex items-center gap-[9px] rounded-lg font-mono text-[12px] tracking-[0.04em] border border-teal-400/25 bg-teal-400/[0.06] text-teal-400 hover:bg-teal-400/[0.12] hover:border-teal-400/40 transition-all duration-150 cursor-pointer",
-          compact ? "px-0 py-[10px] justify-center" : "px-3 py-[10px]",
-        )}>
-          <span className="text-[14px] leading-none">{icon}</span>
-          {!compact && <span>{label}</span>}
-        </div>
-      </Link>
-    );
-  }
-
-  return (
-    <Link href={href} className="no-underline block" onClick={onClick}>
-      <div className={cx(
-        "flex items-center rounded-lg transition-all duration-150 cursor-pointer group",
-        compact ? "gap-0 px-0 py-[9px] justify-center" : "gap-[9px] px-3 py-[9px]",
-        active
-          ? "bg-white/[0.06] border border-white/[0.08]"
-          : "border border-transparent hover:bg-white/[0.03] hover:border-white/[0.04]",
-      )}>
-        <span className={cx(
-          "text-sm leading-none shrink-0 transition-colors duration-150",
-          active ? "text-white" : "text-white/30 group-hover:text-white/50",
-        )}>
-          {icon}
-        </span>
-        {!compact && (
-          <div className="flex flex-col min-w-0 flex-1">
-            <span className={cx(
-              "font-mono text-[12px] tracking-[0.04em] transition-colors duration-150",
-              active ? "text-white" : "text-white/45 group-hover:text-white/65",
-            )}>
-              {label}
-            </span>
-            {sub && (
-              <span className={cx(
-                "font-mono text-[9px] tracking-[0.12em] uppercase transition-colors duration-150",
-                active ? "text-white/30" : "text-white/18 group-hover:text-white/28",
-              )}>
-                {sub}
-              </span>
-            )}
-          </div>
-        )}
-        {active && !compact && (
-          <div className="ml-auto w-[2px] h-4 rounded-full bg-teal-400/60 shrink-0" />
-        )}
-        {active && compact && (
-          <div className="absolute left-0 w-[2px] h-4 rounded-full bg-teal-400/60" />
-        )}
-      </div>
-    </Link>
-  );
-}
 
 function SidebarContent({
-  pathname, session: userSession, compact = false, onNavClick,
+  pathname, session: userSession, compact = false, onNavClick, onSignOutRequest,
 }: {
-  pathname: string;
-  session: ReturnType<typeof useSession>["data"];
-  compact?: boolean;
-  onNavClick?: () => void;
+  pathname:         string;
+  session:          ReturnType<typeof useSession>["data"];
+  compact?:         boolean;
+  onNavClick?:      () => void;
+  onSignOutRequest: () => void;
 }) {
   return (
     <>
@@ -227,7 +166,8 @@ function SidebarContent({
                   {userSession.user.name?.split(" ")[0] || "Trader"}
                 </div>
                 <button
-                  onClick={() => signOut({ callbackUrl: "/login" })}
+                  type="button"
+                  onClick={onSignOutRequest}
                   className="bg-transparent border-none cursor-pointer font-mono text-[9px] text-white/20 p-0 text-left hover:text-white/40 transition-colors duration-150 tracking-[0.06em] uppercase"
                 >
                   Sign out
@@ -244,20 +184,19 @@ function SidebarContent({
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerOpen,  setDrawerOpen]  = useState(false);
+  const [showSignOut, setShowSignOut] = useState(false);
+
+  useEffect(() => { setDrawerOpen(false); }, [pathname]);
 
   useEffect(() => {
-    setDrawerOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
-    if (drawerOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = drawerOpen || showSignOut ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
-  }, [drawerOpen]);
+  }, [drawerOpen, showSignOut]);
+
+  const requestSignOut = useCallback(() => setShowSignOut(true), []);
+  const cancelSignOut  = useCallback(() => setShowSignOut(false), []);
+  const confirmSignOut = useCallback(() => signOut({ callbackUrl: "/login" }), []);
 
   const sidebarBg = "linear-gradient(180deg, #0c1018 0%, #090d12 100%)";
 
@@ -268,17 +207,28 @@ export function AppShell({ children }: { children: ReactNode }) {
         className="hidden md:flex lg:hidden w-[64px] shrink-0 flex-col sticky top-0 h-screen border-r border-white/[0.06]"
         style={{ background: sidebarBg }}
       >
-        <SidebarContent pathname={pathname} session={session} compact={true} />
+        <SidebarContent
+          pathname={pathname}
+          session={session}
+          compact={true}
+          onSignOutRequest={requestSignOut}
+        />
       </aside>
 
       <aside
         className="hidden lg:flex w-[216px] shrink-0 flex-col sticky top-0 h-screen border-r border-white/[0.06]"
         style={{ background: sidebarBg }}
       >
-        <SidebarContent pathname={pathname} session={session} compact={false} />
+        <SidebarContent
+          pathname={pathname}
+          session={session}
+          compact={false}
+          onSignOutRequest={requestSignOut}
+        />
       </aside>
 
-      <div className="md:hidden fixed top-0 inset-x-0 z-40 h-14 border-b border-white/[0.06] flex items-center px-4 gap-3"
+      <div
+        className="md:hidden fixed top-0 inset-x-0 z-40 h-14 border-b border-white/[0.06] flex items-center px-4 gap-3"
         style={{ background: sidebarBg }}
       >
         <button
@@ -319,12 +269,17 @@ export function AppShell({ children }: { children: ReactNode }) {
           session={session}
           compact={false}
           onNavClick={() => setDrawerOpen(false)}
+          onSignOutRequest={requestSignOut}
         />
       </aside>
 
       <main className="flex-1 overflow-auto min-w-0 md:pt-0 pt-14">
         {children}
       </main>
+
+      {showSignOut && (
+        <SignOutModal onConfirm={confirmSignOut} onCancel={cancelSignOut} />
+      )}
     </div>
   );
 }

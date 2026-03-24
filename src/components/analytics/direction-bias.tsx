@@ -1,7 +1,9 @@
 "use client";
 
 import { cx } from "@/style";
+import { Tooltip } from "@/components/ui/tooltip";
 import type { DirectionStat } from "@/types";
+import { TOOLTIP_COPY } from "@/const/tooltip-const";
 
 interface Props {
   directions: DirectionStat[];
@@ -18,15 +20,24 @@ function DirectionCard({ stat }: { stat: DirectionStat }) {
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/20 mb-1">Win Rate</p>
+          <div className="flex items-center gap-1.5 mb-1">
+            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/20">Win Rate</p>
+            <Tooltip content={TOOLTIP_COPY.winRate} />
+          </div>
           <p className={cx("font-mono text-[20px] tracking-[-0.03em] leading-none", stat.winRate >= 50 ? (isLong ? "text-emerald-400" : "text-red-400") : "text-white/50")}>{stat.winRate}%</p>
         </div>
         <div>
-          <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/20 mb-1">Avg R</p>
+          <div className="flex items-center gap-1.5 mb-1">
+            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/20">Avg R</p>
+            <Tooltip content={TOOLTIP_COPY.avgR} />
+          </div>
           <p className={cx("font-mono text-[20px] tracking-[-0.03em] leading-none", stat.avgR >= 0 ? (isLong ? "text-emerald-400" : "text-red-400") : "text-white/50")}>{stat.avgR >= 0 ? "+" : ""}{stat.avgR}R</p>
         </div>
         <div className="col-span-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/20 mb-1">Total R</p>
+          <div className="flex items-center gap-1.5 mb-1">
+            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/20">Total R</p>
+            <Tooltip content={TOOLTIP_COPY.totalR} />
+          </div>
           <p className={cx("font-mono text-[16px] tracking-[-0.02em] leading-none", stat.totalR >= 0 ? "text-white/70" : "text-white/40")}>{stat.totalR >= 0 ? "+" : ""}{stat.totalR}R</p>
         </div>
       </div>
@@ -43,6 +54,7 @@ export function DirectionBias({ directions }: Props) {
       <div className="flex items-center gap-3 px-5 py-4 border-b border-white/[0.05]">
         <div className="w-4 h-px bg-teal-400/50" />
         <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/40">Direction Bias</h2>
+        <Tooltip content={TOOLTIP_COPY.directionBias} />
       </div>
       <div className="p-5">
         {directions.every(d => d.trades === 0) ? (

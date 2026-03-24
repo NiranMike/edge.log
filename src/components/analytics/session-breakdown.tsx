@@ -2,13 +2,13 @@
 
 import { SESSION_META } from "@/const/analytics-const";
 import { cx } from "@/style";
+import { Tooltip } from "@/components/ui/tooltip";
 import type { SessionStat } from "@/types";
+import { TOOLTIP_COPY } from "@/const/tooltip-const";
 
 interface Props {
   sessions: SessionStat[];
 }
-
-
 
 export function SessionBreakdown({ sessions }: Props) {
   const active = sessions?.filter(s => s?.trades > 0);
@@ -17,6 +17,7 @@ export function SessionBreakdown({ sessions }: Props) {
       <div className="flex items-center gap-3 px-5 py-4 border-b border-white/[0.05]">
         <div className="w-4 h-px bg-teal-400/50" />
         <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/40">Session Performance</h2>
+        <Tooltip content={TOOLTIP_COPY.sessionBreakdown} />
       </div>
       <div className="p-4">
         {active?.length === 0 ? (
@@ -35,15 +36,24 @@ export function SessionBreakdown({ sessions }: Props) {
                     </div>
                     <div className="grid grid-cols-3 gap-2">
                       <div>
-                        <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-white/20 mb-0.5">Trades</p>
+                        <div className="flex items-center gap-1 mb-0.5">
+                          <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-white/20">Trades</p>
+                          <Tooltip content={TOOLTIP_COPY.trades} />
+                        </div>
                         <p className="font-mono text-[13px] text-white/60">{session.trades}</p>
                       </div>
                       <div>
-                        <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-white/20 mb-0.5">Win %</p>
+                        <div className="flex items-center gap-1 mb-0.5">
+                          <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-white/20">Win %</p>
+                          <Tooltip content={TOOLTIP_COPY.winRate} />
+                        </div>
                         <p className={cx("font-mono text-[13px]", session.winRate >= 55 ? "text-emerald-400" : session.winRate >= 45 ? "text-white/60" : "text-red-400/70")}>{session.winRate}%</p>
                       </div>
                       <div>
-                        <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-white/20 mb-0.5">Avg R</p>
+                        <div className="flex items-center gap-1 mb-0.5">
+                          <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-white/20">Avg R</p>
+                          <Tooltip content={TOOLTIP_COPY.avgR} />
+                        </div>
                         <p className={cx("font-mono text-[13px]", session.avgR >= 0 ? "text-emerald-400" : "text-red-400/70")}>{session.avgR >= 0 ? "+" : ""}{session.avgR}R</p>
                       </div>
                     </div>

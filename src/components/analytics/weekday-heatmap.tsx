@@ -1,7 +1,9 @@
 "use client";
 
 import { cx } from "@/style";
+import { Tooltip } from "@/components/ui/tooltip";
 import type { WeekdayStat } from "@/types";
+import { TOOLTIP_COPY } from "@/const/tooltip-const";
 
 interface Props {
   weekdays: WeekdayStat[];
@@ -34,6 +36,7 @@ export function WeekdayHeatmap({ weekdays }: Props) {
         <div className="flex items-center gap-3">
           <div className="w-4 h-px bg-teal-400/50" />
           <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/40">Day of Week</h2>
+          <Tooltip content={TOOLTIP_COPY.weekdayHeatmap} />
         </div>
         <span className="font-mono text-[10px] text-white/15">Avg R per weekday</span>
       </div>

@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { cx } from "@/style";
+import { Tooltip } from "@/components/ui/tooltip";
 import type { PairStat } from "@/types";
+import { TOOLTIP_COPY } from "@/const/tooltip-const";
 
 interface Props {
   pairs: PairStat[];
@@ -41,6 +43,7 @@ export function PairBreakdown({ pairs }: Props) {
         <div className="flex items-center gap-3">
           <div className="w-4 h-px bg-teal-400/50" />
           <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/40">Pair Breakdown</h2>
+          <Tooltip content={TOOLTIP_COPY.pairBreakdown} />
         </div>
         <span className="font-mono text-[10px] text-white/20">{pairs.length} pairs</span>
       </div>
