@@ -4,11 +4,12 @@ import { auth }           from "#/auth";
 import { db }             from "@/lib/db";
 import { billingService } from "@/services/billing-service";
 import type { Result }    from "@/types";
+import { redirect } from "next/navigation";
 
 export async function createCheckoutAction(): Promise<Result<{ url: string }>> {
   const session = await auth();
   if (!session?.user?.id || !session.user.email) {
-    return { ok: false, error: "Not authenticated" };
+    redirect("/login");
   }
 
   try {

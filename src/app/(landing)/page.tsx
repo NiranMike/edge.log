@@ -1,5 +1,6 @@
 
 import { auth, authOptions } from "#/auth";
+import { PricingSection } from "@/components/billing/pricing-section";
 import { CtaSection } from "@/components/landing-page/cta-section";
 import { FeaturesSection } from "@/components/landing-page/feature-section";
 import { HeroSection } from "@/components/landing-page/hero-section";
@@ -35,6 +36,7 @@ export default async function LandingPage() {
       <MetricsSection />
       <HowItWorksSection />
       <TestimonialsSection />
+      <PricingSection />
       <CtaSection />
       <LandingFooter />
     </div>
