@@ -1,14 +1,10 @@
 generator client {
   provider = "prisma-client-js"
-  // NO custom output path — generates to node_modules/@prisma/client (the default)
-  // A custom output like "../src/generated/prisma" causes import mismatches with db.ts
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  // NO url here — Prisma 7 + Neon adapter handles the connection in db.ts
-  // CLI migrations use prisma.config.ts which reads DIRECT_URL
 }
 
 model User {
@@ -19,14 +15,39 @@ model User {
   image         String?
   passwordHash  String?
 
+  isPro                  Boolean @default(false)
+  lemonSqueezyCustomerId String? @unique
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  accounts Account[]
-  sessions Session[]
-  trades        Trade[]
+  accounts     Account[]
+  sessions     Session[]
+  trades       Trade[]
+  subscription Subscription?
 
   @@index([email])
+}
+
+model Subscription {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  lemonSqueezyId         String  @unique
+  lemonSqueezyCustomerId String
+  variantId              String
+  status                 String
+  renewsAt               DateTime?
+  endsAt                 DateTime?
+  trialEndsAt            DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([lemonSqueezyId])
+  @@index([userId])
 }
 
 model Account {
@@ -68,41 +89,40 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model WebhookEvent {
+  id        String   @id @default(cuid())
+  eventId   String   @unique
+  eventName String
+  processedAt DateTime @default(now())
+
+  @@index([eventId])
+  @@map("webhook_events")
+}
+
 enum Direction {
   LONG
   SHORT
 }
 
-// V1 fields only — no session, strategy, emotion.
-// Those are V2 behavioural layer additions.
-
 model Trade {
-  id           Int       @id @default(autoincrement())
-  userId       String
+  id         Int      @id @default(autoincrement())
+  userId     String
+  pair       String
+  direction  Direction
+  entryPrice Decimal  @db.Decimal(18, 8)
+  stopLoss   Decimal  @db.Decimal(18, 8)
+  takeProfit Decimal  @db.Decimal(18, 8)
+  exitPrice  Decimal  @db.Decimal(18, 8)
+  rMultiple  Decimal  @db.Decimal(8, 4)
+  won        Boolean
+  notes      String?
+  tradedAt   DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  // Core fields — Decimal prevents float rounding on pip values
-  pair         String       // e.g. "EURUSD", "BTCUSDT"
-  direction    Direction
-  entryPrice   Decimal   @db.Decimal(18, 8)
-  stopLoss     Decimal   @db.Decimal(18, 8)
-  takeProfit   Decimal   @db.Decimal(18, 8)
-  exitPrice    Decimal   @db.Decimal(18, 8)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  // Outcome — rMultiple computed server-side and stored
-  rMultiple    Decimal   @db.Decimal(8, 4)  // e.g. +2.35, -1.00
-  won          Boolean
-
-  // Optional
-  notes        String?
-  tradedAt     DateTime  @default(now())    // when the trade was taken (user-editable)
-  createdAt    DateTime  @default(now())    // record creation time
-  updatedAt    DateTime  @updatedAt
-
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Indexes: user+date for ordered list, user+won for stats
   @@index([userId, tradedAt(sort: Desc)])
   @@index([userId, won])
   @@map("trades")
 }
-

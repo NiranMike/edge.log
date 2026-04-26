@@ -204,7 +204,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen bg-[#07090d]">
 
       <aside
-        className="hidden md:flex lg:hidden w-[64px] shrink-0 flex-col sticky top-0 h-screen border-r border-white/[0.06]"
+        className="hidden md:flex lg:hidden w-16 shrink-0 flex-col sticky top-0 h-screen border-r border-white/[0.06]"
         style={{ background: sidebarBg }}
       >
         <SidebarContent

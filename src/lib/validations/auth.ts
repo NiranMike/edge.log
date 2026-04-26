@@ -1,6 +1,4 @@
-// lib/validations/auth.ts
-// Shared between Server Actions (server) and React Hook Form (client).
-// One source of truth — validation rules are never duplicated.
+
 
 import { z } from "zod";
 
