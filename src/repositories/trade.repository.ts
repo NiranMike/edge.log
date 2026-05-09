@@ -1,19 +1,16 @@
-// ─── Trade Repository ─────────────────────────────────────────────────────────
-// Responsibility: talk to Prisma. Nothing else.
-// No R calculation, no validation, no business rules here
 
 import type { Prisma } from "@prisma/client";
 import type { AnalyticsFilters, Trade } from "@/types";
 import { db } from "@/lib/db";
 
-// ─── Input types (raw numbers from service layer) ─────────────────────────────
 
 export interface CreateTradeRow {
   userId:     string;
   pair:       string;
   direction:  "LONG" | "SHORT";
   entryPrice: number;
-  stopLoss:   number;
+  stopLoss: number;
+  screenshotUrl: string | null;
   takeProfit: number;
   exitPrice:  number;
   rMultiple:  number;
@@ -28,6 +25,7 @@ export interface UpdateTradeRow {
   entryPrice?: number;
   stopLoss?:   number;
   takeProfit?: number;
+  screenshotUrl: string | null;
   exitPrice?:  number;
   rMultiple?:  number;
   won?:        boolean;
@@ -42,7 +40,8 @@ function toTrade(row: Prisma.TradeGetPayload<object>): Trade {
     id:         row.id,
     userId:     row.userId,
     pair:       row.pair,
-    direction:  row.direction as Trade["direction"],
+    direction: row.direction as Trade["direction"],
+    screenshotUrl: row.screenshotUrl,
     entryPrice: Number(row.entryPrice),
     stopLoss:   Number(row.stopLoss),
     takeProfit: Number(row.takeProfit),
@@ -55,7 +54,6 @@ function toTrade(row: Prisma.TradeGetPayload<object>): Trade {
   };
 }
 
-// ─── Repository ───────────────────────────────────────────────────────────────
 
 export const tradeRepository = {
   async findById(id: number, userId: string): Promise<Trade | null> {

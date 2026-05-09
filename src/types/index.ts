@@ -7,6 +7,7 @@ export interface Trade {
   userId:      string;
   pair:        string;
   direction:   Direction;
+  screenshotUrl?: string | null;
   entryPrice:  number;
   stopLoss:    number;
   takeProfit:  number;
@@ -29,14 +30,15 @@ export interface TradeMetrics {
 
 
 export interface TradeFormValues {
-  pair:        string;
-  direction:   Direction;
-  entryPrice:  string;
-  stopLoss:    string;
-  takeProfit:  string;
-  exitPrice:   string;
-  notes:       string;
-  tradedAt:    string;
+  pair:          string;
+  direction:     Direction;
+  entryPrice:    string;
+  screenshotUrl: string | null;
+  stopLoss:      string;
+  takeProfit:    string;
+  exitPrice:     string;
+  notes:         string;
+  tradedAt:      string;
 }
 
 export interface TradeFormErrors {

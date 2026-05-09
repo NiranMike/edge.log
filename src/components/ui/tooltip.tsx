@@ -55,7 +55,7 @@ export function Tooltip({ content, className }: Props) {
         onBlur={hide}
         className={cx(
           "inline-flex items-center justify-center w-3.5 h-3.5 rounded-full shrink-0",
-          "border border-white/[0.12] text-white/25 font-mono text-[8px] leading-none",
+          "border border-white/12 text-white/25 font-mono text-[8px] leading-none",
           "hover:border-teal-400/40 hover:text-teal-400/60",
           "focus-visible:outline-none focus-visible:border-teal-400/40 focus-visible:text-teal-400/60",
           "transition-colors duration-150 cursor-default",

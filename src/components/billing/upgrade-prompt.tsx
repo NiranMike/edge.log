@@ -22,7 +22,6 @@ export function UpgradePrompt({ feature, description, className, bullets = DEFAU
       className,
     )}>
 
-      {/* Lock */}
       <div className="w-11 h-11 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mb-6">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
           <rect x="3" y="8" width="12" height="9" rx="2" stroke="rgba(255,255,255,0.35)" strokeWidth="1.4"/>

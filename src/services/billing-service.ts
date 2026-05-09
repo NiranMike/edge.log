@@ -19,7 +19,7 @@ async function sendWebhookFailureAlert(details: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from:    "alerts@yourdomain.com",
+      from:    "edge@gmail.com",
       to:      adminEmail,
       subject: `[Edge.Log] Webhook processing failed — ${details.eventName}`,
       text: [
@@ -28,7 +28,7 @@ async function sendWebhookFailureAlert(details: {
         `Error:      ${details.error}`,
         `Time:       ${new Date().toISOString()}`,
         "",
-        "Check your Vercel logs for the full stack trace.",
+        // "Check your Vercel logs for the full stack trace.",
         `Lemonsqueezy dashboard: https://app.lemonsqueezy.com/webhooks`,
       ].join("\n"),
     }),

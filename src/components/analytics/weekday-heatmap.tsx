@@ -2,6 +2,7 @@
 
 import { cx } from "@/style";
 import { Tooltip } from "@/components/ui/tooltip";
+import { RLabel } from "../shared/r-label";
 import type { WeekdayStat } from "@/types";
 import { TOOLTIP_COPY } from "@/const/tooltip-const";
 
@@ -19,14 +20,6 @@ function getHeatColor(avgR: number, trades: number): string {
   return "bg-red-400/25 border-red-400/30";
 }
 
-function getTextColor(avgR: number, trades: number): string {
-  if (trades === 0) return "text-white/15";
-  if (avgR >= 0.5)  return "text-emerald-400";
-  if (avgR >= 0)    return "text-emerald-400/60";
-  if (avgR >= -0.5) return "text-red-400/60";
-  return "text-red-400";
-}
-
 export function WeekdayHeatmap({ weekdays }: Props) {
   const maxTrades = Math.max(...weekdays.map(d => d.trades), 1);
 
@@ -40,33 +33,61 @@ export function WeekdayHeatmap({ weekdays }: Props) {
         </div>
         <span className="font-mono text-[10px] text-white/15">Avg R per weekday</span>
       </div>
+
       <div className="p-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
         {weekdays.map(day => {
           const heatCls = getHeatColor(day.avgR, day.trades);
-          const textCls = getTextColor(day.avgR, day.trades);
           return (
-            <div key={day.day} className={cx("rounded-[8px] border px-3 py-3.5 transition-all duration-200 hover:scale-[1.02]", heatCls, day.trades === 0 ? "opacity-40" : "opacity-100")}>
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/30 mb-2">{day.day}</p>
-              <p className={cx("font-mono text-[18px] tracking-[-0.03em] leading-none mb-1.5", textCls)}>
-                {day.trades === 0 ? "—" : `${day.avgR >= 0 ? "+" : ""}${day.avgR}R`}
+            <div
+              key={day.day}
+              className={cx(
+                "rounded-[8px] border px-3 py-3.5 transition-all duration-200 hover:scale-[1.02]",
+                heatCls,
+                day.trades === 0 ? "opacity-40" : "opacity-100",
+              )}
+            >
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/30 mb-2">
+                {day.day}
               </p>
+
+              {day.trades === 0 ? (
+                <span className="font-mono text-[18px] text-white/15 leading-none">—</span>
+              ) : (
+                <RLabel value={day.avgR} size="md" showRatio={false} muted={false} />
+              )}
+
               {day.trades > 0 && (
-                <div className="flex items-center justify-between mt-1">
+                <div className="flex items-center justify-between mt-1.5">
                   <span className="font-mono text-[9px] text-white/20">{day.trades}t</span>
                   <span className="font-mono text-[9px] text-white/30">{day.winRate}%</span>
                 </div>
               )}
+
               <div className="mt-2 h-[2px] rounded-full bg-white/[0.06] overflow-hidden">
-                <div className={cx("h-full rounded-full", day.avgR >= 0 ? "bg-emerald-400/40" : "bg-red-400/40")} style={{ width: `${(day.trades / maxTrades) * 100}%` }} />
+                <div
+                  className={cx(
+                    "h-full rounded-full",
+                    day.avgR >= 0 ? "bg-emerald-400/40" : "bg-red-400/40",
+                  )}
+                  style={{ width: `${(day.trades / maxTrades) * 100}%` }}
+                />
               </div>
             </div>
           );
         })}
       </div>
+
       <div className="flex items-center gap-4 px-5 py-3 border-t border-white/[0.04]">
         <span className="font-mono text-[9px] text-white/15 uppercase tracking-[0.1em]">Intensity</span>
         <div className="flex items-center gap-1.5">
-          {["bg-red-400/25","bg-red-400/12","bg-red-400/[0.06]","bg-emerald-400/[0.06]","bg-emerald-400/12","bg-emerald-400/25"].map((cls, i) => (
+          {[
+            "bg-red-400/25",
+            "bg-red-400/12",
+            "bg-red-400/[0.06]",
+            "bg-emerald-400/[0.06]",
+            "bg-emerald-400/12",
+            "bg-emerald-400/25",
+          ].map((cls, i) => (
             <div key={i} className={cx("w-5 h-[6px] rounded-[2px]", cls)} />
           ))}
         </div>

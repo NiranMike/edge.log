@@ -54,8 +54,6 @@ function getSession(isoDate: string): MarketSession {
   return "Closed";
 }
 
-
-
 export const tradeService = {
   async create(userId: string, values: TradeFormValues): Promise<Result<Trade>> {
     const errors = validate(values);
@@ -70,6 +68,7 @@ export const tradeService = {
         userId, pair: values.pair.trim().toUpperCase(), direction: values.direction,
         entryPrice: entry, stopLoss: stop, takeProfit: tp, exitPrice: exit,
         rMultiple: r, won: r > 0,
+        screenshotUrl: values.screenshotUrl ?? null,
         notes: values.notes.trim() || null,
         tradedAt: values.tradedAt ? new Date(values.tradedAt) : new Date(),
       });
@@ -94,11 +93,13 @@ export const tradeService = {
         pair: values.pair.trim().toUpperCase(), direction: values.direction,
         entryPrice: entry, stopLoss: stop, takeProfit: tp, exitPrice: exit,
         rMultiple: r, won: r > 0,
+        screenshotUrl: values.screenshotUrl ?? null,
         notes: values.notes.trim() || null,
         tradedAt: values.tradedAt ? new Date(values.tradedAt) : new Date(existing.tradedAt),
       });
       return { ok: true, data: trade };
-    } catch {
+    } catch(err) {
+      console.error("[tradeService.update]", err);
       return { ok: false, error: "Failed to update trade." };
     }
   },
@@ -168,7 +169,6 @@ export const tradeService = {
   const avgWinR  = wins.length   ? Math.round((grossWins   / wins.length)   * 100) / 100 : 0;
   const avgLossR = losses.length ? Math.round((grossLosses / losses.length) * 100) / 100 : 0;
 
-  // Win/loss streaks — single pass
   let currentStreak = 0;
   let largestWinStreak  = 0;
   let largestLossStreak = 0;
@@ -185,7 +185,6 @@ export const tradeService = {
     lastWon = t.won;
   }
 
-  // Most active pair
   const pairCounts = trades.reduce<Record<string, number>>((acc, t) => {
     acc[t.pair] = (acc[t.pair] ?? 0) + 1;
     return acc;
@@ -193,7 +192,6 @@ export const tradeService = {
   const mostActivePair = Object.entries(pairCounts)
     .sort((a, b) => b[1] - a[1])[0]?.[0] ?? "";
 
-  // Most active session
   const sessionCounts = trades.reduce<Record<string, number>>((acc, t) => {
     const s = getSession(t.tradedAt);
     acc[s] = (acc[s] ?? 0) + 1;
@@ -213,8 +211,6 @@ export const tradeService = {
     mostActivePair,
     mostActiveSession,
   };
-
-  // ── 2. By pair ───────────────────────────────────────────────────────────────
 
   const pairMap = trades.reduce<Record<string, Trade[]>>((acc, t) => {
     (acc[t.pair] ??= []).push(t);
@@ -237,9 +233,6 @@ export const tradeService = {
       worstR:   sorted[sorted.length - 1]?.rMultiple ?? 0,
     };
   }).sort((a, b) => b.totalR - a.totalR);
-
-  // ── 3. By direction ──────────────────────────────────────────────────────────
-
   const byDirection: DirectionStat[] = (["LONG", "SHORT"] as const).map(dir => {
     const ts = trades.filter(t => t.direction === dir);
     const w  = ts.filter(t => t.won);
@@ -253,8 +246,6 @@ export const tradeService = {
       totalR:    Math.round(total * 100) / 100,
     };
   });
-
-  // ── 4. R distribution buckets ────────────────────────────────────────────────
 
   const bucketDefs = [
     { label: "< -2R",    min: -Infinity, max: -2     },
@@ -276,8 +267,6 @@ export const tradeService = {
       pct: trades.length ? Math.round((count / trades.length) * 1000) / 10 : 0,
     };
   });
-
-  // ── 5. By session ────────────────────────────────────────────────────────────
 
   const sessionMap = trades.reduce<Record<string, Trade[]>>((acc, t) => {
     const s = getSession(t.tradedAt);

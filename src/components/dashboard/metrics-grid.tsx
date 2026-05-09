@@ -2,11 +2,12 @@
 
 import type { TradeMetrics } from "@/types";
 import { cx } from "@/style";
+import { RLabel } from "../shared/r-label";
 
 interface Props {
-  metrics: TradeMetrics;
+  metrics:   TradeMetrics;
   className?: string;
-  rHistory?: number[];
+  rHistory?:  number[];
 }
 
 function getExpectancyMood(e: number): { color: string; label: string; desc: string } {
@@ -69,9 +70,9 @@ function StreakBadge({ rHistory }: { rHistory: number[] }) {
 }
 
 function MetricCard({
-  label, value, sub, colorClass, large, delay, children,
+  label, sub, large, delay, children,
 }: {
-  label: string; value: string; sub: string; colorClass?: string;
+  label: string; sub: string;
   large?: boolean; delay?: number; children?: React.ReactNode;
 }) {
   return (
@@ -89,19 +90,14 @@ function MetricCard({
         {label}
       </div>
 
-      <div className={cx(
-        "font-mono font-medium leading-none tracking-[-0.04em] mb-2",
-        large ? "text-[24px] sm:text-[34px]" : "text-[20px] sm:text-[26px]",
-        colorClass ?? "text-white",
-      )}>
-        {value}
+      {/* value slot — passed as children so RLabel handles its own sizing/color */}
+      <div className={cx("mb-2", large ? "mb-3" : "mb-2")}>
+        {children}
       </div>
 
       <div className="font-mono text-[10px] sm:text-[11px] text-white/35 leading-relaxed">
         {sub}
       </div>
-
-      {children && <div className="mt-2 sm:mt-3">{children}</div>}
     </div>
   );
 }
@@ -120,17 +116,12 @@ export function MetricsGrid({ metrics, className, rHistory = [] }: Props) {
       className,
     )}>
 
+      {/* Expectancy */}
       <div className="col-span-2 md:col-span-1">
-        <MetricCard
-          label="Expectancy"
-          value={`${expectancy >= 0 ? "+" : ""}${expectancy}R`}
-          sub={exp.desc}
-          colorClass={exp.color}
-          large
-          delay={0}
-        >
+        <MetricCard label="Expectancy" sub={exp.desc} large delay={0}>
+          <RLabel value={expectancy} size="lg" showRatio={false} />
           <span className={cx(
-            "inline-block font-mono text-[9px] uppercase tracking-[0.14em] px-2 py-[3px] rounded border",
+            "inline-block font-mono text-[9px] uppercase tracking-[0.14em] px-2 py-[3px] rounded border mt-2",
             exp.color,
             expectancy >= 0
               ? "bg-emerald-400/[0.05] border-emerald-400/15"
@@ -141,14 +132,15 @@ export function MetricsGrid({ metrics, className, rHistory = [] }: Props) {
         </MetricCard>
       </div>
 
-      <MetricCard
-        label="Win Rate"
-        value={`${winRate}%`}
-        sub={`${wins}W · ${losses}L`}
-        colorClass={wrColor}
-        delay={60}
-      >
-        <div className="h-[2px] w-full bg-white/[0.05] rounded-full overflow-hidden">
+      {/* Win Rate */}
+      <MetricCard label="Win Rate" sub={`${wins}W · ${losses}L`} delay={60}>
+        <span className={cx(
+          "font-mono font-medium text-[20px] sm:text-[26px] leading-none tracking-[-0.04em]",
+          wrColor,
+        )}>
+          {winRate}%
+        </span>
+        <div className="h-[2px] w-full bg-white/[0.05] rounded-full overflow-hidden mt-2">
           <div
             className={cx("h-full rounded-full transition-all duration-700", winRate >= 50 ? "bg-emerald-400/50" : "bg-teal-400/50")}
             style={{ width: `${wrPct}%` }}
@@ -156,33 +148,24 @@ export function MetricsGrid({ metrics, className, rHistory = [] }: Props) {
         </div>
       </MetricCard>
 
-      <MetricCard
-        label="Avg R / Trade"
-        value={`${avgR >= 0 ? "+" : ""}${avgR}R`}
-        sub="per closed trade"
-        colorClass={avgR >= 0 ? "text-emerald-400" : "text-red-400"}
-        delay={120}
-      >
-        {rHistory.length > 0 && <StreakBadge rHistory={rHistory} />}
+      {/* Avg R */}
+      <MetricCard label="Avg R / Trade" sub="per closed trade" delay={120}>
+        <RLabel value={avgR} size="md" />
+        {rHistory.length > 0 && <div className="mt-2"><StreakBadge rHistory={rHistory} /></div>}
       </MetricCard>
 
-      <MetricCard
-        label="Total R"
-        value={`${totalR >= 0 ? "+" : ""}${totalR}R`}
-        sub="cumulative P&L in R"
-        colorClass={totalR >= 0 ? "text-emerald-400" : "text-red-400"}
-        delay={180}
-      >
-        {rHistory.length > 1 && <EquityCurve rValues={rHistory} />}
+      {/* Total R */}
+      <MetricCard label="Total R" sub="cumulative P&L in R" delay={180}>
+        <RLabel value={totalR} size="md" />
+        {rHistory.length > 1 && <div className="mt-2"><EquityCurve rValues={rHistory} /></div>}
       </MetricCard>
 
-      <MetricCard
-        label="Trades"
-        value={String(totalTrades)}
-        sub="logged in journal"
-        delay={240}
-      >
-        <div className="font-mono text-[9px] text-white/18 tracking-[0.08em]">
+      {/* Trades */}
+      <MetricCard label="Trades" sub="logged in journal" delay={240}>
+        <span className="font-mono font-medium text-[20px] sm:text-[26px] leading-none tracking-[-0.04em] text-white">
+          {String(totalTrades)}
+        </span>
+        <div className="font-mono text-[9px] text-white/18 tracking-[0.08em] mt-2">
           {totalTrades < 20
             ? `${20 - totalTrades} more for significance`
             : totalTrades < 100
