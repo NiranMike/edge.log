@@ -12,12 +12,7 @@ import {
   type RegisterInput,
 } from "@/lib/validations/auth";
 import { signIn, signOut } from "#/auth";
-
-// ─── Result type ──────────────────────────────────────────────────────────────
-
-export type ActionResult<T = undefined> =
-  | { success: true;  data?: T }
-  | { success: false; error: string; fieldErrors?: Record<string, string[]> };
+import type { Result }     from "@/types";
 
 // ─── Map AuthError → user string ──────────────────────────────────────────────
 
@@ -34,11 +29,11 @@ function mapAuthError(err: unknown): string {
 
 // ─── loginAction (credentials) ────────────────────────────────────────────────
 
-export async function loginAction(data: LoginInput): Promise<ActionResult> {
+export async function loginAction(data: LoginInput): Promise<Result> {
   const parsed = loginSchema.safeParse(data);
   if (!parsed.success) {
     return {
-      success:     false,
+      ok:          false,
       error:       "Please fix the errors below.",
       fieldErrors: parsed.error.flatten().fieldErrors as Record<string, string[]>,
     };
@@ -50,9 +45,9 @@ export async function loginAction(data: LoginInput): Promise<ActionResult> {
       password: parsed.data.password,
       redirect: false,
     });
-    return { success: true };
+    return { ok: true, data: undefined };
   } catch (err) {
-    return { success: false, error: mapAuthError(err) };
+    return { ok: false, error: mapAuthError(err) };
   }
 }
 
@@ -60,11 +55,11 @@ export async function loginAction(data: LoginInput): Promise<ActionResult> {
 
 export async function registerAction(
   data: RegisterInput,
-): Promise<ActionResult<{ userId: string }>> {
+): Promise<Result<{ userId: string }>> {
   const parsed = registerSchema.safeParse(data);
   if (!parsed.success) {
     return {
-      success:     false,
+      ok:          false,
       error:       "Please fix the errors below.",
       fieldErrors: parsed.error.flatten().fieldErrors as Record<string, string[]>,
     };
@@ -76,7 +71,7 @@ export async function registerAction(
   const existing = await db.user.findUnique({ where: { email } });
   if (existing) {
     return {
-      success:     false,
+      ok:          false,
       error:       "An account with this email already exists.",
       fieldErrors: { email: ["This email is already registered."] },
     };
@@ -90,11 +85,12 @@ export async function registerAction(
   // Auto sign-in after registration
   try {
     await signIn("credentials", { email, password, redirect: false });
-  } catch {
-    // Sign-in unexpectedly failed — user was created, they can login manually
+  } catch (err) {
+    console.error("[registerAction] auto sign-in failed after registration:", err);
+    // User was created but not signed in — client will refresh to /login
   }
 
-  return { success: true, data: { userId: user.id } };
+  return { ok: true, data: { userId: user.id } };
 }
 
 // ─── googleSignInAction ───────────────────────────────────────────────────────

@@ -47,7 +47,7 @@ export function LoginForm({ callbackUrl, urlError }: LoginFormProps) {
     setServerError(null);
     startTransition(async () => {
       const result = await loginAction(data);
-      if (result.success) {
+      if (result.ok) {
         router.push(callbackUrl);
         router.refresh();
       } else {

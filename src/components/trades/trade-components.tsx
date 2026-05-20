@@ -5,7 +5,6 @@ import type { Trade } from "@/types";
 import Link from "next/link";
 import { cx } from "@/style";
 
-// ── Shared primitives ─────────────────────────────────────────────────────────
 
 export function RBadge({ r }: { r: number }) {
   // Intensity levels for win magnitude

@@ -1,3 +1,5 @@
+export const TRADES_PAGE_SIZE = 10;
+
 export const DEFAULT_PAIRS = [
   // ── Forex Majors ────────────────────────────────────────────
   { group: "Majors",    value: "EURUSD"  },

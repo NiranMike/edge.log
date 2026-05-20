@@ -3,16 +3,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import type { ReactNode } from "react";
-import { useState, useEffect, useCallback } from "react";
-import { createPortal } from "react-dom";
+import { useState, useEffect } from "react";
 import { cx } from "@/style";
-import { SignOutModal } from "../auth/sign-out-modal";
-import { NavLink } from "./nav-link";
 
 const NAV = [
   { href: "/dashboard",  icon: "◈", label: "Dashboard",  sub: "overview"  },
   { href: "/trades",     icon: "≡", label: "Trades",     sub: "journal"   },
   { href: "/analytics",  icon: "⌬", label: "Analytics",  sub: "patterns"  },
+  { href: "/calendar",   icon: "▦", label: "Calendar",   sub: "daily p&l" },
   { href: "/trades/new", icon: "+", label: "New Trade",  sub: null        },
 ];
 
@@ -60,31 +58,86 @@ function MarketStatus({ compact = false }: { compact?: boolean }) {
 function MenuIcon({ open }: { open: boolean }) {
   return (
     <div className="w-5 h-5 flex flex-col justify-center gap-[5px] shrink-0">
-      <span className={cx(
-        "block h-px bg-white/60 rounded-full transition-all duration-200 origin-center",
-        open ? "rotate-45 translate-y-[6px]" : ""
-      )} />
-      <span className={cx(
-        "block h-px bg-white/60 rounded-full transition-all duration-200",
-        open ? "opacity-0 scale-x-0" : ""
-      )} />
-      <span className={cx(
-        "block h-px bg-white/60 rounded-full transition-all duration-200 origin-center",
-        open ? "-rotate-45 -translate-y-[6px]" : ""
-      )} />
+      <span className={cx("block h-px bg-white/60 rounded-full transition-all duration-200 origin-center", open ? "rotate-45 translate-y-[6px]" : "")} />
+      <span className={cx("block h-px bg-white/60 rounded-full transition-all duration-200", open ? "opacity-0 scale-x-0" : "")} />
+      <span className={cx("block h-px bg-white/60 rounded-full transition-all duration-200 origin-center", open ? "-rotate-45 -translate-y-[6px]" : "")} />
     </div>
   );
 }
 
+function NavLink({
+  href, icon, label, sub, active, compact = false, onClick,
+}: {
+  href: string; icon: string; label: string; sub: string | null;
+  active: boolean; compact?: boolean; onClick?: () => void;
+}) {
+  const isNew = href === "/trades/new";
+
+  if (isNew) {
+    return (
+      <Link href={href} className="no-underline block mt-2" onClick={onClick}>
+        <div className={cx(
+          "flex items-center gap-[9px] rounded-lg font-mono text-[12px] tracking-[0.04em] border border-teal-400/25 bg-teal-400/[0.06] text-teal-400 hover:bg-teal-400/[0.12] hover:border-teal-400/40 transition-all duration-150 cursor-pointer",
+          compact ? "px-0 py-[10px] justify-center" : "px-3 py-[10px]",
+        )}>
+          <span className="text-[14px] leading-none">{icon}</span>
+          {!compact && <span>{label}</span>}
+        </div>
+      </Link>
+    );
+  }
+
+  return (
+    <Link href={href} className="no-underline block" onClick={onClick}>
+      <div className={cx(
+        "flex items-center rounded-lg transition-all duration-150 cursor-pointer group",
+        compact ? "gap-0 px-0 py-[9px] justify-center" : "gap-[9px] px-3 py-[9px]",
+        active
+          ? "bg-white/[0.06] border border-white/[0.08]"
+          : "border border-transparent hover:bg-white/[0.03] hover:border-white/[0.04]",
+      )}>
+        <span className={cx(
+          "text-sm leading-none shrink-0 transition-colors duration-150",
+          active ? "text-white" : "text-white/30 group-hover:text-white/50",
+        )}>
+          {icon}
+        </span>
+        {!compact && (
+          <div className="flex flex-col min-w-0 flex-1">
+            <span className={cx(
+              "font-mono text-[12px] tracking-[0.04em] transition-colors duration-150",
+              active ? "text-white" : "text-white/45 group-hover:text-white/65",
+            )}>
+              {label}
+            </span>
+            {sub && (
+              <span className={cx(
+                "font-mono text-[9px] tracking-[0.12em] uppercase transition-colors duration-150",
+                active ? "text-white/30" : "text-white/18 group-hover:text-white/28",
+              )}>
+                {sub}
+              </span>
+            )}
+          </div>
+        )}
+        {active && !compact && (
+          <div className="ml-auto w-[2px] h-4 rounded-full bg-teal-400/60 shrink-0" />
+        )}
+        {active && compact && (
+          <div className="absolute left-0 w-[2px] h-4 rounded-full bg-teal-400/60" />
+        )}
+      </div>
+    </Link>
+  );
+}
 
 function SidebarContent({
-  pathname, session: userSession, compact = false, onNavClick, onSignOutRequest,
+  pathname, session: userSession, compact = false, onNavClick,
 }: {
-  pathname:         string;
-  session:          ReturnType<typeof useSession>["data"];
-  compact?:         boolean;
-  onNavClick?:      () => void;
-  onSignOutRequest: () => void;
+  pathname: string;
+  session: ReturnType<typeof useSession>["data"];
+  compact?: boolean;
+  onNavClick?: () => void;
 }) {
   return (
     <>
@@ -110,10 +163,7 @@ function SidebarContent({
         <MarketStatus compact={compact} />
       </div>
 
-      <nav className={cx(
-        "py-4 flex-1 flex flex-col gap-[2px]",
-        compact ? "px-2 relative" : "px-3",
-      )}>
+      <nav className={cx("py-4 flex-1 flex flex-col gap-[2px]", compact ? "px-2 relative" : "px-3")}>
         {NAV.map(({ href, icon, label, sub }) => {
           const isNew = href === "/trades/new";
           const active = !isNew && (
@@ -121,25 +171,15 @@ function SidebarContent({
             (href !== "/dashboard" && pathname.startsWith(href))
           );
           return (
-            <NavLink
-              key={href}
-              href={href}
-              icon={icon}
-              label={label}
-              sub={sub}
-              active={active}
-              compact={compact}
-              onClick={onNavClick}
-            />
+            <NavLink key={href} href={href} icon={icon} label={label} sub={sub}
+              active={active} compact={compact} onClick={onNavClick} />
           );
         })}
       </nav>
 
       {!compact && (
         <div className="px-5 py-3 border-t border-white/[0.04]">
-          <p className="font-mono text-[10px] text-white/18 tracking-[0.06em]">
-            {getGreeting()}
-          </p>
+          <p className="font-mono text-[10px] text-white/18 tracking-[0.06em]">{getGreeting()}</p>
         </div>
       )}
 
@@ -150,11 +190,7 @@ function SidebarContent({
             compact ? "justify-center px-0 py-[9px]" : "gap-[10px] px-3 py-[9px]",
           )}>
             {userSession.user.image ? (
-              <img
-                src={userSession.user.image}
-                alt=""
-                className="w-6 h-6 rounded-full shrink-0 opacity-80"
-              />
+              <img src={userSession.user.image} alt="" className="w-6 h-6 rounded-full shrink-0 opacity-80" />
             ) : (
               <div className="w-6 h-6 rounded-full bg-teal-400/10 border border-teal-400/20 flex items-center justify-center font-mono text-[11px] text-teal-400 shrink-0">
                 {(userSession.user.name || userSession.user.email || "?")[0].toUpperCase()}
@@ -166,8 +202,7 @@ function SidebarContent({
                   {userSession.user.name?.split(" ")[0] || "Trader"}
                 </div>
                 <button
-                  type="button"
-                  onClick={onSignOutRequest}
+                  onClick={() => signOut({ callbackUrl: "/login" })}
                   className="bg-transparent border-none cursor-pointer font-mono text-[9px] text-white/20 p-0 text-left hover:text-white/40 transition-colors duration-150 tracking-[0.06em] uppercase"
                 >
                   Sign out
@@ -184,61 +219,31 @@ function SidebarContent({
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const [drawerOpen,  setDrawerOpen]  = useState(false);
-  const [showSignOut, setShowSignOut] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
 
   useEffect(() => {
-    document.body.style.overflow = drawerOpen || showSignOut ? "hidden" : "";
+    document.body.style.overflow = drawerOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
-  }, [drawerOpen, showSignOut]);
-
-  const requestSignOut = useCallback(() => setShowSignOut(true), []);
-  const cancelSignOut  = useCallback(() => setShowSignOut(false), []);
-  const confirmSignOut = useCallback(() => signOut({ callbackUrl: "/login" }), []);
+  }, [drawerOpen]);
 
   const sidebarBg = "linear-gradient(180deg, #0c1018 0%, #090d12 100%)";
 
   return (
     <div className="flex min-h-screen bg-[#07090d]">
-
-      <aside
-        className="hidden md:flex lg:hidden w-16 shrink-0 flex-col sticky top-0 h-screen border-r border-white/[0.06]"
-        style={{ background: sidebarBg }}
-      >
-        <SidebarContent
-          pathname={pathname}
-          session={session}
-          compact={true}
-          onSignOutRequest={requestSignOut}
-        />
+      <aside className="hidden md:flex lg:hidden w-[64px] shrink-0 flex-col sticky top-0 h-screen border-r border-white/[0.06]" style={{ background: sidebarBg }}>
+        <SidebarContent pathname={pathname} session={session} compact={true} />
       </aside>
 
-      <aside
-        className="hidden lg:flex w-[216px] shrink-0 flex-col sticky top-0 h-screen border-r border-white/[0.06]"
-        style={{ background: sidebarBg }}
-      >
-        <SidebarContent
-          pathname={pathname}
-          session={session}
-          compact={false}
-          onSignOutRequest={requestSignOut}
-        />
+      <aside className="hidden lg:flex w-[216px] shrink-0 flex-col sticky top-0 h-screen border-r border-white/[0.06]" style={{ background: sidebarBg }}>
+        <SidebarContent pathname={pathname} session={session} compact={false} />
       </aside>
 
-      <div
-        className="md:hidden fixed top-0 inset-x-0 z-40 h-14 border-b border-white/[0.06] flex items-center px-4 gap-3"
-        style={{ background: sidebarBg }}
-      >
-        <button
-          onClick={() => setDrawerOpen(v => !v)}
-          className="bg-transparent border-none cursor-pointer p-1 -ml-1 flex items-center justify-center"
-          aria-label="Toggle menu"
-        >
+      <div className="md:hidden fixed top-0 inset-x-0 z-40 h-14 border-b border-white/[0.06] flex items-center px-4 gap-3" style={{ background: sidebarBg }}>
+        <button onClick={() => setDrawerOpen(v => !v)} className="bg-transparent border-none cursor-pointer p-1 -ml-1 flex items-center justify-center" aria-label="Toggle menu">
           <MenuIcon open={drawerOpen} />
         </button>
-
         <Link href="/dashboard" className="no-underline flex-1">
           <div className="flex items-baseline gap-[3px]">
             <span className="font-mono text-[14px] font-medium tracking-[0.12em] text-white uppercase">Edge</span>
@@ -246,40 +251,23 @@ export function AppShell({ children }: { children: ReactNode }) {
             <span className="font-mono text-[14px] font-medium tracking-[0.12em] text-white uppercase">Log</span>
           </div>
         </Link>
-
         <MarketStatus compact={true} />
       </div>
 
       {drawerOpen && (
-        <div
-          className="md:hidden fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"
-          onClick={() => setDrawerOpen(false)}
-        />
+        <div className="md:hidden fixed inset-0 z-30 bg-black/60 backdrop-blur-sm" onClick={() => setDrawerOpen(false)} />
       )}
 
-      <aside
-        className={cx(
-          "md:hidden fixed top-14 left-0 bottom-0 z-40 w-[240px] flex flex-col border-r border-white/[0.06] transition-transform duration-250 ease-in-out",
-          drawerOpen ? "translate-x-0" : "-translate-x-full",
-        )}
-        style={{ background: sidebarBg }}
-      >
-        <SidebarContent
-          pathname={pathname}
-          session={session}
-          compact={false}
-          onNavClick={() => setDrawerOpen(false)}
-          onSignOutRequest={requestSignOut}
-        />
+      <aside className={cx(
+        "md:hidden fixed top-14 left-0 bottom-0 z-40 w-[240px] flex flex-col border-r border-white/[0.06] transition-transform duration-250 ease-in-out",
+        drawerOpen ? "translate-x-0" : "-translate-x-full",
+      )} style={{ background: sidebarBg }}>
+        <SidebarContent pathname={pathname} session={session} compact={false} onNavClick={() => setDrawerOpen(false)} />
       </aside>
 
       <main className="flex-1 overflow-auto min-w-0 md:pt-0 pt-14">
         {children}
       </main>
-
-      {showSignOut && (
-        <SignOutModal onConfirm={confirmSignOut} onCancel={cancelSignOut} />
-      )}
     </div>
   );
 }

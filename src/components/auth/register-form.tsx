@@ -93,7 +93,7 @@ export function RegisterForm({ defaultEmail }: RegisterFormProps) {
     startTransition(async () => {
       const result = await registerAction(data);
 
-      if (result.success) {
+      if (result.ok) {
         setServerSuccess("Account created! Taking you to your dashboard…");
         router.refresh();
         setTimeout(() => router.push("/dashboard"), 900);

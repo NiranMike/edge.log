@@ -1,11 +1,7 @@
 "use server";
-// lib/actions/trade-actions.ts
-// ─── Trade Server Actions ─────────────────────────────────────────────────────
-// Routes are thin. These are also thin.
 // Pattern: get session → call service → revalidate → return Result.
 
 import { revalidatePath }   from "next/cache";
-import  getServerSession  from "next-auth";
 import type { TradeFormValues, Result, Trade } from "@/types";
 import { tradeService } from "@/services/trade-service";
 import { auth } from "#/auth";

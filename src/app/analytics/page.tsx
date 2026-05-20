@@ -79,10 +79,11 @@ export default async function AnalyticsPage({
 
   const params    = await searchParams;
   const filters   = parseFilters(params);
-  const trades    = await tradeRepository.findFiltered(session.user.id, filters);
+  const [trades, allPairs] = await Promise.all([
+    tradeRepository.findFiltered(session.user.id, filters),
+    tradeRepository.findDistinctPairs(session.user.id),
+  ]);
   const analytics = tradeService.computeAnalytics(trades, filters);
-  const allTrades = await tradeRepository.findAllByUser(session.user.id);
-  const allPairs  = [...new Set(allTrades.map(t => t.pair))].sort();
 
   return (
     <AppShell>

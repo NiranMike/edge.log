@@ -54,7 +54,7 @@ export interface TradeFormErrors {
 
 export type Result<T = void> =
   | { ok: true;  data: T }
-  | { ok: false; error: string };
+  | { ok: false; error: string; fieldErrors?: Record<string, string[]> };
 
 
 

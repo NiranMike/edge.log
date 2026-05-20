@@ -4,8 +4,7 @@ import { auth } from "#/auth";
 import { tradeService } from "@/services/trade-service";
 import { AppShell } from "@/components/layout/app-shell";
 import { TradesList } from "@/components/trades/trades-list";
-
-const PAGE_SIZE = 10;
+import { TRADES_PAGE_SIZE } from "@/const/trades-const";
 
 export default async function TradesPage({
   searchParams,
@@ -20,15 +19,15 @@ export default async function TradesPage({
 
   const { trades, total } = await tradeService.getPage(session.user.id, page);
 
-  const pageCount = Math.ceil(total / PAGE_SIZE);
+  const pageCount = Math.ceil(total / TRADES_PAGE_SIZE);
   if (total > 0 && page > pageCount) redirect(`/trades?page=${pageCount}`);
 
   return (
     <AppShell>
       <div className="w-full px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-9">
-
         <div className="w-full max-w-[1120px] mx-auto">
 
+          {/* Header */}
           <div className="animate-fade-up flex items-end justify-between mb-6 sm:mb-7 gap-4">
             <div className="min-w-0">
               <div className="flex items-center gap-3 mb-2 sm:mb-3">
@@ -45,12 +44,22 @@ export default async function TradesPage({
               </p>
             </div>
 
-            <Link
-              href="/trades/new"
-              className="shrink-0 inline-flex items-center gap-1.5 px-4 py-[9px] bg-teal-400/[0.08] border border-teal-400/20 rounded-lg text-teal-400 font-mono text-[11px] no-underline hover:bg-teal-400/[0.14] hover:border-teal-400/35 transition-all duration-150 tracking-[0.04em] whitespace-nowrap"
-            >
-              + New trade
-            </Link>
+            {/* Action buttons */}
+            <div className="flex items-center gap-2 shrink-0">
+              <Link
+                href="/trades/import"
+                className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-[9px] bg-white/[0.04] border border-white/[0.08] rounded-lg font-mono text-[11px] text-white/40 no-underline hover:bg-white/[0.07] hover:border-white/[0.14] hover:text-white/60 transition-all duration-150 tracking-[0.04em] whitespace-nowrap"
+              >
+                <span className="text-[13px] leading-none">↑</span>
+                <span className="hidden sm:inline">Import</span>
+              </Link>
+              <Link
+                href="/trades/new"
+                className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-[9px] bg-teal-400/[0.08] border border-teal-400/20 rounded-lg text-teal-400 font-mono text-[11px] no-underline hover:bg-teal-400/[0.14] hover:border-teal-400/35 transition-all duration-150 tracking-[0.04em] whitespace-nowrap"
+              >
+                + New trade
+              </Link>
+            </div>
           </div>
 
           <TradesList trades={trades} total={total} page={page} pageCount={pageCount} />

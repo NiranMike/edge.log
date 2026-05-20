@@ -11,10 +11,7 @@ export default async function DashboardPage() {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const trades   = await tradeService.getAll(session.user.id);
-  const metrics  = tradeService.computeMetrics(trades);
-  const recent   = trades.slice(0, 8);
-  const rHistory = trades.map(t => t.rMultiple);
+  const { metrics, recent, rHistory } = await tradeService.getDashboardData(session.user.id);
   const firstName = session.user.name?.split(" ")[0] ?? "Trader";
 
   return (
@@ -32,18 +29,18 @@ export default async function DashboardPage() {
                 </span>
               </div>
               <h1 className="font-mono font-medium text-[22px] sm:text-[26px] tracking-[-0.03em] text-white mb-1">
-                {trades.length === 0
+                {metrics.totalTrades === 0
                   ? `Welcome, ${firstName}.`
                   : `Your edge, ${firstName}.`}
               </h1>
               <p className="font-mono text-[11px] sm:text-[12px] text-white/35">
-                {trades.length === 0
+                {metrics.totalTrades === 0
                   ? "Start logging to discover your patterns."
                   : `${metrics.totalTrades} trades · expectancy ${metrics.expectancy >= 0 ? "+" : ""}${metrics.expectancy}R`}
               </p>
             </div>
 
-            {trades.length > 0 && (
+            {metrics.totalTrades > 0 && (
               <Link
                 href="/trades/new"
                 className="shrink-0 inline-flex items-center gap-2 px-3 sm:px-4 py-[9px] bg-teal-400/[0.08] border border-teal-400/20 rounded-lg font-mono text-[11px] text-teal-400 no-underline hover:bg-teal-400/[0.14] hover:border-teal-400/35 transition-all duration-150 tracking-[0.04em] whitespace-nowrap"
@@ -53,7 +50,7 @@ export default async function DashboardPage() {
             )}
           </div>
 
-          {trades.length === 0 ? (
+          {metrics.totalTrades === 0 ? (
             <EmptyDashboard />
           ) : (
             <>

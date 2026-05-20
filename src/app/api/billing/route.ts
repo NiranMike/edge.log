@@ -22,6 +22,7 @@ const SUBSCRIPTION_EVENTS = new Set([
 interface LemonEvent {
   meta: {
     event_name:   string;
+    webhook_id?:  string; // unique per webhook delivery — used for idempotency
     custom_data?: { user_id?: string };
   };
   data: {
@@ -67,6 +68,8 @@ export async function POST(req: NextRequest) {
   const { id: lemonSqueezyId, attributes: attrs } = event.data;
 
   await billingService.handleSubscriptionEvent({
+    eventId:                event.meta.webhook_id ?? `${lemonSqueezyId}-${event_name}`,
+    eventName:              event_name,
     userId,
     lemonSqueezyId,
     lemonSqueezyCustomerId: String(attrs.customer_id),
