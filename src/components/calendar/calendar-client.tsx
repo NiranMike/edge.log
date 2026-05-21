@@ -22,10 +22,10 @@ function getDayColors(stat: DayStat | null, isFuture: boolean) {
   if (!stat || isFuture) return { bg: "", border: "", text: "", rText: "" };
 
   if (stat.isBreakeven) return {
-    bg:     "bg-white/[0.03]",
-    border: "border-white/[0.08]",
-    text:   "text-white/40",
-    rText:  "text-white/30",
+    bg:     "bg-[var(--bg-overlay)]",
+    border: "border-[var(--bd)]",
+    text:   "text-[var(--tx-3)]",
+    rText:  "text-[var(--tx-3)]",
   };
 
   if (stat.isProfit) {
@@ -36,7 +36,7 @@ function getDayColors(stat: DayStat | null, isFuture: boolean) {
       { bg: "bg-emerald-400/[0.22]", border: "border-emerald-400/50", rText: "text-emerald-400"    },
     ];
     const s = shades[stat.intensity] ?? shades[3];
-    return { ...s, text: "text-white/70" };
+    return { ...s, text: "text-[var(--tx-2)]" };
   }
 
   // Loss
@@ -47,38 +47,38 @@ function getDayColors(stat: DayStat | null, isFuture: boolean) {
     { bg: "bg-red-400/[0.22]", border: "border-red-400/50", rText: "text-red-400"    },
   ];
   const s = shades[stat.intensity] ?? shades[3];
-  return { ...s, text: "text-white/70" };
+  return { ...s, text: "text-[var(--tx-2)]" };
 }
 
 function DayTooltip({ stat, date }: { stat: DayStat; date: string }) {
   const d = new Date(date + "T12:00:00");
   return (
     <div className="absolute z-50 bottom-[calc(100%+6px)] left-1/2 -translate-x-1/2 w-40 pointer-events-none">
-      <div className="bg-[#0d1117] border border-white/12 rounded-md shadow-[0_16px_48px_rgba(0,0,0,0.8)] px-3 py-2.5">
-        <p className="font-mono text-[10px] text-white/40 mb-1.5">
+      <div className="bg-[var(--bg-elevated)] border border-[var(--bd-hi)] rounded-md shadow-[0_16px_48px_rgba(0,0,0,0.5)] px-3 py-2.5">
+        <p className="font-mono text-[10px] text-[var(--tx-3)] mb-1.5">
           {d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
         </p>
         <div className="space-y-1">
           <div className="flex justify-between">
-            <span className="font-mono text-[10px] text-white/30">Total R</span>
+            <span className="font-mono text-[10px] text-[var(--tx-3)]">Total R</span>
             <span className={cx(
               "font-mono text-[11px] font-medium",
-              stat.isProfit ? "text-emerald-400" : stat.isLoss ? "text-red-400" : "text-white/40",
+              stat.isProfit ? "text-[var(--win)]" : stat.isLoss ? "text-[var(--loss)]" : "text-[var(--tx-3)]",
             )}>
               {stat.totalR >= 0 ? "+" : ""}{stat.totalR}R
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="font-mono text-[10px] text-white/30">Trades</span>
-            <span className="font-mono text-[10px] text-white/60">{stat.trades}</span>
+            <span className="font-mono text-[10px] text-[var(--tx-3)]">Trades</span>
+            <span className="font-mono text-[10px] text-[var(--tx-2)]">{stat.trades}</span>
           </div>
           <div className="flex justify-between">
-            <span className="font-mono text-[10px] text-white/30">Win rate</span>
-            <span className="font-mono text-[10px] text-white/60">{stat.winRate}%</span>
+            <span className="font-mono text-[10px] text-[var(--tx-3)]">Win rate</span>
+            <span className="font-mono text-[10px] text-[var(--tx-2)]">{stat.winRate}%</span>
           </div>
           <div className="flex justify-between">
-            <span className="font-mono text-[10px] text-white/30">W / L</span>
-            <span className="font-mono text-[10px] text-white/60">{stat.wins} / {stat.losses}</span>
+            <span className="font-mono text-[10px] text-[var(--tx-3)]">W / L</span>
+            <span className="font-mono text-[10px] text-[var(--tx-2)]">{stat.wins} / {stat.losses}</span>
           </div>
         </div>
         {/* Caret */}
@@ -107,10 +107,10 @@ function DayCell({ cell }: { cell: CalendarCell }) {
       <div className={cx(
         "relative flex flex-col justify-between aspect-square sm:aspect-auto sm:h-[88px] p-1.5 sm:p-2 rounded-[6px] border transition-all duration-150",
         cell.isToday
-          ? "border-teal-400/40 bg-teal-400/[0.04]"
+          ? "border-[var(--ac-2-ring)] bg-[var(--ac-2-dim)]"
           : hasStat && !cell.isFuture
           ? cx(colors.bg, colors.border, "hover:brightness-110 cursor-default")
-          : "border-white/[0.04] bg-white/[0.01]",
+          : "border-[var(--bd)] bg-[var(--bg-overlay)]",
         cell.isFuture && "opacity-30",
       )}>
         {/* Day number */}
@@ -118,16 +118,16 @@ function DayCell({ cell }: { cell: CalendarCell }) {
           <span className={cx(
             "font-mono text-[11px] sm:text-[12px] leading-none",
             cell.isToday
-              ? "text-teal-400 font-medium"
+              ? "text-[var(--ac-2)] font-medium"
               : hasStat && !cell.isFuture
               ? colors.text
-              : "text-white/18",
+              : "text-[var(--tx-4)]",
           )}>
             {cell.dayNum}
           </span>
           {/* Trade count dot/number */}
           {hasStat && !cell.isFuture && (
-            <span className="font-mono text-[9px] text-white/25 leading-none hidden sm:block">
+            <span className="font-mono text-[9px] text-[var(--tx-3)] leading-none hidden sm:block">
               {cell.stat!.trades}t
             </span>
           )}
@@ -143,7 +143,7 @@ function DayCell({ cell }: { cell: CalendarCell }) {
               {cell.stat!.totalR >= 0 ? "+" : ""}{cell.stat!.totalR}R
             </span>
             {/* Trade count on mobile */}
-            <span className="font-mono text-[8px] text-white/20 mt-0.5 block sm:hidden">
+            <span className="font-mono text-[8px] text-[var(--tx-4)] mt-0.5 block sm:hidden">
               {cell.stat!.trades} trade{cell.stat!.trades > 1 ? "s" : ""}
             </span>
           </div>
@@ -174,22 +174,22 @@ function MonthSummary({
       "flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3 rounded-[6px] border mb-5",
       isPositive ? "bg-emerald-400/[0.04] border-emerald-400/12" :
       isNegative ? "bg-red-400/[0.04] border-red-400/12" :
-                   "bg-white/[0.02] border-white/[0.06]",
+                   "bg-[var(--bg-overlay)] border-[var(--bd)]",
     )}>
       {[
         {
           label: "Month R",
           value: `${totalR >= 0 ? "+" : ""}${totalR}R`,
-          color: isPositive ? "text-emerald-400" : isNegative ? "text-red-400" : "text-white/40",
+          color: isPositive ? "text-[var(--win)]" : isNegative ? "text-[var(--loss)]" : "text-[var(--tx-3)]",
         },
-        { label: "Trades",       value: String(trades),                              color: "text-white/60" },
-        { label: "Win rate",     value: `${winRate}%`,                              color: "text-white/60" },
-        { label: "Trading days", value: String(tradingDays),                         color: "text-white/60" },
-        { label: "Profit days",  value: String(profitDays),                          color: "text-emerald-400/70" },
-        { label: "Loss days",    value: String(lossDays),                            color: "text-red-400/70" },
+        { label: "Trades",       value: String(trades),     color: "text-[var(--tx-2)]" },
+        { label: "Win rate",     value: `${winRate}%`,      color: "text-[var(--tx-2)]" },
+        { label: "Trading days", value: String(tradingDays), color: "text-[var(--tx-2)]" },
+        { label: "Profit days",  value: String(profitDays),  color: "text-[var(--win)] opacity-70" },
+        { label: "Loss days",    value: String(lossDays),    color: "text-[var(--loss)] opacity-70" },
       ].map(({ label, value, color }) => (
         <div key={label} className="flex items-baseline gap-1.5">
-          <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/22">{label}</span>
+          <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--tx-4)]">{label}</span>
           <span className={cx("font-mono text-[13px] font-medium", color)}>{value}</span>
         </div>
       ))}
@@ -208,7 +208,7 @@ function YearStrip({
 }) {
   return (
     <div className="mb-8">
-      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/20 mb-3">{year}</p>
+      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--tx-4)] mb-3">{year}</p>
       <div className="grid grid-cols-6 sm:grid-cols-12 gap-2">
         {Array.from({ length: 12 }, (_, m) => {
           const key   = `${year}-${String(m + 1).padStart(2, "0")}`;
@@ -231,7 +231,7 @@ function YearStrip({
                 "px-2 py-2.5 rounded-[4px] border font-mono text-[10px] text-center cursor-pointer transition-all duration-150",
                 isPos ? "bg-emerald-400/[0.08] border-emerald-400/20 text-emerald-400/80 hover:bg-emerald-400/[0.14]" :
                 isNeg ? "bg-red-400/[0.08] border-red-400/20 text-red-400/80 hover:bg-red-400/[0.14]" :
-                        "bg-white/[0.02] border-white/[0.05] text-white/20 hover:border-white/[0.10]",
+                        "bg-[var(--bg-overlay)] border-[var(--bd)] text-[var(--tx-4)] hover:border-[var(--bd-hi)]",
               )}
             >
               <span className="block text-[8px] uppercase tracking-[0.1em] opacity-60 mb-0.5">
@@ -294,12 +294,12 @@ export function CalendarClient({ trades }: { trades: Trade[] }) {
   if (trades.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="w-10 h-10 rounded-full bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-white/15 text-lg mb-4">
+        <div className="w-10 h-10 rounded-full bg-[var(--bg-overlay)] border border-[var(--bd)] flex items-center justify-center text-[var(--tx-4)] text-lg mb-4">
           ◻
         </div>
-        <p className="font-mono text-[13px] text-white/35 mb-1">No trades yet.</p>
-        <p className="font-mono text-[11px] text-white/20 mb-5">Log trades to see your calendar.</p>
-        <Link href="/trades/new" className="font-mono text-[11px] text-teal-400/70 hover:text-teal-400 no-underline transition-colors">
+        <p className="font-mono text-[13px] text-[var(--tx-3)] mb-1">No trades yet.</p>
+        <p className="font-mono text-[11px] text-[var(--tx-4)] mb-5">Log trades to see your calendar.</p>
+        <Link href="/trades/new" className="font-mono text-[11px] text-[var(--ac-2)] opacity-70 hover:opacity-100 no-underline transition-opacity">
           Log your first trade →
         </Link>
       </div>
@@ -317,14 +317,14 @@ export function CalendarClient({ trades }: { trades: Trade[] }) {
         />
       ))}
 
-      <div className="border-t border-white/[0.05] mb-7" />
+      <div className="border-t border-[var(--bd)] mb-7" />
 
       {/* Month navigation */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
           <button
             onClick={prev}
-            className="w-8 h-8 flex items-center justify-center rounded-[6px] border border-white/[0.08] bg-white/[0.02] font-mono text-[14px] text-white/35 hover:text-white/60 hover:border-white/[0.14] transition-all duration-150 cursor-pointer"
+            className="w-8 h-8 flex items-center justify-center rounded-[6px] border border-[var(--bd)] bg-[var(--bg-overlay)] font-mono text-[14px] text-[var(--tx-3)] hover:text-[var(--tx-2)] hover:border-[var(--bd-hi)] transition-all duration-150 cursor-pointer"
           >
             ‹
           </button>
@@ -333,20 +333,20 @@ export function CalendarClient({ trades }: { trades: Trade[] }) {
           <div className="relative" ref={pickerRef}>
             <button
               onClick={() => setPickerOpen(v => !v)}
-              className="flex items-center gap-2 font-mono text-[16px] sm:text-[18px] font-medium tracking-[-0.02em] text-white hover:text-white/70 transition-colors duration-150 cursor-pointer min-w-[180px] justify-center"
+              className="flex items-center gap-2 font-mono text-[16px] sm:text-[18px] font-medium tracking-[-0.02em] text-[var(--tx-1)] hover:text-[var(--tx-2)] transition-colors duration-150 cursor-pointer min-w-[180px] justify-center"
             >
               {MONTHS[month]} {year}
               <span className={cx(
-                "text-[10px] text-white/30 transition-transform duration-200",
+                "text-[10px] text-[var(--tx-3)] transition-transform duration-200",
                 pickerOpen ? "rotate-180" : "",
               )}>▾</span>
             </button>
 
             {/* Picker dropdown */}
             {pickerOpen && (
-              <div className="absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 z-50 w-[280px] bg-[#0d1117] border border-white/[0.12] rounded-[10px] shadow-[0_24px_64px_rgba(0,0,0,0.8)] p-4">
+              <div className="absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 z-50 w-[280px] bg-[var(--bg-elevated)] border border-[var(--bd-hi)] rounded-[10px] shadow-[0_24px_64px_rgba(0,0,0,0.5)] p-4">
 
-                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/25 mb-2">Year</p>
+                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--tx-3)] mb-2">Year</p>
                 <div className="grid grid-cols-4 gap-1.5 mb-4">
                   {years.map(y => (
                     <button
@@ -355,8 +355,8 @@ export function CalendarClient({ trades }: { trades: Trade[] }) {
                       className={cx(
                         "px-2 py-1.5 rounded-[6px] font-mono text-[11px] border transition-all duration-150 cursor-pointer",
                         y === year
-                          ? "bg-teal-400/[0.12] border-teal-400/30 text-teal-400"
-                          : "bg-white/[0.03] border-white/[0.06] text-white/40 hover:text-white/70 hover:border-white/[0.12]",
+                          ? "bg-[var(--ac-2-dim)] border-[var(--ac-2-ring)] text-[var(--ac-2)]"
+                          : "bg-[var(--bg-overlay)] border-[var(--bd)] text-[var(--tx-3)] hover:text-[var(--tx-2)] hover:border-[var(--bd-hi)]",
                       )}
                     >
                       {y}
@@ -365,7 +365,7 @@ export function CalendarClient({ trades }: { trades: Trade[] }) {
                 </div>
 
                 {/* Month selector */}
-                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/25 mb-2">Month</p>
+                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--tx-3)] mb-2">Month</p>
                 <div className="grid grid-cols-4 gap-1.5">
                   {MONTHS.map((m, i) => {
                     const isFutureMonth = year === now.getFullYear() && i > now.getMonth();
@@ -377,10 +377,10 @@ export function CalendarClient({ trades }: { trades: Trade[] }) {
                         className={cx(
                           "px-2 py-1.5 rounded-[6px] font-mono text-[11px] border transition-all duration-150",
                           isFutureMonth
-                            ? "border-transparent text-white/12 cursor-not-allowed"
-                            : i === month && year === year
-                            ? "bg-teal-400/[0.12] border-teal-400/30 text-teal-400 cursor-pointer"
-                            : "bg-white/[0.03] border-white/[0.06] text-white/40 hover:text-white/70 hover:border-white/[0.12] cursor-pointer",
+                            ? "border-transparent text-[var(--tx-4)] cursor-not-allowed"
+                            : i === month
+                            ? "bg-[var(--ac-2-dim)] border-[var(--ac-2-ring)] text-[var(--ac-2)] cursor-pointer"
+                            : "bg-[var(--bg-overlay)] border-[var(--bd)] text-[var(--tx-3)] hover:text-[var(--tx-2)] hover:border-[var(--bd-hi)] cursor-pointer",
                         )}
                       >
                         {m.slice(0, 3)}
@@ -398,8 +398,8 @@ export function CalendarClient({ trades }: { trades: Trade[] }) {
             className={cx(
               "w-8 h-8 flex items-center justify-center rounded-[6px] border font-mono text-[14px] transition-all duration-150",
               isAtCurrent
-                ? "border-white/[0.04] text-white/12 cursor-not-allowed"
-                : "border-white/[0.08] bg-white/[0.02] text-white/35 hover:text-white/60 hover:border-white/[0.14] cursor-pointer",
+                ? "border-[var(--bd)] text-[var(--tx-4)] cursor-not-allowed"
+                : "border-[var(--bd)] bg-[var(--bg-overlay)] text-[var(--tx-3)] hover:text-[var(--tx-2)] hover:border-[var(--bd-hi)] cursor-pointer",
             )}
           >
             ›
@@ -412,8 +412,8 @@ export function CalendarClient({ trades }: { trades: Trade[] }) {
           className={cx(
             "font-mono text-[10px] uppercase tracking-[0.12em] px-3 py-1.5 rounded-[6px] border transition-all duration-150",
             isAtCurrent
-              ? "text-white/15 border-white/[0.04] cursor-default"
-              : "text-white/35 border-white/[0.08] hover:text-white/55 hover:border-white/[0.14] cursor-pointer",
+              ? "text-[var(--tx-4)] border-[var(--bd)] cursor-default"
+              : "text-[var(--tx-3)] border-[var(--bd)] hover:text-[var(--tx-2)] hover:border-[var(--bd-hi)] cursor-pointer",
           )}
         >
           Today
@@ -436,23 +436,23 @@ export function CalendarClient({ trades }: { trades: Trade[] }) {
           {[
             { cls: "bg-emerald-400/[0.08] border-emerald-400/20", label: "Profit" },
             { cls: "bg-red-400/[0.08] border-red-400/20",         label: "Loss"   },
-            { cls: "bg-white/[0.03] border-white/[0.08]",         label: "Breakeven" },
+            { cls: "bg-[var(--bg-overlay)] border-[var(--bd)]", label: "Breakeven" },
           ].map(({ cls, label }) => (
             <div key={label} className="flex items-center gap-1">
               <div className={cx("w-3 h-3 rounded-[2px] border", cls)} />
-              <span className="font-mono text-[9px] text-white/25 tracking-[0.06em]">{label}</span>
+              <span className="font-mono text-[9px] text-[var(--tx-3)] tracking-[0.06em]">{label}</span>
             </div>
           ))}
         </div>
-        <span className="font-mono text-[9px] text-white/18 ml-auto">Darker = larger R</span>
+        <span className="font-mono text-[9px] text-[var(--tx-4)] ml-auto">Darker = larger R</span>
       </div>
 
       {/* Calendar grid */}
-      <div className="rounded-xl border border-white/[0.065] bg-[#0d1117] overflow-hidden">
+      <div className="rounded-xl border border-[var(--bd)] bg-[var(--bg-surface)] overflow-hidden">
         {/* Day headers */}
-        <div className="grid grid-cols-7 border-b border-white/[0.05]">
+        <div className="grid grid-cols-7 border-b border-[var(--bd)]">
           {DAYS.map(d => (
-            <div key={d} className="px-2 py-2.5 text-center font-mono text-[9px] uppercase tracking-[0.14em] text-white/20 bg-[#0a0e14]">
+            <div key={d} className="px-2 py-2.5 text-center font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--tx-4)] bg-[var(--bg-elevated)]">
               <span className="hidden sm:inline">{d}</span>
               <span className="sm:hidden">{d[0]}</span>
             </div>
@@ -476,7 +476,7 @@ export function CalendarClient({ trades }: { trades: Trade[] }) {
         <div className="mt-4 flex justify-end">
           <Link
             href="/trades"
-            className="font-mono text-[11px] text-teal-400/50 hover:text-teal-400 no-underline transition-colors duration-150 tracking-[0.04em]"
+            className="font-mono text-[11px] text-[var(--ac-2)] opacity-50 hover:opacity-100 no-underline transition-opacity duration-150 tracking-[0.04em]"
           >
             View all trades →
           </Link>

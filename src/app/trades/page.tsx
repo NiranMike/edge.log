@@ -31,15 +31,15 @@ export default async function TradesPage({
           <div className="animate-fade-up flex items-end justify-between mb-6 sm:mb-7 gap-4">
             <div className="min-w-0">
               <div className="flex items-center gap-3 mb-2 sm:mb-3">
-                <div className="w-5 h-px bg-white/15" />
-                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/25">
+                <div className="w-5 h-px bg-[var(--bd-hi)]" />
+                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--tx-3)]">
                   Journal
                 </span>
               </div>
-              <h1 className="font-mono font-medium text-[20px] sm:text-[24px] tracking-[-0.03em] text-white mb-1">
+              <h1 className="font-display font-black text-[20px] sm:text-[24px] tracking-[-0.04em] text-[var(--tx-1)] mb-1">
                 All trades
               </h1>
-              <p className="font-mono text-[11px] sm:text-[12px] text-white/30">
+              <p className="font-mono text-[11px] sm:text-[12px] text-[var(--tx-3)]">
                 {total} {total === 1 ? "trade" : "trades"} logged
               </p>
             </div>
@@ -48,14 +48,15 @@ export default async function TradesPage({
             <div className="flex items-center gap-2 shrink-0">
               <Link
                 href="/trades/import"
-                className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-[9px] bg-white/[0.04] border border-white/[0.08] rounded-lg font-mono text-[11px] text-white/40 no-underline hover:bg-white/[0.07] hover:border-white/[0.14] hover:text-white/60 transition-all duration-150 tracking-[0.04em] whitespace-nowrap"
+                className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-[9px] bg-[var(--bg-overlay)] border border-[var(--bd)] rounded-lg font-mono text-[11px] text-[var(--tx-3)] no-underline hover:border-[var(--bd-hi)] hover:text-[var(--tx-2)] transition-all duration-150 tracking-[0.04em] whitespace-nowrap"
               >
                 <span className="text-[13px] leading-none">↑</span>
                 <span className="hidden sm:inline">Import</span>
               </Link>
               <Link
                 href="/trades/new"
-                className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-[9px] bg-teal-400/[0.08] border border-teal-400/20 rounded-lg text-teal-400 font-mono text-[11px] no-underline hover:bg-teal-400/[0.14] hover:border-teal-400/35 transition-all duration-150 tracking-[0.04em] whitespace-nowrap"
+                className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-[9px] rounded-lg font-mono text-[11px] no-underline transition-all duration-150 tracking-[0.04em] whitespace-nowrap"
+                style={{ background: "var(--ac-2-dim)", border: "1px solid var(--ac-2-ring)", color: "var(--ac-2)" }}
               >
                 + New trade
               </Link>

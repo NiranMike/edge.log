@@ -13,10 +13,10 @@ export function RDistribution({ buckets }: Props) {
   const maxCount = Math.max(...buckets.map(b => b.count), 1);
 
   return (
-    <div className="rounded-xl bg-[#0d1117] border border-white/[0.065] overflow-hidden">
-      <div className="flex items-center gap-3 px-5 py-4 border-b border-white/[0.05]">
-        <div className="w-4 h-px bg-teal-400/50" />
-        <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/40">R Distribution</h2>
+    <div className="rounded-xl bg-[var(--bg-surface)] border border-[var(--bd)] overflow-hidden">
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-[var(--bd)]">
+        <div className="w-4 h-px bg-[var(--ac-2)] opacity-50" />
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--tx-3)]">R Distribution</h2>
         <Tooltip content={TOOLTIP_COPY.rDistribution} />
       </div>
 
@@ -36,12 +36,12 @@ export function RDistribution({ buckets }: Props) {
                   {bucket.count > 0 && (
                     <div className="absolute bottom-[calc(100%+6px)] left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
                       <div
-                        className="rounded-[6px] border border-white/[0.08] px-2 py-1.5 whitespace-nowrap shadow-[0_4px_16px_rgba(0,0,0,0.6)]"
-                        style={{ backgroundColor: "#0d1117" }}
+                        className="rounded-[6px] border border-[var(--bd-hi)] px-2 py-1.5 whitespace-nowrap shadow-[0_4px_16px_rgba(0,0,0,0.4)]"
+                        style={{ backgroundColor: "var(--bg-elevated)" }}
                       >
-                        <p className="font-mono text-[10px] text-white/60">{bucket.label}</p>
-                        <p className="font-mono text-[11px] text-white/80">{bucket.count} trades</p>
-                        <p className="font-mono text-[10px] text-white/35">{bucket.pct}%</p>
+                        <p className="font-mono text-[10px] text-[var(--tx-2)]">{bucket.label}</p>
+                        <p className="font-mono text-[11px] text-[var(--tx-1)]">{bucket.count} trades</p>
+                        <p className="font-mono text-[10px] text-[var(--tx-3)]">{bucket.pct}%</p>
                       </div>
                     </div>
                   )}
@@ -53,7 +53,7 @@ export function RDistribution({ buckets }: Props) {
                         ? "bg-red-400/40 group-hover:bg-red-400/60"
                         : isWin
                         ? "bg-emerald-400/40 group-hover:bg-emerald-400/60"
-                        : "bg-white/20 group-hover:bg-white/35",
+                        : "bg-[var(--bd-hi)] group-hover:bg-[var(--bd-hi)]",
                       bucket.count === 0 ? "opacity-20" : "",
                     )}
                     style={{ height: bucket.count === 0 ? 2 : Math.max(heightPx, 4) }}
@@ -67,7 +67,7 @@ export function RDistribution({ buckets }: Props) {
         <div className="flex gap-2 mt-3">
           {buckets.map(bucket => (
             <div key={bucket.label} className="flex-1 text-center">
-              <span className="font-mono text-[8px] text-white/20 leading-tight block">{bucket.label}</span>
+              <span className="font-mono text-[8px] text-[var(--tx-4)] leading-tight block">{bucket.label}</span>
             </div>
           ))}
         </div>

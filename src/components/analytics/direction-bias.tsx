@@ -27,20 +27,20 @@ function DirectionCard({ stat }: { stat: DirectionStat }) {
         <span className={cx("font-mono text-[11px] uppercase tracking-[0.14em]", isLong ? "text-emerald-400/70" : "text-red-400/70")}>
           {stat.direction}
         </span>
-        <span className="font-mono text-[10px] text-white/20 ml-auto">{stat.trades} trades</span>
+        <span className="font-mono text-[10px] text-[var(--tx-4)] ml-auto">{stat.trades} trades</span>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
           <div className="flex items-center gap-1.5 mb-1">
-            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/20">Win Rate</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--tx-4)]">Win Rate</p>
             <Tooltip content={TOOLTIP_COPY.winRate} />
           </div>
           <p className={cx(
             "font-mono text-[20px] tracking-[-0.03em] leading-none",
             stat.winRate >= 50
-              ? (isLong ? "text-emerald-400" : "text-red-400")
-              : "text-white/50",
+              ? (isLong ? "text-[var(--win)]" : "text-[var(--loss)]")
+              : "text-[var(--tx-2)]",
           )}>
             {stat.winRate}%
           </p>
@@ -49,7 +49,7 @@ function DirectionCard({ stat }: { stat: DirectionStat }) {
         {/* Avg R */}
         <div>
           <div className="flex items-center gap-1.5 mb-1">
-            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/20">Avg R</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--tx-4)]">Avg R</p>
             <Tooltip content={TOOLTIP_COPY.avgR} />
           </div>
           <RLabel value={stat.avgR} size="md" />
@@ -57,14 +57,14 @@ function DirectionCard({ stat }: { stat: DirectionStat }) {
 
         <div className="col-span-2">
           <div className="flex items-center gap-1.5 mb-1">
-            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/20">Total R</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--tx-4)]">Total R</p>
             <Tooltip content={TOOLTIP_COPY.totalR} />
           </div>
           <RLabel value={stat.totalR} size="sm" />
         </div>
       </div>
 
-      <div className="mt-4 h-[3px] rounded-full bg-white/[0.05] overflow-hidden">
+      <div className="mt-4 h-[3px] rounded-full bg-[var(--bd)] overflow-hidden">
         <div
           className={cx("h-full rounded-full transition-all duration-700", isLong ? "bg-emerald-400/50" : "bg-red-400/50")}
           style={{ width: `${stat.winRate}%` }}
@@ -76,16 +76,16 @@ function DirectionCard({ stat }: { stat: DirectionStat }) {
 
 export function DirectionBias({ directions }: Props) {
   return (
-    <div className="rounded-xl bg-[#0d1117] border border-white/[0.065] overflow-hidden">
-      <div className="flex items-center gap-3 px-5 py-4 border-b border-white/[0.05]">
-        <div className="w-4 h-px bg-teal-400/50" />
-        <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/40">Direction Bias</h2>
+    <div className="rounded-xl bg-[var(--bg-surface)] border border-[var(--bd)] overflow-hidden">
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-[var(--bd)]">
+        <div className="w-4 h-px bg-[var(--ac-2)] opacity-50" />
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--tx-3)]">Direction Bias</h2>
         <Tooltip content={TOOLTIP_COPY.directionBias} />
       </div>
 
       <div className="p-5">
         {directions.every(d => d.trades === 0) ? (
-          <p className="font-mono text-[12px] text-white/20 text-center py-6">No data</p>
+          <p className="font-mono text-[12px] text-[var(--tx-3)] text-center py-6">No data</p>
         ) : (
           <div className="flex flex-col sm:flex-row gap-3">
             {directions.map(stat => (

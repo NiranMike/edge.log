@@ -90,7 +90,7 @@ export function LoginForm({ callbackUrl, urlError }: LoginFormProps) {
           <div className="flex justify-end">
             <Link
               href="/forgot-password"
-              className="font-mono text-[10px] text-white/22 hover:text-emerald-400 transition-colors duration-150 uppercase tracking-[0.15em] mt-1"
+              className="font-mono text-[10px] text-[var(--tx-4)] hover:text-[var(--ac-1)] transition-colors duration-150 uppercase tracking-[0.15em] mt-1"
             >
               Forgot password?
             </Link>
@@ -102,18 +102,18 @@ export function LoginForm({ callbackUrl, urlError }: LoginFormProps) {
         </AuthButton>
       </form>
 
-      <p className="font-mono text-[11px] text-center text-white/22">
+      <p className="font-mono text-[11px] text-center text-[var(--tx-4)]">
         No account?{" "}
-        <Link href="/register" className="text-emerald-400/80 hover:text-emerald-400 transition-colors">
+        <Link href="/register" className="text-[var(--ac-1)] opacity-80 hover:opacity-100 transition-opacity">
           Create one free →
         </Link>
       </p>
 
       <p className={cx(ds.micro, "text-center")}>
         By continuing you agree to our{" "}
-        <a href="/terms" className="underline underline-offset-2 hover:text-white/35 transition-colors">Terms</a>
+        <a href="/terms" className="underline underline-offset-2 hover:text-[var(--tx-3)] transition-colors">Terms</a>
         {" & "}
-        <a href="/privacy" className="underline underline-offset-2 hover:text-white/35 transition-colors">Privacy</a>.
+        <a href="/privacy" className="underline underline-offset-2 hover:text-[var(--tx-3)] transition-colors">Privacy</a>.
       </p>
     </div>
   );

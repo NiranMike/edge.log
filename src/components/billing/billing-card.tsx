@@ -30,14 +30,14 @@ export function BillingCard({ isPro, status, endsAt }: Props) {
   const isCancelled = status === "cancelled";
 
   return (
-    <div className="rounded-xl bg-[#0d1117] border border-white/[0.065] p-6">
+    <div className="rounded-xl bg-[var(--bg-surface)] border border-[var(--bd)] p-6">
       <div className="flex items-start justify-between gap-4 mb-5">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/25 mb-1.5">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--tx-3)] mb-1.5">
             Current plan
           </p>
           <div className="flex items-center gap-2.5">
-            <span className="font-display font-bold text-[22px] tracking-[-0.02em] text-white">
+            <span className="font-display font-bold text-[22px] tracking-[-0.02em] text-[var(--tx-1)]">
               {isPro ? "Pro" : "Free"}
             </span>
             {isPro && (
@@ -52,7 +52,7 @@ export function BillingCard({ isPro, status, endsAt }: Props) {
             )}
           </div>
           {isPro && isCancelled && endsAt && (
-            <p className="font-mono text-[11px] text-white/30 mt-1">
+            <p className="font-mono text-[11px] text-[var(--tx-3)] mt-1">
               Access until {new Date(endsAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
             </p>
           )}
@@ -65,7 +65,7 @@ export function BillingCard({ isPro, status, endsAt }: Props) {
             type="button"
             onClick={openPortal}
             disabled={loading}
-            className="inline-flex items-center gap-2 px-4 py-2.5 border border-white/[0.08] rounded-lg font-mono text-[11px] text-white/40 hover:text-white/60 hover:border-white/15 transition-colors duration-150 disabled:opacity-50 w-fit"
+            className="inline-flex items-center gap-2 px-4 py-2.5 border border-[var(--bd)] rounded-lg font-mono text-[11px] text-[var(--tx-3)] hover:text-[var(--tx-2)] hover:border-[var(--bd-hi)] transition-colors duration-150 disabled:opacity-50 w-fit"
           >
             {loading ? (
               <>
@@ -80,7 +80,7 @@ export function BillingCard({ isPro, status, endsAt }: Props) {
         </div>
       ) : (
         <div>
-          <p className="font-mono text-[12px] text-white/35 leading-relaxed mb-4">
+          <p className="font-mono text-[12px] text-[var(--tx-3)] leading-relaxed mb-4">
             Upgrade to unlock the full analytics dashboard, equity curve, session breakdown, and more.
           </p>
           <UpgradeButton />

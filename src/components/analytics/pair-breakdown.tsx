@@ -22,7 +22,7 @@ function SortBtn({ label, active, desc, onClick }: {
       onClick={onClick}
       className={cx(
         "font-mono text-[9px] uppercase tracking-[0.14em] transition-colors duration-150 flex items-center gap-1",
-        active ? "text-teal-400" : "text-white/20 hover:text-white/45",
+        active ? "text-[var(--ac-2)]" : "text-[var(--tx-4)] hover:text-[var(--tx-3)]",
       )}
     >
       {label}
@@ -48,18 +48,18 @@ export function PairBreakdown({ pairs }: Props) {
   const maxR = Math.max(...pairs.map(p => Math.abs(p.totalR)), 0.01);
 
   return (
-    <div className="rounded-xl bg-[#0d1117] border border-white/[0.065] overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.05]">
+    <div className="rounded-xl bg-[var(--bg-surface)] border border-[var(--bd)] overflow-hidden">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--bd)]">
         <div className="flex items-center gap-3">
-          <div className="w-4 h-px bg-teal-400/50" />
-          <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/40">Pair Breakdown</h2>
+          <div className="w-4 h-px bg-[var(--ac-2)] opacity-50" />
+          <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--tx-3)]">Pair Breakdown</h2>
           <Tooltip content={TOOLTIP_COPY.pairBreakdown} />
         </div>
-        <span className="font-mono text-[10px] text-white/20">{pairs.length} pairs</span>
+        <span className="font-mono text-[10px] text-[var(--tx-4)]">{pairs.length} pairs</span>
       </div>
 
-      <div className="flex items-center gap-4 px-5 py-3 border-b border-white/[0.04]">
-        <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/15 mr-1">Sort</span>
+      <div className="flex items-center gap-4 px-5 py-3 border-b border-[var(--bd)]">
+        <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--tx-4)] mr-1">Sort</span>
         <SortBtn label="Total R"  active={sortKey === "totalR"}  desc={sortDesc} onClick={() => handleSort("totalR")}  />
         <SortBtn label="Win Rate" active={sortKey === "winRate"} desc={sortDesc} onClick={() => handleSort("winRate")} />
         <SortBtn label="Trades"   active={sortKey === "trades"}  desc={sortDesc} onClick={() => handleSort("trades")}  />
@@ -68,7 +68,7 @@ export function PairBreakdown({ pairs }: Props) {
 
       <div className="overflow-x-auto">
         {pairs.length === 0 ? (
-          <div className="px-5 py-10 text-center font-mono text-[12px] text-white/20">No pair data</div>
+          <div className="px-5 py-10 text-center font-mono text-[12px] text-[var(--tx-4)]">No pair data</div>
         ) : (
           <table className="w-full border-collapse min-w-[440px]">
             <tbody>
@@ -79,13 +79,13 @@ export function PairBreakdown({ pairs }: Props) {
                   <tr
                     key={p.pair}
                     className={cx(
-                      "group transition-colors duration-150 hover:bg-white/[0.02]",
-                      i < sorted.length - 1 ? "border-b border-white/[0.04]" : "",
+                      "group transition-colors duration-150 hover:bg-[var(--bg-overlay)]",
+                      i < sorted.length - 1 ? "border-b border-[var(--bd)]" : "",
                     )}
                   >
                     {/* Pair name */}
                     <td className="px-5 py-[13px] whitespace-nowrap">
-                      <span className="font-mono text-[13px] text-white/80 font-medium tracking-[0.06em]">
+                      <span className="font-mono text-[13px] text-[var(--tx-1)] font-medium tracking-[0.06em]">
                         {p.pair}
                       </span>
                     </td>
@@ -94,8 +94,8 @@ export function PairBreakdown({ pairs }: Props) {
                     <td className="px-3 py-[13px] whitespace-nowrap">
                       <span className={cx(
                         "font-mono text-[12px]",
-                        p.winRate >= 55 ? "text-emerald-400" :
-                        p.winRate >= 45 ? "text-white/60"    : "text-red-400/70",
+                        p.winRate >= 55 ? "text-[var(--win)]" :
+                        p.winRate >= 45 ? "text-[var(--tx-2)]" : "text-[var(--loss)]",
                       )}>
                         {p.winRate}%
                       </span>
@@ -103,13 +103,13 @@ export function PairBreakdown({ pairs }: Props) {
 
                     {/* Trade count */}
                     <td className="px-3 py-[13px] whitespace-nowrap">
-                      <span className="font-mono text-[11px] text-white/25">{p.trades}t</span>
+                      <span className="font-mono text-[11px] text-[var(--tx-3)]">{p.trades}t</span>
                     </td>
 
                     {/* Total R bar + RLabel */}
                     <td className="px-3 py-[13px] w-full">
                       <div className="flex items-center gap-3">
-                        <div className="flex-1 h-[4px] rounded-full bg-white/[0.04] overflow-hidden max-w-[120px]">
+                        <div className="flex-1 h-[4px] rounded-full bg-[var(--bd)] overflow-hidden max-w-[120px]">
                           <div
                             className={cx(
                               "h-full rounded-full transition-all duration-500",

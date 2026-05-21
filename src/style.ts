@@ -50,39 +50,39 @@ export const palette = {
 
 export const ds = {
   // ── Backgrounds ──
-  bgBase:    "bg-[#07090d]",
-  bgSurface: "bg-[#0d1117]",
-  bgCard:    "bg-[#0f1318]",
-  bgOverlay: "bg-white/[0.03]",
+  bgBase:    "bg-[var(--bg-base)]",
+  bgSurface: "bg-[var(--bg-surface)]",
+  bgCard:    "bg-[var(--bg-elevated)]",
+  bgOverlay: "bg-[var(--bg-overlay)]",
 
   // ── Borders ──
-  border:       "border border-white/[0.065]",
-  borderStrong: "border border-white/10",
+  border:       "border border-[var(--bd)]",
+  borderStrong: "border border-[var(--bd-hi)]",
 
   // ── Accent borders ──
-  borderPrimary:   "border border-emerald-400/20",
-  borderSecondary: "border border-teal-400/20",
+  borderPrimary:   "border border-[var(--ac-1-ring)]",
+  borderSecondary: "border border-[var(--ac-2-ring)]",
   borderTertiary:  "border border-violet-400/20",
 
   // ── Text ──
-  textPrimary:   "text-white",
-  textSecondary: "text-white/55",
-  textMuted:     "text-white/28",
-  textFaint:     "text-white/12",
+  textPrimary:   "text-[var(--tx-1)]",
+  textSecondary: "text-[var(--tx-2)]",
+  textMuted:     "text-[var(--tx-3)]",
+  textFaint:     "text-[var(--tx-4)]",
 
   // ── Accent text ──
-  textAccent:  "text-emerald-400",
-  textAccent2: "text-teal-400",
+  textAccent:  "text-[var(--ac-1)]",
+  textAccent2: "text-[var(--ac-2)]",
   textAccent3: "text-violet-400",
 
   // ── Typography ──
   fontDisplay: "font-display",
   fontMono:    "font-mono",
 
-  heading: "font-display font-extrabold text-white leading-[1.06] tracking-tight",
-  label:   "font-mono text-[10px] uppercase tracking-[0.2em] text-emerald-400",
-  body:    "font-mono text-[13px] leading-relaxed text-white/40",
-  micro:   "font-mono text-[9px] uppercase tracking-widest text-white/20",
+  heading: "font-display font-extrabold text-[var(--tx-1)] leading-[1.06] tracking-tight",
+  label:   "font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--ac-1)]",
+  body:    "font-mono text-[13px] leading-relaxed text-[var(--tx-3)]",
+  micro:   "font-mono text-[9px] uppercase tracking-widest text-[var(--tx-4)]",
 
   // ── Spacing ──
   sectionY:  "py-24 sm:py-32 lg:py-40",
@@ -91,11 +91,11 @@ export const ds = {
 
   // ── Section label row ──
   sectionLabel:     "flex items-center gap-3 mb-4",
-  sectionLabelLine: "w-8 h-px bg-emerald-400 shrink-0",
+  sectionLabelLine: "w-8 h-px bg-[var(--ac-1)] shrink-0",
 
   // ── Cards ──
-  card:      "rounded-xl bg-[#0f1318] border border-white/[0.065]",
-  cardHover: "hover:bg-white/[0.025] transition-colors duration-200",
+  card:      "rounded-xl bg-[var(--bg-elevated)] border border-[var(--bd)]",
+  cardHover: "hover:border-[var(--bd-hi)] transition-colors duration-200",
   cardShadow:"shadow-[0_0_0_1px_rgba(255,255,255,0.07),0_24px_64px_rgba(0,0,0,0.55)]",
 
   // ── Clipped corner shape ──
@@ -104,19 +104,19 @@ export const ds = {
   clip20: { clipPath: "polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px))" },
 
   // ── Buttons ──
-  btnPrimary:   "relative overflow-hidden font-mono font-bold text-[11px] uppercase tracking-[0.14em] text-black bg-emerald-400 hover:bg-emerald-300 transition-colors duration-150",
-  btnSecondary: "font-mono text-[11px] uppercase tracking-[0.14em] text-white/40 border border-white/[0.065] hover:border-white/20 hover:text-white/65 transition-colors duration-150",
-  btnGhost:     "font-mono text-[11px] uppercase tracking-[0.14em] text-emerald-400 border border-emerald-400/30 hover:bg-emerald-400/8 transition-colors duration-150",
+  btnPrimary:   "relative overflow-hidden font-mono font-bold text-[11px] uppercase tracking-[0.14em] text-[var(--bg-base)] bg-[var(--ac-1)] hover:opacity-90 transition-all duration-150",
+  btnSecondary: "font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--tx-3)] border border-[var(--bd)] hover:border-[var(--bd-hi)] hover:text-[var(--tx-2)] transition-colors duration-150",
+  btnGhost:     "font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--ac-1)] border border-[var(--ac-1-ring)] hover:bg-[var(--ac-1-dim)] transition-colors duration-150",
   btnShimmer:   "absolute inset-0 bg-white/15 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12",
 
   // ── Inputs ──
-  input: "bg-white/[0.03] border border-white/10 font-mono text-[12px] text-white/80 placeholder-white/20 outline-none focus:border-emerald-400/40 transition-colors tracking-wide",
+  input: "bg-[var(--bg-input)] border border-[var(--bd)] font-mono text-[12px] text-[var(--tx-1)] placeholder:text-[var(--tx-4)] outline-none focus:border-[var(--ac-1-ring)] transition-colors tracking-wide",
 
   // ── Live badge ──
-  liveBadge: "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-400/80 bg-emerald-400/[0.08] border border-emerald-400/18",
+  liveBadge: "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--ac-1)] bg-[var(--ac-1-dim)] border border-[var(--ac-1-ring)]",
 
   // ── Divider ──
-  divider: "border-t border-white/[0.05]",
+  divider: "border-t border-[var(--bd)]",
 
   // ── Scanline overlay ──
   scanlines: {

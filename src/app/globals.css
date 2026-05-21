@@ -1,91 +1,208 @@
 @import "tailwindcss";
-
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+   All colours, surfaces, and radii live here as CSS variables.
+   Components reference these — never hardcode hex values in components.
+   ═══════════════════════════════════════════════════════════════════════════ */
 
+/* ── Dark theme (default) ─────────────────────────────────────────────────── */
 :root {
+  color-scheme: dark;
+
+  /* Fonts */
   --font-mono:    "JetBrains Mono", ui-monospace, monospace;
   --font-display: "Syne", sans-serif;
 
-  /* Background layers */
-  --bg-base:     #0f0e0d;   
-  --bg-surface:  #171614; 
-  --bg-elevated: #1f1d1b;  
-  --bg-input:    #141210;  
+  /* Surfaces — match landing page exactly */
+  --bg-base:      #07090d;
+  --bg-surface:   #0d1117;
+  --bg-card:      #0f1318;
+  --bg-elevated:  #141c22;
+  --bg-overlay:   rgba(255,255,255,0.03);
+
+  /* Sidebar */
+  --sidebar-from: #0c1018;
+  --sidebar-to:   #090d12;
 
   /* Text */
-  --text-primary:   #e8e0d5;
-  --text-secondary: #9b9289; 
-  --text-ghost:     #514c47;
+  --tx-1: rgba(255,255,255,1);
+  --tx-2: rgba(255,255,255,0.55);
+  --tx-3: rgba(255,255,255,0.28);
+  --tx-4: rgba(255,255,255,0.12);
 
-  /* Primary accent — emerald */
-  --accent:        #4ade80;
-  --accent-dim:    rgba(74,222,128,0.10);
-  --accent-glow:   rgba(74,222,128,0.22);
+  /* Primary accent — emerald (matches landing) */
+  --ac-1:      #10b981;
+  --ac-1-dim:  rgba(16,185,129,0.12);
+  --ac-1-ring: rgba(16,185,129,0.22);
+  --ac-1-glow: rgba(16,185,129,0.35);
 
   /* Secondary accent — teal */
-  --accent-2:      #2dd4bf;
-  --accent-2-dim:  rgba(45,212,191,0.10);
-  --accent-2-glow: rgba(45,212,191,0.20);
+  --ac-2:      #2dd4bf;
+  --ac-2-dim:  rgba(45,212,191,0.12);
+  --ac-2-ring: rgba(45,212,191,0.22);
+  --ac-2-glow: rgba(45,212,191,0.3);
 
   /* Tertiary accent — violet */
-  --accent-3:      #a78bfa;
-  --accent-3-dim:  rgba(167,139,250,0.10);
-  --accent-3-glow: rgba(167,139,250,0.20);
+  --ac-3:      #a78bfa;
+  --ac-3-dim:  rgba(167,139,250,0.12);
+  --ac-3-ring: rgba(167,139,250,0.22);
 
-  /* State colours */
-  --win:      #5cb87a;
-  --win-dim:  rgba(92,184,122,0.1);
-  --loss:     #c0605a;  
-  --loss-dim: rgba(192,96,90,0.1);
-  --neutral:  #7a9fc0;   
+  /* Semantic */
+  --win:      #10b981;
+  --win-dim:  rgba(16,185,129,0.1);
+  --loss:     #ef4444;
+  --loss-dim: rgba(239,68,68,0.1);
+
+  /* Inputs */
+  --bg-input:       rgba(255,255,255,0.025);
+  --bg-input-focus: rgba(255,255,255,0.05);
 
   /* Borders */
-  --border:       rgba(255,255,255,0.06);
-  --border-hover: rgba(255,255,255,0.12);
+  --bd:    rgba(255,255,255,0.065);
+  --bd-hi: rgba(255,255,255,0.12);
 
   /* Radius */
-  --r-sm:  4px;
-  --r-md:  8px;
-  --r-lg:  14px;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
 }
 
+/* ── Light theme ──────────────────────────────────────────────────────────── */
+[data-theme="light"] {
+  color-scheme: light;
+
+  --bg-base:     #f3f2ef;
+  --bg-surface:  #ffffff;
+  --bg-card:     #fafaf9;
+  --bg-elevated: #ebebea;
+  --bg-overlay:  rgba(0,0,0,0.03);
+
+  --sidebar-from: #f8f7f5;
+  --sidebar-to:   #f1f0ed;
+
+  --tx-1: rgba(10,14,20,1);
+  --tx-2: rgba(10,14,20,0.58);
+  --tx-3: rgba(10,14,20,0.34);
+  --tx-4: rgba(10,14,20,0.14);
+
+  --ac-1:      #059669;
+  --ac-1-dim:  rgba(5,150,105,0.1);
+  --ac-1-ring: rgba(5,150,105,0.25);
+  --ac-1-glow: rgba(5,150,105,0.18);
+
+  --ac-2:      #0d9488;
+  --ac-2-dim:  rgba(13,148,136,0.1);
+  --ac-2-ring: rgba(13,148,136,0.25);
+  --ac-2-glow: rgba(13,148,136,0.2);
+
+  --ac-3:      #7c3aed;
+  --ac-3-dim:  rgba(124,58,237,0.1);
+  --ac-3-ring: rgba(124,58,237,0.22);
+
+  --win:      #059669;
+  --win-dim:  rgba(5,150,105,0.1);
+  --loss:     #dc2626;
+  --loss-dim: rgba(220,38,38,0.1);
+
+  --bg-input:       rgba(0,0,0,0.04);
+  --bg-input-focus: rgba(0,0,0,0.07);
+
+  --bd:    rgba(10,14,20,0.09);
+  --bd-hi: rgba(10,14,20,0.17);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   UTILITY CLASSES
+   Theme-aware utilities that components can use directly.
+   ═══════════════════════════════════════════════════════════════════════════ */
 @layer utilities {
-  .font-mono {
-    font-family: var(--font-mono);
-  }
-  .font-display {
-    font-family: var(--font-display);
-  }
+  /* Font stacks */
+  .font-mono    { font-family: var(--font-mono); }
+  .font-display { font-family: var(--font-display); }
+
+  /* Surfaces */
+  .bg-base      { background-color: var(--bg-base); }
+  .bg-surface   { background-color: var(--bg-surface); }
+  .bg-card      { background-color: var(--bg-card); }
+  .bg-elevated  { background-color: var(--bg-elevated); }
+  .bg-overlay   { background-color: var(--bg-overlay); }
+
+  /* Text */
+  .text-tx-1    { color: var(--tx-1); }
+  .text-tx-2    { color: var(--tx-2); }
+  .text-tx-3    { color: var(--tx-3); }
+  .text-tx-4    { color: var(--tx-4); }
+  .text-ac-1    { color: var(--ac-1); }
+  .text-ac-2    { color: var(--ac-2); }
+  .text-ac-3    { color: var(--ac-3); }
+  .text-win     { color: var(--win); }
+  .text-loss    { color: var(--loss); }
+
+  /* Borders */
+  .border-bd    { border-color: var(--bd); }
+  .border-bd-hi { border-color: var(--bd-hi); }
+  .border-ac-1  { border-color: var(--ac-1-ring); }
+  .border-ac-2  { border-color: var(--ac-2-ring); }
+  .border-ac-3  { border-color: var(--ac-3-ring); }
+
+  /* Fills */
+  .fill-ac-1    { fill: var(--ac-1); }
+  .fill-win     { fill: var(--win); }
+  .fill-loss    { fill: var(--loss); }
 }
 
-
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE STYLES
+   ═══════════════════════════════════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
 
-/* ─── Prevent browser swipe back/forward navigation ────────────────────────── */
-html, body {
-  overscroll-behavior-x: none;
-}
+html, body { overscroll-behavior-x: none; }
 
 body {
   background-color: var(--bg-base);
-  color:            var(--text-primary);
+  color:            var(--tx-1);
+  font-family:      var(--font-mono);
   font-size:        14px;
   line-height:      1.6;
-  -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing:  antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Smooth theme transition — only on colour properties */
+  transition:
+    background-color 0.25s ease,
+    color            0.25s ease;
 }
 
+/* Prevent transition flicker on page load */
+.no-transition, .no-transition * {
+  transition: none !important;
+}
 
+/* ─── Scrollbar ─────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar       { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+::-webkit-scrollbar-thumb { background: var(--bd); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--bd-hi); }
 
-/* ─── Animations ────────────────────────────────────────────────────────────── */
+/* ─── Focus ring ────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--ac-1);
+  outline-offset: 2px;
+}
 
+/* ─── Selection ─────────────────────────────────────────────────────────────── */
+::selection {
+  background: var(--ac-1-dim);
+  color: var(--tx-1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -111,19 +228,29 @@ body {
   50%       { opacity: 0.4; transform: scale(0.8); }
 }
 
-.animate-fade-up      { animation: fadeUp       0.4s ease both; }
-.animate-fade-in      { animation: fadeIn       0.3s ease both; }
-.animate-slide-right  { animation: slideInRight 0.35s ease both; }
-.animate-pulse-dot    { animation: pulse-dot    2s ease-in-out infinite; }
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes glow {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1; }
+}
+
+.animate-fade-up     { animation: fadeUp       0.4s cubic-bezier(0.16,1,0.3,1) both; }
+.animate-fade-in     { animation: fadeIn       0.3s ease both; }
+.animate-slide-right { animation: slideInRight 0.35s ease both; }
+.animate-pulse-dot   { animation: pulse-dot    2s ease-in-out infinite; }
 
 /* Staggered children */
-.stagger > *:nth-child(1) { animation-delay: 0ms; }
-.stagger > *:nth-child(2) { animation-delay: 60ms; }
+.stagger > *:nth-child(1) { animation-delay:   0ms; }
+.stagger > *:nth-child(2) { animation-delay:  60ms; }
 .stagger > *:nth-child(3) { animation-delay: 120ms; }
 .stagger > *:nth-child(4) { animation-delay: 180ms; }
 .stagger > *:nth-child(5) { animation-delay: 240ms; }
 
-
+/* ─── Skeleton loader ───────────────────────────────────────────────────────── */
 .skeleton {
   background: linear-gradient(
     90deg,
@@ -134,18 +261,4 @@ body {
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
   border-radius: var(--r-sm);
-}
-
-/* ─── Focus ring ────────────────────────────────────────────────────────────── */
-
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-/* ─── Selection ─────────────────────────────────────────────────────────────── */
-
-::selection {
-  background: var(--accent-dim);
-  color: var(--text-primary);
 }

@@ -55,9 +55,9 @@ export function Tooltip({ content, className }: Props) {
         onBlur={hide}
         className={cx(
           "inline-flex items-center justify-center w-3.5 h-3.5 rounded-full shrink-0",
-          "border border-white/12 text-white/25 font-mono text-[8px] leading-none",
-          "hover:border-teal-400/40 hover:text-teal-400/60",
-          "focus-visible:outline-none focus-visible:border-teal-400/40 focus-visible:text-teal-400/60",
+          "border border-[var(--bd)] text-[var(--tx-3)] font-mono text-[8px] leading-none",
+          "hover:border-[var(--ac-2-ring)] hover:text-[var(--ac-2)]",
+          "focus-visible:outline-none focus-visible:border-[var(--ac-2-ring)] focus-visible:text-[var(--ac-2)]",
           "transition-colors duration-150 cursor-default",
           className,
         )}
@@ -69,10 +69,10 @@ export function Tooltip({ content, className }: Props) {
         <div
           id={id}
           role="tooltip"
-          className="absolute pointer-events-none rounded-[8px] border border-white/[0.1] px-3 py-2.5 shadow-[0_8px_32px_rgba(0,0,0,0.8)]"
-          style={{ top: pos.top, left: pos.left, zIndex: 9999, maxWidth: MAX_WIDTH, backgroundColor: "#0d1117" }}
+          className="absolute pointer-events-none rounded-[8px] border border-[var(--bd-hi)] px-3 py-2.5 shadow-[0_8px_32px_rgba(0,0,0,0.8)]"
+          style={{ top: pos.top, left: pos.left, zIndex: 9999, maxWidth: MAX_WIDTH, backgroundColor: "var(--bg-elevated)" }}
         >
-          <p className="font-mono text-[11px] text-white/55 leading-relaxed">{content}</p>
+          <p className="font-mono text-[11px] text-[var(--tx-2)] leading-relaxed">{content}</p>
         </div>,
         document.body,
       )}

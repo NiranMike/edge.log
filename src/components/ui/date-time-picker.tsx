@@ -68,26 +68,26 @@ function Dropdown({
       onMouseDown={e => e.stopPropagation()}
     >
       <div
-        style={{ backgroundColor: "#0d1117" }}
-        className="rounded-[10px] border border-white/[0.1] shadow-[0_24px_80px_rgba(0,0,0,0.85),0_0_0_1px_rgba(255,255,255,0.05)]"
+        style={{ backgroundColor: "var(--bg-elevated)" }}
+        className="rounded-[10px] border border-[var(--bd-hi)] shadow-[0_24px_80px_rgba(0,0,0,0.85)]"
       >
-        <div className="flex items-center justify-between px-4 pt-4 pb-3 border-b border-white/[0.06]">
+        <div className="flex items-center justify-between px-4 pt-4 pb-3 border-b border-[var(--bd)]">
           <button
             type="button"
             onClick={() => onMonthChange(new Date(month.getFullYear(), month.getMonth() - 1))}
-            className="w-7 h-7 flex items-center justify-center rounded-md text-white/30 hover:text-white/70 hover:bg-white/[0.06] transition-all duration-150"
+            className="w-7 h-7 flex items-center justify-center rounded-md text-[var(--tx-3)] hover:text-[var(--tx-1)] hover:bg-[var(--bg-overlay)] transition-all duration-150"
           >
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
               <path d="M6.5 2L3.5 5l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
-          <span className="font-mono text-[12px] text-white/70 tracking-[0.06em]">
+          <span className="font-mono text-[12px] text-[var(--tx-2)] tracking-[0.06em]">
             {MONTHS[month.getMonth()]} {month.getFullYear()}
           </span>
           <button
             type="button"
             onClick={() => onMonthChange(new Date(month.getFullYear(), month.getMonth() + 1))}
-            className="w-7 h-7 flex items-center justify-center rounded-md text-white/30 hover:text-white/70 hover:bg-white/[0.06] transition-all duration-150"
+            className="w-7 h-7 flex items-center justify-center rounded-md text-[var(--tx-3)] hover:text-[var(--tx-1)] hover:bg-[var(--bg-overlay)] transition-all duration-150"
           >
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
               <path d="M3.5 2L6.5 5l-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -107,33 +107,33 @@ function Dropdown({
               month:      "w-full",
               month_grid: "w-full border-collapse",
               weekdays:   "flex mb-1",
-              weekday:    "flex-1 text-center font-mono text-[9px] uppercase tracking-[0.14em] text-white/20 py-1",
+              weekday:    "flex-1 text-center font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--tx-4)] py-1",
               week:       "flex",
               day:        "flex-1 aspect-square p-[1px]",
               day_button: [
                 "w-full h-full flex items-center justify-center rounded-[5px]",
-                "font-mono text-[12px] text-white/45 transition-all duration-100",
-                "hover:bg-white/[0.08] hover:text-white/80 cursor-pointer",
+                "font-mono text-[12px] text-[var(--tx-3)] transition-all duration-100",
+                "hover:bg-[var(--bg-overlay)] hover:text-[var(--tx-1)] cursor-pointer",
               ].join(" "),
-              selected: "[&>button]:!bg-emerald-400 [&>button]:!text-[#07090d] [&>button]:!font-semibold [&>button]:shadow-[0_0_12px_rgba(74,222,128,0.3)]",
-              today:    "[&>button]:text-emerald-400 [&>button]:font-medium",
+              selected: "[&>button]:!bg-[var(--ac-1)] [&>button]:!text-[var(--bg-base)] [&>button]:!font-semibold [&>button]:shadow-[0_0_12px_var(--ac-1-glow)]",
+              today:    "[&>button]:text-[var(--ac-1)] [&>button]:font-medium",
               outside:  "opacity-0 pointer-events-none",
-              disabled: "[&>button]:!text-white/10 [&>button]:!cursor-not-allowed",
+              disabled: "[&>button]:!text-[var(--tx-4)] [&>button]:!cursor-not-allowed",
             }}
           />
         </div>
 
-        <div className="px-4 pb-3 pt-1 border-t border-white/[0.06]">
+        <div className="px-4 pb-3 pt-1 border-t border-[var(--bd)]">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/25">Time</span>
-            <span className="font-mono text-[10px] text-white/35">{time}</span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--tx-4)]">Time</span>
+            <span className="font-mono text-[10px] text-[var(--tx-3)]">{time}</span>
           </div>
           <input
             type="time"
             value={time}
             onChange={onTimeChange}
-            style={{ backgroundColor: "rgba(255,255,255,0.03)" }}
-            className="w-full px-3 py-[8px] rounded-[6px] font-mono text-[12px] text-white/70 outline-none border border-white/[0.06] [color-scheme:dark] focus:border-emerald-400/30 transition-all duration-150"
+            style={{ backgroundColor: "var(--bg-input)" }}
+            className="w-full px-3 py-[8px] rounded-[6px] font-mono text-[12px] text-[var(--tx-2)] outline-none border border-[var(--bd)] focus:border-[var(--ac-1-ring)] transition-all duration-150"
           />
           {/* Quick shortcuts */}
           <div className="flex gap-[5px] mt-2">
@@ -141,12 +141,12 @@ function Dropdown({
               <button
                 key={t} type="button"
                 onClick={() => onQuickTime(t)}
-                style={time === t ? { backgroundColor: "rgba(74,222,128,0.12)" } : { backgroundColor: "rgba(255,255,255,0.03)" }}
+                style={time === t ? { backgroundColor: "var(--ac-1-dim)" } : { backgroundColor: "var(--bg-overlay)" }}
                 className={[
                   "flex-1 py-[5px] rounded-[4px] font-mono text-[9px] tracking-[0.02em] transition-all duration-150 border",
                   time === t
-                    ? "text-emerald-400/80 border-emerald-400/20"
-                    : "text-white/25 border-white/[0.05] hover:text-white/45",
+                    ? "text-[var(--ac-1)] border-[var(--ac-1-ring)]"
+                    : "text-[var(--tx-4)] border-[var(--bd)] hover:text-[var(--tx-3)]",
                 ].join(" ")}
               >
                 {t}
@@ -155,16 +155,16 @@ function Dropdown({
           </div>
         </div>
 
-        <div className="flex items-center justify-between px-4 py-3 border-t border-white/[0.06]">
+        <div className="flex items-center justify-between px-4 py-3 border-t border-[var(--bd)]">
           <button
             type="button" onClick={onNow}
-            className="font-mono text-[10px] text-emerald-400/50 hover:text-emerald-400/80 transition-colors duration-150 tracking-[0.06em]"
+            className="font-mono text-[10px] text-[var(--ac-1)] opacity-50 hover:opacity-80 transition-opacity duration-150 tracking-[0.06em]"
           >
             Now
           </button>
           <button
             type="button" onClick={onClose}
-            className="font-mono text-[10px] text-white/25 hover:text-white/50 transition-colors duration-150 tracking-[0.06em] px-3 py-[5px] rounded-md hover:bg-white/[0.04]"
+            className="font-mono text-[10px] text-[var(--tx-4)] hover:text-[var(--tx-2)] transition-colors duration-150 tracking-[0.06em] px-3 py-[5px] rounded-md hover:bg-[var(--bg-overlay)]"
           >
             Done
           </button>
@@ -252,8 +252,8 @@ export function DateTimePicker({ value, onChange }: Props) {
           "w-full px-[14px] py-[11px] rounded-[6px] font-mono text-[13px] text-left outline-none",
           "transition-all duration-200 flex items-center justify-between gap-2",
           open
-            ? "bg-white/[0.04] border border-emerald-400/40 shadow-[0_0_0_3px_rgba(74,222,128,0.06)] text-white/88"
-            : "bg-white/[0.025] border border-white/[0.08] text-white/55 hover:border-white/15 hover:text-white/75",
+            ? "bg-[var(--bg-input-focus)] border border-[var(--ac-1-ring)] shadow-[0_0_0_3px_var(--ac-1-dim)] text-[var(--tx-1)]"
+            : "bg-[var(--bg-input)] border border-[var(--bd)] text-[var(--tx-2)] hover:border-[var(--bd-hi)] hover:text-[var(--tx-1)]",
         ].join(" ")}
       >
         <span className="truncate">{formatDisplay(selected, time)}</span>

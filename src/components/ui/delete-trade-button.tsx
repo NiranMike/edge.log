@@ -72,7 +72,7 @@ export function DeleteTradeButton({ tradeId, pair }: Props) {
           type="button"
           onClick={() => { setConfirming(false); setError(null); }}
           disabled={isPending}
-          className="px-5 py-[11px] rounded-[6px] font-mono text-[12px] tracking-[0.06em] text-white/30 border border-transparent hover:border-white/[0.08] hover:text-white/50 transition-all duration-150 cursor-pointer disabled:opacity-40"
+          className="px-5 py-[11px] rounded-[6px] font-mono text-[12px] tracking-[0.06em] text-[var(--tx-3)] border border-transparent hover:border-[var(--bd)] hover:text-[var(--tx-2)] transition-all duration-150 cursor-pointer disabled:opacity-40"
         >
           Cancel
         </button>

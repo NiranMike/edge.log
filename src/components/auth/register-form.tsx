@@ -24,7 +24,7 @@ function PasswordStrength({ value }: { value: string }) {
   ];
   const score     = checks.filter((c) => c.ok).length;
   const barColors = ["bg-red-500", "bg-teal-500", "bg-yellow-400", "bg-emerald-400"] as const;
-  const barColor  = score > 0 ? barColors[Math.min(score - 1, 3)] : "bg-white/10";
+  const barColor  = score > 0 ? barColors[Math.min(score - 1, 3)] : "bg-[var(--bd)]";
 
   return (
     <div className="mt-2 space-y-2">
@@ -34,7 +34,7 @@ function PasswordStrength({ value }: { value: string }) {
             key={i}
             className={cx(
               "h-[3px] flex-1 transition-all duration-300",
-              i < score ? barColor : "bg-white/[0.07]",
+              i < score ? barColor : "bg-[var(--bd)]",
             )}
           />
         ))}
@@ -47,8 +47,8 @@ function PasswordStrength({ value }: { value: string }) {
             className={cx(
               "font-mono text-[9px] px-1.5 py-0.5 border transition-all duration-200",
               ok
-                ? "border-emerald-400/25 text-emerald-400/70 bg-emerald-400/[0.06]"
-                : "border-white/[0.06] text-white/20",
+                ? "border-[var(--ac-1-ring)] text-[var(--ac-1)] bg-[var(--ac-1-dim)]"
+                : "border-[var(--bd)] text-[var(--tx-4)]",
             )}
           >
             {ok && "✓ "}
@@ -165,11 +165,11 @@ export function RegisterForm({ defaultEmail }: RegisterFormProps) {
         </AuthButton>
       </form>
 
-      <p className="font-mono text-[11px] text-center text-white/22">
+      <p className="font-mono text-[11px] text-center text-[var(--tx-4)]">
         Already have an account?{" "}
         <Link
           href="/login"
-          className="text-emerald-400/80 hover:text-emerald-400 transition-colors duration-150"
+          className="text-[var(--ac-1)] opacity-80 hover:opacity-100 transition-opacity"
         >
           Sign in →
         </Link>
@@ -179,14 +179,14 @@ export function RegisterForm({ defaultEmail }: RegisterFormProps) {
         By creating an account you agree to our{" "}
         <a
           href="/terms"
-          className="underline underline-offset-2 hover:text-white/35 transition-colors"
+          className="underline underline-offset-2 hover:text-[var(--tx-3)] transition-colors"
         >
           Terms
         </a>
         {" & "}
         <a
           href="/privacy"
-          className="underline underline-offset-2 hover:text-white/35 transition-colors"
+          className="underline underline-offset-2 hover:text-[var(--tx-3)] transition-colors"
         >
           Privacy
         </a>

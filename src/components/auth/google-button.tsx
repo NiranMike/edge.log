@@ -28,11 +28,11 @@ export function GoogleButton({
       disabled={isPending}
       className={cx(
         "w-full flex items-center justify-center gap-3",
-        "px-5 py-3.5 border border-white/[0.09] bg-white/[0.03]",
-        "font-mono text-[11px] uppercase tracking-[0.15em] text-white/55",
-        "hover:bg-white/[0.06] hover:border-white/[0.16] hover:text-white/80",
+        "px-5 py-3.5 border border-[var(--bd)] bg-[var(--bg-overlay)]",
+        "font-mono text-[11px] uppercase tracking-[0.15em] text-[var(--tx-2)]",
+        "hover:bg-[var(--bg-input)] hover:border-[var(--bd-hi)] hover:text-[var(--tx-1)]",
         "transition-all duration-150 disabled:opacity-40 disabled:cursor-wait",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bd-hi)]"
       )}
     >
       {isPending ? (
@@ -71,7 +71,7 @@ function GoogleIcon() {
 
 function Spinner() {
   return (
-    <svg className="animate-spin h-4 w-4 text-white/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg className="animate-spin h-4 w-4 text-[var(--tx-3)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <circle cx="12" cy="12" r="10" strokeOpacity="0.2" />
       <path d="M12 2a10 10 0 0110 10" strokeLinecap="round" />
     </svg>

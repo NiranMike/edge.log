@@ -45,8 +45,8 @@ export function RLabel({
   const colorClass = muted
     ? "text-current"
     : positive
-    ? "text-emerald-400"
-    : "text-red-400";
+    ? "text-[var(--win)]"
+    : "text-[var(--loss)]";
 
   return (
     <span className={cx("inline-flex flex-col gap-0.5", className)}>
@@ -64,7 +64,7 @@ export function RLabel({
       </span>
 
       {showRatio && value > 0 && (
-        <span className={cx("font-mono text-white/30 tracking-[0.04em]", sz.ratio)}>
+        <span className={cx("font-mono text-[var(--tx-3)] tracking-[0.04em]", sz.ratio)}>
           1:{value.toFixed(2)} RR
         </span>
       )}

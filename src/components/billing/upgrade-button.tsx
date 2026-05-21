@@ -35,8 +35,8 @@ export function UpgradeButton({ label = "Upgrade to Pro", className, variant = "
         className={cx(
           "inline-flex items-center gap-2 cursor-pointer font-mono text-[11px] uppercase tracking-[0.14em] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed",
           variant === "primary"
-            ? "px-5 py-2.5 bg-teal-400 text-[#07090d] font-bold hover:bg-teal-300 rounded-lg"
-            : "px-4 py-2 border border-teal-400/30 text-teal-400 hover:bg-teal-400/[0.08] rounded-lg",
+            ? "px-5 py-2.5 bg-[var(--ac-2)] text-[var(--bg-base)] font-bold hover:opacity-90 rounded-lg"
+            : "px-4 py-2 border border-[var(--ac-2-ring)] text-[var(--ac-2)] hover:bg-[var(--ac-2-dim)] rounded-lg",
           className,
         )}
       >

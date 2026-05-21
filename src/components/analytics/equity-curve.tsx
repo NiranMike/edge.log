@@ -51,28 +51,28 @@ export function EquityCurve({ curve }: Props) {
       height: containerRef.current.clientHeight,
       layout: {
         background: { type: ColorType.Solid, color: "transparent" },
-        textColor:  "rgba(255,255,255,0.25)",
+        textColor:  getComputedStyle(document.documentElement).getPropertyValue("--tx-3").trim() || "rgba(255,255,255,0.25)",
         fontFamily: "var(--font-mono)",
         fontSize:   10,
       },
       grid: {
-        vertLines: { color: "rgba(255,255,255,0.03)" },
-        horzLines: { color: "rgba(255,255,255,0.03)" },
+        vertLines: { color: getComputedStyle(document.documentElement).getPropertyValue("--bd").trim() || "rgba(255,255,255,0.03)" },
+        horzLines: { color: getComputedStyle(document.documentElement).getPropertyValue("--bd").trim() || "rgba(255,255,255,0.03)" },
       },
       crosshair: {
         mode: CrosshairMode.Magnet,
         vertLine: {
-          color:        "rgba(255,255,255,0.12)",
+          color:        getComputedStyle(document.documentElement).getPropertyValue("--bd-hi").trim() || "rgba(255,255,255,0.12)",
           width:        1,
           style:        1,
           labelVisible: false,
         },
         horzLine: {
-          color:                "rgba(255,255,255,0.12)",
+          color:                getComputedStyle(document.documentElement).getPropertyValue("--bd-hi").trim() || "rgba(255,255,255,0.12)",
           width:                1,
           style:                1,
           labelVisible:         true,
-          labelBackgroundColor: "#0d1117",
+          labelBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue("--bg-elevated").trim() || "#0d1117",
         },
       },
       rightPriceScale: {
@@ -96,7 +96,7 @@ export function EquityCurve({ curve }: Props) {
       lineWidth:                      2,
       crosshairMarkerVisible:         true,
       crosshairMarkerRadius:          4,
-      crosshairMarkerBorderColor:     "#0d1117",
+      crosshairMarkerBorderColor:     getComputedStyle(document.documentElement).getPropertyValue("--bg-surface").trim() || "#0d1117",
       crosshairMarkerBackgroundColor: lineColor,
       priceLineVisible:               false,
       lastValueVisible:               false,
@@ -174,38 +174,38 @@ export function EquityCurve({ curve }: Props) {
 
   if (curve.length === 0) {
     return (
-      <div className="rounded-xl bg-[#0d1117] border border-white/[0.065] px-5 py-10 text-center">
-        <p className="font-mono text-[12px] text-white/20">No equity data</p>
+      <div className="rounded-xl bg-[var(--bg-surface)] border border-[var(--bd)] px-5 py-10 text-center">
+        <p className="font-mono text-[12px] text-[var(--tx-4)]">No equity data</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl bg-[#0d1117] border border-white/[0.065] overflow-hidden">
+    <div className="rounded-xl bg-[var(--bg-surface)] border border-[var(--bd)] overflow-hidden">
 
-      <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4 border-b border-white/[0.05]">
+      <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4 border-b border-[var(--bd)]">
         <div className="flex items-center gap-3">
-          <div className="w-4 h-px bg-teal-400/50" />
-          <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/40">Equity Curve</h2>
+          <div className="w-4 h-px bg-[var(--ac-2)] opacity-50" />
+          <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--tx-3)]">Equity Curve</h2>
           <Tooltip content={TOOLTIP_COPY.equityCurve} />
         </div>
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-1.5">
-            <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-white/20">Total</span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--tx-4)]">Total</span>
             <Tooltip content={TOOLTIP_COPY.totalR} />
-            <span className={cx("font-mono text-[13px] ml-1", finalR >= 0 ? "text-emerald-400" : "text-red-400")}>
+            <span className={cx("font-mono text-[13px] ml-1", finalR >= 0 ? "text-[var(--win)]" : "text-[var(--loss)]")}>
               {finalR >= 0 ? "+" : ""}{finalR}R
             </span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-white/20">Max DD</span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--tx-4)]">Max DD</span>
             <Tooltip content={TOOLTIP_COPY.maxDrawdown} />
-            <span className="font-mono text-[13px] text-red-400/60 ml-1">{maxDD}R</span>
+            <span className="font-mono text-[13px] text-[var(--loss)] opacity-60 ml-1">{maxDD}R</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-white/20">Trades</span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--tx-4)]">Trades</span>
             <Tooltip content={TOOLTIP_COPY.trades} />
-            <span className="font-mono text-[13px] text-white/40 ml-1">{curve.length}</span>
+            <span className="font-mono text-[13px] text-[var(--tx-3)] ml-1">{curve.length}</span>
           </div>
         </div>
       </div>
@@ -222,28 +222,28 @@ export function EquityCurve({ curve }: Props) {
             }}
           >
             <div
-              className="rounded-[8px] border border-white/[0.1] px-3 py-2.5 shadow-[0_8px_32px_rgba(0,0,0,0.7)]"
-              style={{ backgroundColor: "#0d1117" }}
+              className="rounded-[8px] border border-[var(--bd-hi)] px-3 py-2.5 shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
+              style={{ backgroundColor: "var(--bg-elevated)" }}
             >
-              <p className="font-mono text-[10px] text-white/30 mb-1">{tooltip.date}</p>
-              <p className="font-mono text-[11px] text-white/50 mb-2 tracking-[0.04em]">{tooltip.pair}</p>
+              <p className="font-mono text-[10px] text-[var(--tx-3)] mb-1">{tooltip.date}</p>
+              <p className="font-mono text-[11px] text-[var(--tx-2)] mb-2 tracking-[0.04em]">{tooltip.pair}</p>
               <div className="flex items-start gap-4">
                 <div>
-                  <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-white/20 mb-0.5">Trade</p>
-                  <p className={cx("font-mono text-[13px]", tooltip.tradeR >= 0 ? "text-emerald-400" : "text-red-400")}>
+                  <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-[var(--tx-4)] mb-0.5">Trade</p>
+                  <p className={cx("font-mono text-[13px]", tooltip.tradeR >= 0 ? "text-[var(--win)]" : "text-[var(--loss)]")}>
                     {tooltip.tradeR >= 0 ? "+" : ""}{tooltip.tradeR}R
                   </p>
                 </div>
                 <div>
-                  <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-white/20 mb-0.5">Cumul.</p>
-                  <p className={cx("font-mono text-[13px]", tooltip.cumulativeR >= 0 ? "text-white/80" : "text-red-400/70")}>
+                  <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-[var(--tx-4)] mb-0.5">Cumul.</p>
+                  <p className={cx("font-mono text-[13px]", tooltip.cumulativeR >= 0 ? "text-[var(--tx-2)]" : "text-[var(--loss)]")}>
                     {tooltip.cumulativeR >= 0 ? "+" : ""}{tooltip.cumulativeR}R
                   </p>
                 </div>
                 {tooltip.drawdown < 0 && (
                   <div>
-                    <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-white/20 mb-0.5">DD</p>
-                    <p className="font-mono text-[13px] text-red-400/60">{tooltip.drawdown}R</p>
+                    <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-[var(--tx-4)] mb-0.5">DD</p>
+                    <p className="font-mono text-[13px] text-[var(--loss)]">{tooltip.drawdown}R</p>
                   </div>
                 )}
               </div>

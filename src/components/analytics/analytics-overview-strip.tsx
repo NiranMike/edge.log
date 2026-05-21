@@ -22,17 +22,17 @@ function StatPill({
 }) {
   return (
     <div
-      className="flex-1 min-w-[140px] flex flex-col gap-1 px-5 py-4 rounded-xl bg-[#0d1117] border border-white/[0.065] hover:border-white/10 transition-colors duration-200"
+      className="flex-1 min-w-[140px] flex flex-col gap-1 px-5 py-4 rounded-xl bg-[var(--bg-surface)] border border-[var(--bd)] hover:border-[var(--bd-hi)] transition-colors duration-200"
       style={{ animationDelay: delay ? `${delay}ms` : "0ms" }}
     >
       <div className="flex items-center justify-between gap-1.5">
-        <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/25">{label}</span>
+        <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--tx-3)]">{label}</span>
         <Tooltip content={tooltip} />
       </div>
-      <span className={cx("font-mono text-[22px] tracking-[-0.03em] leading-none", valueClass ?? "text-white")}>
+      <span className={cx("font-mono text-[22px] tracking-[-0.03em] leading-none", valueClass ?? "text-[var(--tx-1)]")}>
         {value}
       </span>
-      {sub && <span className="font-mono text-[10px] text-white/25 mt-0.5">{sub}</span>}
+      {sub && <span className="font-mono text-[10px] text-[var(--tx-3)] mt-0.5">{sub}</span>}
     </div>
   );
 }
@@ -48,15 +48,15 @@ function RStatPill({
 }) {
   return (
     <div
-      className="flex-1 min-w-35 flex flex-col gap-1 px-5 py-4 rounded-xl bg-[#0d1117] border border-white/[0.065] hover:border-white/10 transition-colors duration-200"
+      className="flex-1 min-w-35 flex flex-col gap-1 px-5 py-4 rounded-xl bg-[var(--bg-surface)] border border-[var(--bd)] hover:border-[var(--bd-hi)] transition-colors duration-200"
       style={{ animationDelay: delay ? `${delay}ms` : "0ms" }}
     >
       <div className="flex items-center justify-between gap-1.5">
-        <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/25">{label}</span>
+        <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--tx-3)]">{label}</span>
         <Tooltip content={tooltip} />
       </div>
       <RLabel value={Number(value.toFixed(2))} size="md" />
-      {sub && <span className="font-mono text-[10px] text-white/25 mt-0.5">{sub}</span>}
+      {sub && <span className="font-mono text-[10px] text-[var(--tx-3)] mt-0.5">{sub}</span>}
     </div>
   );
 }
@@ -69,8 +69,8 @@ export function AnalyticsOverviewStrip({ overview }: Props) {
   } = overview;
 
   const pfClass =
-    profitFactor >= 2 ? "text-emerald-400" :
-    profitFactor >= 1 ? "text-white"        : "text-red-400";
+    profitFactor >= 2 ? "text-[var(--win)]"  :
+    profitFactor >= 1 ? "text-[var(--tx-1)]" : "text-[var(--loss)]";
 
   return (
     <div className="flex flex-wrap gap-3">

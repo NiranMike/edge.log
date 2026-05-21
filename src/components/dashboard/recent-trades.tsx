@@ -7,7 +7,7 @@ function RBadge({ r }: { r: number }) {
   return (
     <span className={cx(
       "inline-flex items-center px-2 py-0.75 rounded font-mono text-[11px] sm:text-[12px] font-medium tracking-[-0.02em]",
-      won ? "bg-emerald-400/10 text-emerald-400" : "bg-red-400/10 text-red-400",
+      won ? "bg-[var(--win-dim)] text-[var(--win)]" : "bg-[var(--loss-dim)] text-[var(--loss)]",
     )}>
       {r >= 0 ? "+" : ""}{r}R
     </span>
@@ -18,7 +18,7 @@ function DirectionTag({ dir }: { dir: "LONG" | "SHORT" }) {
   return (
     <span className={cx(
       "font-mono text-[10px] tracking-[0.08em]",
-      dir === "LONG" ? "text-emerald-400" : "text-red-400",
+      dir === "LONG" ? "text-[var(--win)]" : "text-[var(--loss)]",
     )}>
       {dir === "LONG" ? "▲" : "▼"}
       <span className="hidden xs:inline"> {dir}</span>
@@ -30,16 +30,16 @@ export function RecentTrades({ trades }: { trades: Trade[] }) {
   if (trades.length === 0) return null;
  
   return (
-    <div className="bg-[#0d1117] border border-white/[0.065] rounded-xl overflow-hidden">
+    <div className="bg-[var(--bg-surface)] border border-[var(--bd)] rounded-xl overflow-hidden">
  
       <div className="hidden sm:block overflow-x-auto">
         <table className="w-full border-collapse min-w-[520px]">
           <thead>
-            <tr className="border-b border-white/[0.065]">
+            <tr className="border-b border-[var(--bd)]">
               {["Date", "Pair", "Side", "Entry", "Exit", "R", ""].map(h => (
                 <th
                   key={h}
-                  className="px-4 py-3 text-left bg-[#0f1318] font-mono text-[10px] uppercase tracking-[0.12em] text-white/28 font-normal"
+                  className="px-4 py-3 text-left bg-[var(--bg-elevated)] font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--tx-3)] font-normal"
                 >
                   {h}
                 </th>
@@ -51,26 +51,26 @@ export function RecentTrades({ trades }: { trades: Trade[] }) {
               <tr
                 key={t.id}
                 className={cx(
-                  "transition-colors duration-150 hover:bg-white/[0.025]",
-                  i < trades.length - 1 ? "border-b border-white/[0.065]" : "",
+                  "transition-colors duration-150 hover:bg-[var(--bg-overlay)]",
+                  i < trades.length - 1 ? "border-b border-[var(--bd)]" : "",
                 )}
               >
-                <td className="px-4 py-3.25 font-mono text-[12px] text-white/28 whitespace-nowrap">
+                <td className="px-4 py-3.25 font-mono text-[12px] text-[var(--tx-3)] whitespace-nowrap">
                   {new Date(t.tradedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                 </td>
-                <td className="px-4 py-3.25 font-mono text-[13px] text-white font-medium tracking-[0.04em]">
+                <td className="px-4 py-3.25 font-mono text-[13px] text-[var(--tx-1)] font-medium tracking-[0.04em]">
                   {t.pair}
                 </td>
                 <td className="px-4 py-3.25">
                   <DirectionTag dir={t.direction} />
                 </td>
-                <td className="px-4 py-3.25 font-mono text-[12px] text-white/55">{t.entryPrice}</td>
-                <td className="px-4 py-3.25 font-mono text-[12px] text-white/55">{t.exitPrice}</td>
+                <td className="px-4 py-3.25 font-mono text-[12px] text-[var(--tx-2)]">{t.entryPrice}</td>
+                <td className="px-4 py-3.25 font-mono text-[12px] text-[var(--tx-2)]">{t.exitPrice}</td>
                 <td className="px-4 py-3.25"><RBadge r={t.rMultiple} /></td>
                 <td className="px-4 py-3.25">
                   <Link
                     href={`/trades/${t.id}/edit`}
-                    className="font-mono text-[11px] text-white/28 no-underline hover:text-teal-400 transition-colors duration-150"
+                    className="font-mono text-[11px] text-[var(--tx-3)] no-underline hover:text-[var(--ac-2)] transition-colors duration-150"
                   >
                     Edit
                   </Link>
@@ -81,21 +81,21 @@ export function RecentTrades({ trades }: { trades: Trade[] }) {
         </table>
       </div>
  
-      <div className="sm:hidden divide-y divide-white/[0.05]">
+      <div className="sm:hidden divide-y divide-[var(--bd)]">
         {trades.map((t) => (
           <Link
             key={t.id}
             href={`/trades/${t.id}/edit`}
-            className="flex items-center justify-between px-4 py-3.5 no-underline hover:bg-white/[0.025] transition-colors duration-150 gap-3"
+            className="flex items-center justify-between px-4 py-3.5 no-underline hover:bg-[var(--bg-overlay)] transition-colors duration-150 gap-3"
           >
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-[3px]">
-                <span className="font-mono text-[13px] text-white font-medium tracking-[0.04em]">
+                <span className="font-mono text-[13px] text-[var(--tx-1)] font-medium tracking-[0.04em]">
                   {t.pair}
                 </span>
                 <DirectionTag dir={t.direction} />
               </div>
-              <span className="font-mono text-[10px] text-white/28">
+              <span className="font-mono text-[10px] text-[var(--tx-3)]">
                 {new Date(t.tradedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                 {" · "}
                 {t.entryPrice} → {t.exitPrice}
@@ -104,7 +104,7 @@ export function RecentTrades({ trades }: { trades: Trade[] }) {
  
             <div className="flex items-center gap-2 shrink-0">
               <RBadge r={t.rMultiple} />
-              <span className="font-mono text-[11px] text-white/20">›</span>
+              <span className="font-mono text-[11px] text-[var(--tx-4)]">›</span>
             </div>
           </Link>
         ))}

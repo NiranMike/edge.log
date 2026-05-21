@@ -19,25 +19,25 @@ export function EmptyDashboard() {
       </svg>
       </div>
  
-      <h2 className="font-mono font-normal text-[18px] sm:text-[20px] tracking-[-0.025em] text-white mb-3 leading-snug">
+      <h2 className="font-mono font-normal text-[18px] sm:text-[20px] tracking-[-0.025em] text-[var(--tx-1)] mb-3 leading-snug">
         Your edge is waiting<br/>
-        <span className="text-white/35">to be found.</span>
+        <span className="text-[var(--tx-3)]">to be found.</span>
       </h2>
  
-      <p className="font-mono text-[11px] sm:text-[12px] leading-[1.75] text-white/35 max-w-[320px] sm:max-w-[360px] mb-7 sm:mb-8">
+      <p className="font-mono text-[11px] sm:text-[12px] leading-[1.75] text-[var(--tx-3)] max-w-[320px] sm:max-w-[360px] mb-7 sm:mb-8">
         Most traders don't know their actual win rate, average R, or which
         conditions they perform best in. The data is in your trades.
       </p>
  
       <div className="w-full max-w-[380px] sm:max-w-[320px] mb-7 sm:mb-8 text-left">
-        <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/20 mb-3">
+        <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--tx-4)] mb-3">
           Once you log trades, you'll see →
         </p>
         <div className="flex flex-col gap-[6px]">
           {INSIGHT_ITEMS.map(({ icon, text }) => (
-            <div key={text} className="flex items-center gap-3 px-3 py-[10px] sm:py-[9px] bg-white/[0.02] border border-white/[0.04]">
-              <span className="text-teal-400/40 text-sm leading-none shrink-0">{icon}</span>
-              <span className="font-mono text-[11px] text-white/30 tracking-[0.02em]">{text}</span>
+            <div key={text} className="flex items-center gap-3 px-3 py-[10px] sm:py-[9px] bg-[var(--bg-overlay)] border border-[var(--bd)]">
+              <span className="text-[var(--ac-2)] opacity-40 text-sm leading-none shrink-0">{icon}</span>
+              <span className="font-mono text-[11px] text-[var(--tx-3)] tracking-[0.02em]">{text}</span>
             </div>
           ))}
         </div>
@@ -45,12 +45,12 @@ export function EmptyDashboard() {
  
       <Link
         href="/trades/new"
-        className="inline-flex items-center gap-2 px-5 sm:px-6 py-[13px] sm:py-[12px] bg-emerald-400 text-[#07090d] rounde font-mono text-[12px] font-semibold tracking-[0.06em] uppercase no-underline hover:bg-emerald-300 transition-colors duration-150"
+        className="inline-flex items-center gap-2 px-5 sm:px-6 py-[13px] sm:py-[12px] bg-[var(--ac-1)] text-[var(--bg-base)] font-mono text-[12px] font-semibold tracking-[0.06em] uppercase no-underline hover:opacity-90 transition-opacity duration-150"
       >
         Log your first trade →
       </Link>
  
-      <p className="font-mono text-[10px] text-white/15 mt-4 tracking-[0.04em]">
+      <p className="font-mono text-[10px] text-[var(--tx-4)] mt-4 tracking-[0.04em]">
         Takes 60 seconds.
       </p>
     </div>

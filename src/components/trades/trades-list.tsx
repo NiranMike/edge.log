@@ -36,7 +36,7 @@ const columns = [
   col.accessor("tradedAt", {
     header: "Date",
     cell: i => (
-      <span className="font-mono text-[11px] text-white/25 whitespace-nowrap">
+      <span className="font-mono text-[11px] text-[var(--tx-3)] whitespace-nowrap">
         {new Date(i.getValue()).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "2-digit" })}
       </span>
     ),
@@ -45,7 +45,7 @@ const columns = [
   col.accessor("pair", {
     header: "Pair",
     cell: i => (
-      <span className="font-mono text-[13px] text-white font-medium tracking-[0.06em]">
+      <span className="font-mono text-[13px] text-[var(--tx-1)] font-medium tracking-[0.06em]">
         {i.getValue()}
       </span>
     ),
@@ -57,7 +57,7 @@ const columns = [
   }),
   col.accessor("entryPrice", {
     header: "Entry",
-    cell: i => <span className="font-mono text-[12px] text-white/45">{i.getValue()}</span>,
+    cell: i => <span className="font-mono text-[12px] text-[var(--tx-2)]">{i.getValue()}</span>,
   }),
   col.accessor("stopLoss", {
     header: "Stop",
@@ -69,7 +69,7 @@ const columns = [
   }),
   col.accessor("exitPrice", {
     header: "Exit",
-    cell: i => <span className="font-mono text-[12px] text-white/55">{i.getValue()}</span>,
+    cell: i => <span className="font-mono text-[12px] text-[var(--tx-2)]">{i.getValue()}</span>,
   }),
   col.accessor("rMultiple", {
     header: "R",
@@ -83,7 +83,7 @@ const columns = [
   col.accessor("notes", {
     header: "Notes",
     cell: i => i.getValue() ? (
-      <span className="block font-mono text-[11px] text-white/22 overflow-hidden text-ellipsis whitespace-nowrap max-w-[180px]">
+      <span className="block font-mono text-[11px] text-[var(--tx-3)] overflow-hidden text-ellipsis whitespace-nowrap max-w-[180px]">
         {i.getValue()}
       </span>
     ) : null,
@@ -95,7 +95,7 @@ const columns = [
     cell: i => (
       <Link
         href={`/trades/${i.getValue()}/edit`}
-        className="font-mono text-[10px] text-white/20 no-underline group-hover:text-teal-400/60 hover:!text-teal-400 transition-colors duration-150 tracking-[0.06em] uppercase"
+        className="font-mono text-[10px] text-[var(--tx-4)] no-underline group-hover:text-[var(--ac-2)] hover:!text-[var(--ac-2)] transition-colors duration-150 tracking-[0.06em] uppercase"
       >
         Edit
       </Link>
@@ -118,7 +118,7 @@ const COL_LABELS: Record<string, string> = {
 
 function EmptyState() {
   return (
-    <div className="relative flex flex-col items-center justify-center px-10 py-20 text-center bg-[#0d1117] border border-white/[0.065]  overflow-hidden">
+    <div className="relative flex flex-col items-center justify-center px-10 py-20 text-center bg-[var(--bg-surface)] border border-[var(--bd)] overflow-hidden">
 
       <div
         className="absolute inset-0 opacity-[0.03]"
@@ -139,10 +139,10 @@ function EmptyState() {
         </div>
       </div>
 
-      <p className="relative font-mono text-[13px] text-white/40 mb-1 tracking-[0.02em]">
+      <p className="relative font-mono text-[13px] text-[var(--tx-3)] mb-1 tracking-[0.02em]">
         No trades logged yet.
       </p>
-      <p className="relative font-mono text-[11px] text-white/20 mb-6 leading-[1.6] max-w-[220px]">
+      <p className="relative font-mono text-[11px] text-[var(--tx-4)] mb-6 leading-[1.6] max-w-[220px]">
         Every trade logged is a data point.<br />Start building your edge.
       </p>
 
@@ -189,7 +189,7 @@ export function TradesList({ trades, total, page, pageCount }: Props) {
     <div className="space-y-3">
 
       <div className="flex items-center justify-end gap-3">
-        <span className="font-mono text-[10px] text-white/20 tracking-[0.06em]">
+        <span className="font-mono text-[10px] text-[var(--tx-4)] tracking-[0.06em]">
           {total} {total === 1 ? "trade" : "trades"}
         </span>
 
@@ -199,8 +199,8 @@ export function TradesList({ trades, total, page, pageCount }: Props) {
             className={cx(
               "flex items-center gap-[6px] px-3 py-[7px] rounded-[6px] font-mono text-[10px] uppercase tracking-[0.1em] transition-all duration-150 border",
               showColMenu
-                ? "bg-white/[0.06] border-white/12 text-white/60"
-                : "bg-white/[0.025] border-white/[0.08] text-white/30 hover:text-white/50 hover:border-white/12",
+                ? "bg-[var(--bg-overlay)] border-[var(--bd-hi)] text-[var(--tx-2)]"
+                : "bg-[var(--bg-overlay)] border-[var(--bd)] text-[var(--tx-3)] hover:text-[var(--tx-2)] hover:border-[var(--bd-hi)]",
             )}
           >
             <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
@@ -213,21 +213,20 @@ export function TradesList({ trades, total, page, pageCount }: Props) {
 
           {showColMenu && (
             <div
-              style={{ backgroundColor: "#0d1117" }}
-              className="absolute right-0 top-[calc(100%+6px)] z-50 w-[160px] rounded-[8px] border border-white/[0.1] shadow-[0_16px_48px_rgba(0,0,0,0.7)] py-2"
+                  className="absolute right-0 top-[calc(100%+6px)] z-50 w-[160px] rounded-[8px] border border-[var(--bd-hi)] bg-[var(--bg-elevated)] shadow-[0_16px_48px_rgba(0,0,0,0.6)] py-2"
             >
               {table.getAllLeafColumns()
                 .filter(c => c.id !== "actions" && COL_LABELS[c.id])
                 .map(column => (
                   <label
                     key={column.id}
-                    className="flex items-center gap-[10px] px-3 py-[7px] cursor-pointer hover:bg-white/[0.04] transition-colors"
+                    className="flex items-center gap-[10px] px-3 py-[7px] cursor-pointer hover:bg-[var(--bg-overlay)] transition-colors"
                   >
                     <div className={cx(
                       "w-[13px] h-[13px] rounded-[3px] border flex items-center justify-center shrink-0 transition-all duration-150",
                       column.getIsVisible()
                         ? "bg-emerald-400/20 border-emerald-400/40"
-                        : "bg-transparent border-white/15",
+                        : "bg-transparent border-[var(--bd)]",
                     )}>
                       {column.getIsVisible() && (
                         <svg width="8" height="6" viewBox="0 0 8 6" fill="none">
@@ -241,7 +240,7 @@ export function TradesList({ trades, total, page, pageCount }: Props) {
                       checked={column.getIsVisible()}
                       onChange={column.getToggleVisibilityHandler()}
                     />
-                    <span className="font-mono text-[11px] text-white/45">
+                    <span className="font-mono text-[11px] text-[var(--tx-2)]">
                       {COL_LABELS[column.id]}
                     </span>
                   </label>
@@ -251,10 +250,10 @@ export function TradesList({ trades, total, page, pageCount }: Props) {
         </div>
       </div>
 
-      <div className="bg-[#0d1117] border border-white/[0.065] rounded-xl overflow-hidden">
+      <div className="bg-[var(--bg-surface)] border border-[var(--bd)] rounded-xl overflow-hidden">
         <table className="w-full border-collapse">
           <thead>
-            <tr className="border-b border-white/[0.05]">
+            <tr className="border-b border-[var(--bd)]">
               {table.getFlatHeaders().map(header => {
                 const canSort = header.column.getCanSort();
                 const sorted  = header.column.getIsSorted();
@@ -278,8 +277,8 @@ export function TradesList({ trades, total, page, pageCount }: Props) {
               <tr
                 key={row.id}
                 className={cx(
-                  "transition-colors duration-150 hover:bg-white/[0.02] group",
-                  i < rows.length - 1 ? "border-b border-white/[0.04]" : "",
+                  "transition-colors duration-150 hover:bg-[var(--bg-overlay)] group",
+                  i < rows.length - 1 ? "border-b border-[var(--bd)]" : "",
                 )}
               >
                 {row.getVisibleCells().map(cell => (
@@ -295,31 +294,31 @@ export function TradesList({ trades, total, page, pageCount }: Props) {
 
       {pageCount > 1 && (
         <div className="flex items-center justify-between pt-1">
-          <span className="font-mono text-[10px] text-white/20 tracking-[0.06em]">
+          <span className="font-mono text-[10px] text-[var(--tx-4)] tracking-[0.06em]">
             Page {page} of {pageCount}
           </span>
           <div className="flex items-center gap-2">
             {page > 1 ? (
               <Link
                 href={`/trades?page=${page - 1}`}
-                className="px-3 py-[7px] rounded-[6px] border border-white/[0.065] font-mono text-[11px] text-white/35 no-underline hover:border-white/12 hover:text-white/55 transition-all duration-150"
+                className="px-3 py-[7px] rounded-[6px] border border-[var(--bd)] font-mono text-[11px] text-[var(--tx-3)] no-underline hover:border-[var(--bd-hi)] hover:text-[var(--tx-2)] transition-all duration-150"
               >
                 ← Prev
               </Link>
             ) : (
-              <span className="px-3 py-[7px] rounded-[6px] border border-white/[0.065] font-mono text-[11px] text-white/15 cursor-not-allowed">
+              <span className="px-3 py-[7px] rounded-[6px] border border-[var(--bd)] font-mono text-[11px] text-[var(--tx-4)] cursor-not-allowed">
                 ← Prev
               </span>
             )}
             {page < pageCount ? (
               <Link
                 href={`/trades?page=${page + 1}`}
-                className="px-3 py-[7px] rounded-[6px] border border-white/[0.065] font-mono text-[11px] text-white/35 no-underline hover:border-white/12 hover:text-white/55 transition-all duration-150"
+                className="px-3 py-[7px] rounded-[6px] border border-[var(--bd)] font-mono text-[11px] text-[var(--tx-3)] no-underline hover:border-[var(--bd-hi)] hover:text-[var(--tx-2)] transition-all duration-150"
               >
                 Next →
               </Link>
             ) : (
-              <span className="px-3 py-[7px] rounded-[6px] border border-white/[0.065] font-mono text-[11px] text-white/15 cursor-not-allowed">
+              <span className="px-3 py-[7px] rounded-[6px] border border-[var(--bd)] font-mono text-[11px] text-[var(--tx-4)] cursor-not-allowed">
                 Next →
               </span>
             )}

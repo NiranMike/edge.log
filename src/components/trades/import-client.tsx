@@ -25,16 +25,16 @@ function Steps({ current }: { current: 1 | 2 | 3 }) {
             <div className={cx(
               "w-6 h-6 rounded-full flex items-center justify-center font-mono text-[11px] font-medium transition-all duration-200",
               current === s.n
-                ? "bg-teal-400 text-[#07090d]"
+                ? "bg-[var(--ac-2)] text-[var(--bg-base)]"
                 : current > s.n
-                ? "bg-teal-400/20 text-teal-400 border border-teal-400/30"
-                : "bg-white/4 text-white/20 border border-white/8",
+                ? "bg-[var(--ac-2-dim)] text-[var(--ac-2)] border border-[var(--ac-2-ring)]"
+                : "bg-[var(--bg-overlay)] text-[var(--tx-4)] border border-[var(--bd)]",
             )}>
               {current > s.n ? "✓" : s.n}
             </div>
             <span className={cx(
               "font-mono text-[11px] tracking-[0.04em] hidden sm:inline",
-              current === s.n ? "text-white/70" : current > s.n ? "text-teal-400/60" : "text-white/20",
+              current === s.n ? "text-[var(--tx-2)]" : current > s.n ? "text-[var(--ac-2)] opacity-60" : "text-[var(--tx-4)]",
             )}>
               {s.label}
             </span>
@@ -42,7 +42,7 @@ function Steps({ current }: { current: 1 | 2 | 3 }) {
           {i < steps.length - 1 && (
             <div className={cx(
               "w-8 sm:w-12 h-px mx-2 sm:mx-3 transition-colors duration-200",
-              current > s.n ? "bg-teal-400/30" : "bg-white/6",
+              current > s.n ? "bg-[var(--ac-2-ring)]" : "bg-[var(--bd)]",
             )} />
           )}
         </div>
@@ -109,7 +109,7 @@ function UploadStep({ onParsed }: {
     <div>
       <div className="mb-6 flex flex-wrap gap-2">
         {["MT4 / MT5", "cTrader", "Tradovate", "IBKR", "Edgewonk", "Excel / Google Sheets"].map(s => (
-          <span key={s} className="px-2.5 py-1 rounded font-mono text-[10px] text-white/30 bg-white/[0.03] border border-white/[0.06] tracking-[0.04em]">
+          <span key={s} className="px-2.5 py-1 rounded font-mono text-[10px] text-[var(--tx-3)] bg-[var(--bg-overlay)] border border-[var(--bd)] tracking-[0.04em]">
             {s}
           </span>
         ))}
@@ -124,25 +124,25 @@ function UploadStep({ onParsed }: {
           "relative flex flex-col items-center justify-center gap-3 w-full py-14 sm:py-20 rounded-[8px] border border-dashed transition-all duration-200",
           loading ? "cursor-default" : "cursor-pointer",
           dragging
-            ? "border-teal-400/40 bg-teal-400/4"
-            : "border-white/10 bg-white/[0.02] hover:border-white/[0.18] hover:bg-white/[0.04]",
+            ? "border-[var(--ac-2-ring)] bg-[var(--ac-2-dim)]"
+            : "border-[var(--bd)] bg-[var(--bg-overlay)] hover:border-[var(--bd-hi)] hover:bg-[var(--bg-input)]",
         )}
       >
         {loading ? (
           <>
-            <span className="w-6 h-6 rounded-full border-2 border-white/15 border-t-teal-400 animate-spin" />
-            <span className="font-mono text-[12px] text-white/35">Parsing CSV…</span>
+            <span className="w-6 h-6 rounded-full border-2 border-[var(--bd)] border-t-[var(--ac-2)] animate-spin" />
+            <span className="font-mono text-[12px] text-[var(--tx-3)]">Parsing CSV…</span>
           </>
         ) : (
           <>
-            <div className="w-10 h-10 rounded-full bg-white/4 border border-white/8 flex items-center justify-center text-white/25 text-[18px]">
+            <div className="w-10 h-10 rounded-full bg-[var(--bg-overlay)] border border-[var(--bd)] flex items-center justify-center text-[var(--tx-3)] text-[18px]">
               ↑
             </div>
             <div className="text-center">
-              <p className="font-mono text-[13px] text-white/45">
-                Drop your CSV here or <span className="text-teal-400/70">browse</span>
+              <p className="font-mono text-[13px] text-[var(--tx-2)]">
+                Drop your CSV here or <span className="text-[var(--ac-2)] opacity-70">browse</span>
               </p>
-              <p className="font-mono text-[11px] text-white/20 mt-1">
+              <p className="font-mono text-[11px] text-[var(--tx-4)] mt-1">
                 .csv files only · max {MAX_FILE_MB} MB · up to 1,000 rows
               </p>
             </div>
@@ -164,8 +164,8 @@ function UploadStep({ onParsed }: {
         onChange={e => { const f = e.target.files?.[0]; if (f) parse(f); e.target.value = ""; }}
       />
 
-      <div className="mt-6 p-4 rounded-md bg-white/[0.02] border border-white/5">
-        <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/20 mb-3">How to export</p>
+      <div className="mt-6 p-4 rounded-md bg-[var(--bg-overlay)] border border-[var(--bd)]">
+        <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--tx-4)] mb-3">How to export</p>
         <ul className="space-y-2">
           {[
             { broker: "MT4/MT5",        how: "Reports → Account History → right-click → Save as Report (CSV)" },
@@ -173,8 +173,8 @@ function UploadStep({ onParsed }: {
             { broker: "Excel / Sheets", how: "File → Download / Save As → CSV (.csv)" },
           ].map(({ broker, how }) => (
             <li key={broker} className="flex gap-3">
-              <span className="font-mono text-[10px] text-teal-400/50 shrink-0 w-[80px]">{broker}</span>
-              <span className="font-mono text-[10px] text-white/25 leading-relaxed">{how}</span>
+              <span className="font-mono text-[10px] text-[var(--ac-2)] opacity-50 shrink-0 w-[80px]">{broker}</span>
+              <span className="font-mono text-[10px] text-[var(--tx-3)] leading-relaxed">{how}</span>
             </li>
           ))}
         </ul>
@@ -221,7 +221,7 @@ function MappingStep({
 
   return (
     <div>
-      <p className="font-mono text-[12px] text-white/35 mb-6 leading-relaxed">
+      <p className="font-mono text-[12px] text-[var(--tx-3)] mb-6 leading-relaxed">
         We've auto-matched your columns. Review and correct anything that looks wrong.
         Required fields are marked <span className="text-red-400/70">*</span>.
       </p>
@@ -240,14 +240,14 @@ function MappingStep({
                 isDuplicate
                   ? "bg-amber-400/4 border-amber-400/20"
                   : field === "skip"
-                  ? "bg-white/1 border-white/5"
-                  : "bg-white/3 border-white/8",
+                  ? "bg-[var(--bg-overlay)] border-[var(--bd)]"
+                  : "bg-[var(--bg-input)] border-[var(--bd-hi)]",
               )}
             >
               <div className="flex items-center gap-2 flex-1 min-w-0">
-                <span className="font-mono text-[12px] text-white/55 truncate">{header}</span>
+                <span className="font-mono text-[12px] text-[var(--tx-2)] truncate">{header}</span>
                 {autoMatched && !isDuplicate && (
-                  <span className="shrink-0 px-1.5 py-[2px] rounded font-mono text-[9px] text-teal-400/60 bg-teal-400/[0.06] border border-teal-400/15 uppercase tracking-[0.1em]">
+                  <span className="shrink-0 px-1.5 py-[2px] rounded font-mono text-[9px] text-[var(--ac-2)] bg-[var(--ac-2-dim)] border border-[var(--ac-2-ring)] uppercase tracking-[0.1em]">
                     auto
                   </span>
                 )}
@@ -257,18 +257,19 @@ function MappingStep({
                   </span>
                 )}
                 {rawRows[0]?.[header] && (
-                  <span className="hidden sm:inline font-mono text-[10px] text-white/18 truncate max-w-[120px]">
+                  <span className="hidden sm:inline font-mono text-[10px] text-[var(--tx-4)] truncate max-w-[120px]">
                     e.g. {rawRows[0][header]}
                   </span>
                 )}
               </div>
 
-              <span className="hidden sm:block font-mono text-[12px] text-white/15">→</span>
+              <span className="hidden sm:block font-mono text-[12px] text-[var(--tx-4)]">→</span>
 
               <select
                 value={field}
                 onChange={e => setField(header, e.target.value as AppField)}
-                className="shrink-0 sm:w-[190px] px-3 py-[8px] rounded-[6px] font-mono text-[12px] text-white/70 bg-white/[0.04] border border-white/[0.08] outline-none focus:border-teal-400/40 transition-colors duration-150 [color-scheme:dark] cursor-pointer"
+                className="shrink-0 sm:w-[190px] px-3 py-[8px] rounded-[6px] font-mono text-[12px] text-[var(--tx-2)] bg-[var(--bg-input)] border border-[var(--bd)] outline-none focus:border-[var(--ac-2-ring)] transition-colors duration-150 cursor-pointer"
+                style={{ backgroundColor: "var(--bg-input)" }}
               >
                 {ALL_FIELDS.map(f => (
                   <option key={f} value={f}>
@@ -292,7 +293,7 @@ function MappingStep({
               duplicate
                 ? "text-amber-400/70 bg-amber-400/6 border-amber-400/20"
                 : mapped
-                ? "text-teal-400/70 bg-teal-400/6 border-teal-400/15"
+                ? "text-[var(--ac-2)] bg-[var(--ac-2-dim)] border-[var(--ac-2-ring)]"
                 : "text-red-400/60 bg-red-400/5 border-red-400/15",
             )}>
               {duplicate ? "⚠" : mapped ? "✓" : "✗"} {FIELD_META[f].label}
@@ -310,7 +311,7 @@ function MappingStep({
       <div className="flex flex-col-reverse sm:grid sm:grid-cols-[auto_1fr] gap-2.5">
         <button
           onClick={onBack}
-          className="px-5 py-[13px] rounded-md bg-transparent border border-white/8 font-mono text-[12px] tracking-[0.06em] text-white/35 cursor-pointer transition-all duration-150 hover:border-white/18 hover:text-white/55"
+          className="px-5 py-[13px] rounded-md bg-transparent border border-[var(--bd)] font-mono text-[12px] tracking-[0.06em] text-[var(--tx-3)] cursor-pointer transition-all duration-150 hover:border-[var(--bd-hi)] hover:text-[var(--tx-2)]"
         >
           ← Back
         </button>
@@ -320,8 +321,8 @@ function MappingStep({
           className={cx(
             "py-[13px] rounded-[6px] font-mono text-[12px] font-semibold tracking-[0.1em] uppercase transition-all duration-200 border border-transparent",
             allRequiredMapped
-              ? "bg-teal-400 text-[#07090d] hover:bg-teal-300 cursor-pointer shadow-[0_0_24px_rgba(45,212,191,0.2)]"
-              : "bg-white/[0.04] text-white/20 cursor-not-allowed",
+              ? "bg-[var(--ac-2)] text-[var(--bg-base)] hover:opacity-90 cursor-pointer shadow-[0_0_24px_var(--ac-2-glow)]"
+              : "bg-[var(--bg-overlay)] text-[var(--tx-4)] cursor-not-allowed",
           )}
         >
           Preview {rawRows.length} trades →
@@ -357,13 +358,13 @@ function PreviewStep({
     <div>
       <div className="grid grid-cols-3 gap-3 mb-6">
         {[
-          { label: "Total rows",  value: rows.length,        color: "text-white"         },
-          { label: "Ready",       value: validRows.length,   color: "text-teal-400"      },
-          { label: "Skipped",     value: invalidRows.length, color: invalidRows.length > 0 ? "text-red-400" : "text-white/20" },
+          { label: "Total rows",  value: rows.length,        color: "text-[var(--tx-1)]"  },
+          { label: "Ready",       value: validRows.length,   color: "text-[var(--ac-2)]"  },
+          { label: "Skipped",     value: invalidRows.length, color: invalidRows.length > 0 ? "text-red-400" : "text-[var(--tx-4)]" },
         ].map(({ label, value, color }) => (
-          <div key={label} className="px-4 py-3 rounded-[6px] bg-white/[0.02] border border-white/[0.06] text-center">
+          <div key={label} className="px-4 py-3 rounded-[6px] bg-[var(--bg-overlay)] border border-[var(--bd)] text-center">
             <p className={cx("font-mono text-[22px] font-medium tracking-[-0.04em] mb-1", color)}>{value}</p>
-            <p className="font-mono text-[10px] text-white/25 uppercase tracking-[0.12em]">{label}</p>
+            <p className="font-mono text-[10px] text-[var(--tx-3)] uppercase tracking-[0.12em]">{label}</p>
           </div>
         ))}
       </div>
@@ -380,7 +381,7 @@ function PreviewStep({
             <div className="mt-2 space-y-1.5 max-h-[160px] overflow-y-auto pr-1">
               {invalidRows.map((r, i) => (
                 <div key={i} className="flex items-start gap-3 px-3 py-2 rounded bg-red-400/[0.04] border border-red-400/10">
-                  <span className="font-mono text-[10px] text-white/25 shrink-0">Row {rows.indexOf(r) + 2}</span>
+                  <span className="font-mono text-[10px] text-[var(--tx-3)] shrink-0">Row {rows.indexOf(r) + 2}</span>
                   <span className="font-mono text-[10px] text-red-400/60">{r._errors.join(" · ")}</span>
                 </div>
               ))}
@@ -389,13 +390,13 @@ function PreviewStep({
         </div>
       )}
 
-      <div className="rounded-[8px] border border-white/[0.065] overflow-hidden mb-5">
+      <div className="rounded-[8px] border border-[var(--bd)] overflow-hidden mb-5">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse min-w-[540px]">
             <thead>
-              <tr className="border-b border-white/[0.05]">
+              <tr className="border-b border-[var(--bd)]">
                 {["Pair", "Dir", "Entry", "Exit", "Stop", "Date", "Notes"].map(h => (
-                  <th key={h} className="px-3 py-2.5 text-left bg-[#0a0e14] font-mono text-[9px] uppercase tracking-[0.16em] text-white/22 font-normal whitespace-nowrap">
+                  <th key={h} className="px-3 py-2.5 text-left bg-[var(--bg-elevated)] font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--tx-3)] font-normal whitespace-nowrap">
                     {h}
                   </th>
                 ))}
@@ -405,22 +406,22 @@ function PreviewStep({
               {validRows.slice(0, 8).map((r, i) => (
                 <tr key={i} className={cx(
                   "transition-colors duration-150",
-                  i < Math.min(validRows.length, 8) - 1 ? "border-b border-white/[0.04]" : "",
+                  i < Math.min(validRows.length, 8) - 1 ? "border-b border-[var(--bd)]" : "",
                 )}>
-                  <td className="px-3 py-2.5 font-mono text-[12px] text-white font-medium">{r.pair}</td>
+                  <td className="px-3 py-2.5 font-mono text-[12px] text-[var(--tx-1)] font-medium">{r.pair}</td>
                   <td className="px-3 py-2.5 font-mono text-[11px]">
-                    <span className={r.direction === "LONG" ? "text-teal-400" : "text-red-400"}>
+                    <span className={r.direction === "LONG" ? "text-[var(--win)]" : "text-[var(--loss)]"}>
                       {r.direction === "LONG" ? "▲" : "▼"} {r.direction}
                     </span>
                   </td>
-                  <td className="px-3 py-2.5 font-mono text-[11px] text-white/50">{r.entryPrice}</td>
-                  <td className="px-3 py-2.5 font-mono text-[11px] text-white/50">{r.exitPrice}</td>
-                  <td className="px-3 py-2.5 font-mono text-[11px] text-white/30">{r.stopLoss ?? <span className="text-white/18">—</span>}</td>
-                  <td className="px-3 py-2.5 font-mono text-[11px] text-white/30 whitespace-nowrap">
+                  <td className="px-3 py-2.5 font-mono text-[11px] text-[var(--tx-2)]">{r.entryPrice}</td>
+                  <td className="px-3 py-2.5 font-mono text-[11px] text-[var(--tx-2)]">{r.exitPrice}</td>
+                  <td className="px-3 py-2.5 font-mono text-[11px] text-[var(--tx-3)]">{r.stopLoss ?? <span className="text-[var(--tx-4)]">—</span>}</td>
+                  <td className="px-3 py-2.5 font-mono text-[11px] text-[var(--tx-3)] whitespace-nowrap">
                     {new Date(r.tradedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "2-digit" })}
                   </td>
-                  <td className="px-3 py-2.5 font-mono text-[11px] text-white/25 max-w-[100px] truncate">
-                    {r.notes || <span className="text-white/15">—</span>}
+                  <td className="px-3 py-2.5 font-mono text-[11px] text-[var(--tx-3)] max-w-[100px] truncate">
+                    {r.notes || <span className="text-[var(--tx-4)]">—</span>}
                   </td>
                 </tr>
               ))}
@@ -428,8 +429,8 @@ function PreviewStep({
           </table>
         </div>
         {validRows.length > 8 && (
-          <div className="px-4 py-2.5 border-t border-white/[0.04] bg-[#0a0e14]">
-            <span className="font-mono text-[10px] text-white/20">
+          <div className="px-4 py-2.5 border-t border-[var(--bd)] bg-[var(--bg-elevated)]">
+            <span className="font-mono text-[10px] text-[var(--tx-4)]">
               +{validRows.length - 8} more rows not shown
             </span>
           </div>
@@ -459,7 +460,7 @@ function PreviewStep({
         <button
           onClick={onBack}
           disabled={importing}
-          className="px-5 py-[13px] rounded-md bg-transparent border border-white/8 font-mono text-[12px] tracking-[0.06em] text-white/35 cursor-pointer transition-all duration-150 hover:border-white/18 hover:text-white/55 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-5 py-[13px] rounded-md bg-transparent border border-[var(--bd)] font-mono text-[12px] tracking-[0.06em] text-[var(--tx-3)] cursor-pointer transition-all duration-150 hover:border-[var(--bd-hi)] hover:text-[var(--tx-2)] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           ← Back
         </button>
@@ -469,13 +470,13 @@ function PreviewStep({
           className={cx(
             "py-[13px] rounded-[6px] font-mono text-[12px] font-semibold tracking-[0.1em] uppercase transition-all duration-200 border border-transparent",
             importing || validRows.length === 0
-              ? "bg-white/[0.04] text-white/20 cursor-not-allowed"
+              ? "bg-[var(--bg-overlay)] text-[var(--tx-4)] cursor-not-allowed"
               : "bg-teal-400 text-[#07090d] hover:bg-teal-300 cursor-pointer shadow-[0_0_24px_rgba(45,212,191,0.2)]",
           )}
         >
           {importing ? (
             <span className="flex items-center justify-center gap-2">
-              <span className="w-[10px] h-[10px] rounded-full border-[1.5px] border-white/15 border-t-white/50 inline-block animate-spin" />
+              <span className="w-[10px] h-[10px] rounded-full border-[1.5px] border-[var(--bd)] border-t-[var(--tx-2)] inline-block animate-spin" />
               Importing…
             </span>
           ) : `Import ${validRows.length} trade${validRows.length === 1 ? "" : "s"}`}
@@ -553,19 +554,19 @@ export function ImportClient() {
   if (success !== null) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
-        <div className="w-[52px] h-[52px] rounded-full bg-teal-400/10 border border-teal-400/30 flex items-center justify-center text-[22px] text-teal-400">
+        <div className="w-[52px] h-[52px] rounded-full bg-[var(--ac-2-dim)] border border-[var(--ac-2-ring)] flex items-center justify-center text-[22px] text-[var(--ac-2)]">
           ✓
         </div>
         <div className="text-center">
-          <p className="font-mono text-[14px] text-white/70 mb-1">
+          <p className="font-mono text-[14px] text-[var(--tx-2)] mb-1">
             {success.imported} trade{success.imported === 1 ? "" : "s"} imported successfully.
           </p>
           {success.duplicates > 0 && (
-            <p className="font-mono text-[11px] text-white/30">
+            <p className="font-mono text-[11px] text-[var(--tx-3)]">
               {success.duplicates} duplicate{success.duplicates === 1 ? "" : "s"} skipped.
             </p>
           )}
-          <p className="font-mono text-[11px] text-white/25 mt-2">Redirecting to your journal…</p>
+          <p className="font-mono text-[11px] text-[var(--tx-3)] mt-2">Redirecting to your journal…</p>
         </div>
       </div>
     );
@@ -580,7 +581,7 @@ export function ImportClient() {
           <p className="font-mono text-[12px] text-red-400">↳ {error}</p>
           <button
             onClick={handleReset}
-            className="shrink-0 font-mono text-[11px] text-white/30 hover:text-white/55 transition-colors duration-150 whitespace-nowrap"
+            className="shrink-0 font-mono text-[11px] text-[var(--tx-3)] hover:text-[var(--tx-1)] transition-colors duration-150 whitespace-nowrap"
           >
             Start over
           </button>

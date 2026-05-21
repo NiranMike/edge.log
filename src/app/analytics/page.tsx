@@ -30,16 +30,16 @@ function PageHeader({ tradeCount, dateRange }: { tradeCount?: number; dateRange?
   return (
     <div className="mb-6 sm:mb-8">
       <div className="flex items-center gap-3 mb-2 sm:mb-3">
-        <div className="w-5 h-px bg-teal-400/50" />
-        <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-teal-400/60">
+        <div className="w-5 h-px bg-[var(--ac-2)] opacity-50" />
+        <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--ac-2)] opacity-60">
           Analytics
         </span>
       </div>
-      <h1 className="font-display font-medium text-[20px] sm:text-[24px] tracking-[-0.03em] text-white mb-1">
+      <h1 className="font-display font-black text-[20px] sm:text-[24px] tracking-[-0.04em] text-[var(--tx-1)] mb-1">
         Performance breakdown
       </h1>
       {tradeCount !== undefined && (
-        <p className="font-mono text-[11px] sm:text-[12px] text-white/30">
+        <p className="font-mono text-[11px] sm:text-[12px] text-[var(--tx-3)]">
           {tradeCount} trades analysed
           {dateRange && dateRange !== "all" && ` · last ${dateRange}`}
         </p>
@@ -92,7 +92,7 @@ export default async function AnalyticsPage({
 
           <PageHeader tradeCount={analytics.totalTrades} dateRange={filters.dateRange} />
 
-          <div className="sticky top-0 z-30 -mx-4 sm:-mx-6 lg:-mx-10 px-4 sm:px-6 lg:px-10 py-3 mb-6 sm:mb-8 bg-[#07090d]/90 backdrop-blur-sm border-b border-white/[0.05]">
+          <div className="sticky top-0 z-30 -mx-4 sm:-mx-6 lg:-mx-10 px-4 sm:px-6 lg:px-10 py-3 mb-6 sm:mb-8 backdrop-blur-sm border-b border-[var(--bd)]" style={{ background: "color-mix(in srgb, var(--bg-base) 90%, transparent)" }}>
             <div className="w-full max-w-[1200px] mx-auto">
               <AnalyticsFilters filters={filters} allPairs={allPairs} />
             </div>
@@ -100,8 +100,8 @@ export default async function AnalyticsPage({
 
           {analytics.totalTrades === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 sm:py-24 text-center">
-              <p className="font-mono text-[13px] text-white/30 mb-1">No trades match your filters.</p>
-              <p className="font-mono text-[11px] text-white/18">Try widening the date range or clearing pair filters.</p>
+              <p className="font-mono text-[13px] text-[var(--tx-3)] mb-1">No trades match your filters.</p>
+              <p className="font-mono text-[11px] text-[var(--tx-4)]">Try widening the date range or clearing pair filters.</p>
             </div>
           ) : (
             <div className="space-y-4 sm:space-y-6">

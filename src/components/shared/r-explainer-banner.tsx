@@ -12,9 +12,9 @@ interface Example {
 }
 
 const EXAMPLES: Example[] = [
-  { r: 2.5,  label: "Made 2.5× your risk",      color: "text-emerald-400" },
-  { r: 1,    label: "Made exactly what you risked", color: "text-emerald-400/70" },
-  { r: -1,   label: "Lost your full risk amount", color: "text-red-400"    },
+  { r: 2.5,  label: "Made 2.5× your risk",      color: "text-[var(--win)]" },
+  { r: 1,    label: "Made exactly what you risked", color: "text-[var(--win)] opacity-70" },
+  { r: -1,   label: "Lost your full risk amount", color: "text-[var(--loss)]" },
 ];
 
 export function RExplainerBanner() {
@@ -44,7 +44,7 @@ export function RExplainerBanner() {
   return (
     <div
       className={cx(
-        "relative rounded-xl border border-teal-400/15 bg-teal-400/[0.03] overflow-hidden",
+        "relative rounded-xl border border-[var(--ac-2-ring)] bg-[var(--ac-2-dim)] overflow-hidden",
         "transition-all duration-300",
         leaving ? "opacity-0 translate-y-1" : "opacity-100 translate-y-0",
       )}
@@ -55,15 +55,15 @@ export function RExplainerBanner() {
       <div className="flex items-start gap-4 px-5 py-4">
 
         {/* icon */}
-        <div className="shrink-0 mt-0.5 w-8 h-8 rounded-lg bg-teal-400/10 border border-teal-400/20 flex items-center justify-center">
-          <span className="font-mono text-[13px] font-bold text-teal-400">R</span>
+        <div className="shrink-0 mt-0.5 w-8 h-8 rounded-lg bg-[var(--ac-2-dim)] border border-[var(--ac-2-ring)] flex items-center justify-center">
+          <span className="font-mono text-[13px] font-bold text-[var(--ac-2)]">R</span>
         </div>
 
         <div className="flex-1 min-w-0">
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-teal-400/60 mb-1.5">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--ac-2)] opacity-60 mb-1.5">
             Understanding R-multiples
           </p>
-          <p className="font-mono text-[12px] text-white/40 leading-relaxed mb-3">
+          <p className="font-mono text-[12px] text-[var(--tx-3)] leading-relaxed mb-3">
             Every result is shown as a multiple of your initial risk — so you can
             compare trades regardless of account size or position size.
           </p>
@@ -73,18 +73,18 @@ export function RExplainerBanner() {
             {EXAMPLES.map(ex => (
               <div
                 key={ex.r}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06]"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--bg-overlay)] border border-[var(--bd)]"
               >
                 <span className={cx("font-mono text-[13px] font-medium", ex.color)}>
                   {ex.r > 0 ? "+" : ""}{ex.r}R
                 </span>
-                <span className="font-mono text-[9px] text-white/20 uppercase tracking-[0.1em]">
+                <span className="font-mono text-[9px] text-[var(--tx-4)] uppercase tracking-[0.1em]">
                   =
                 </span>
-                <span className="font-mono text-[10px] text-white/30">
+                <span className="font-mono text-[10px] text-[var(--tx-3)]">
                   {ex.label}
                 </span>
-                <span className="font-mono text-[9px] text-white/15 ml-1">
+                <span className="font-mono text-[9px] text-[var(--tx-4)] ml-1">
                   ({ex.r > 0 ? `1:${Math.abs(ex.r).toFixed(2)}` : `${Math.abs(ex.r).toFixed(2)}:1`} RR)
                 </span>
               </div>
@@ -97,7 +97,7 @@ export function RExplainerBanner() {
           type="button"
           onClick={dismiss}
           aria-label="Dismiss"
-          className="shrink-0 w-6 h-6 rounded-md flex items-center justify-center text-white/15 hover:text-white/45 hover:bg-white/5 transition-colors duration-150"
+          className="shrink-0 w-6 h-6 rounded-md flex items-center justify-center text-[var(--tx-4)] hover:text-[var(--tx-2)] hover:bg-[var(--bg-overlay)] transition-colors duration-150"
         >
           <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
             <path d="M1.5 1.5l7 7M8.5 1.5l-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>

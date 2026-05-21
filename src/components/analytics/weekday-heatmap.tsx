@@ -11,7 +11,7 @@ interface Props {
 }
 
 function getHeatColor(avgR: number, trades: number): string {
-  if (trades === 0) return "bg-white/[0.03] border-white/[0.05]";
+  if (trades === 0) return "bg-[var(--bg-overlay)] border-[var(--bd)]";
   if (avgR >= 1.5)  return "bg-emerald-400/25 border-emerald-400/30";
   if (avgR >= 0.5)  return "bg-emerald-400/12 border-emerald-400/15";
   if (avgR >= 0)    return "bg-emerald-400/[0.06] border-emerald-400/[0.08]";
@@ -24,14 +24,14 @@ export function WeekdayHeatmap({ weekdays }: Props) {
   const maxTrades = Math.max(...weekdays.map(d => d.trades), 1);
 
   return (
-    <div className="rounded-xl bg-[#0d1117] border border-white/[0.065] overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.05]">
+    <div className="rounded-xl bg-[var(--bg-surface)] border border-[var(--bd)] overflow-hidden">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--bd)]">
         <div className="flex items-center gap-3">
-          <div className="w-4 h-px bg-teal-400/50" />
-          <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/40">Day of Week</h2>
+          <div className="w-4 h-px bg-[var(--ac-2)] opacity-50" />
+          <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--tx-3)]">Day of Week</h2>
           <Tooltip content={TOOLTIP_COPY.weekdayHeatmap} />
         </div>
-        <span className="font-mono text-[10px] text-white/15">Avg R per weekday</span>
+        <span className="font-mono text-[10px] text-[var(--tx-4)]">Avg R per weekday</span>
       </div>
 
       <div className="p-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
@@ -46,24 +46,24 @@ export function WeekdayHeatmap({ weekdays }: Props) {
                 day.trades === 0 ? "opacity-40" : "opacity-100",
               )}
             >
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/30 mb-2">
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--tx-3)] mb-2">
                 {day.day}
               </p>
 
               {day.trades === 0 ? (
-                <span className="font-mono text-[18px] text-white/15 leading-none">—</span>
+                <span className="font-mono text-[18px] text-[var(--tx-4)] leading-none">—</span>
               ) : (
                 <RLabel value={day.avgR} size="md" showRatio={false} muted={false} />
               )}
 
               {day.trades > 0 && (
                 <div className="flex items-center justify-between mt-1.5">
-                  <span className="font-mono text-[9px] text-white/20">{day.trades}t</span>
-                  <span className="font-mono text-[9px] text-white/30">{day.winRate}%</span>
+                  <span className="font-mono text-[9px] text-[var(--tx-4)]">{day.trades}t</span>
+                  <span className="font-mono text-[9px] text-[var(--tx-3)]">{day.winRate}%</span>
                 </div>
               )}
 
-              <div className="mt-2 h-[2px] rounded-full bg-white/[0.06] overflow-hidden">
+              <div className="mt-2 h-[2px] rounded-full bg-[var(--bd)] overflow-hidden">
                 <div
                   className={cx(
                     "h-full rounded-full",
@@ -77,8 +77,8 @@ export function WeekdayHeatmap({ weekdays }: Props) {
         })}
       </div>
 
-      <div className="flex items-center gap-4 px-5 py-3 border-t border-white/[0.04]">
-        <span className="font-mono text-[9px] text-white/15 uppercase tracking-[0.1em]">Intensity</span>
+      <div className="flex items-center gap-4 px-5 py-3 border-t border-[var(--bd)]">
+        <span className="font-mono text-[9px] text-[var(--tx-4)] uppercase tracking-[0.1em]">Intensity</span>
         <div className="flex items-center gap-1.5">
           {[
             "bg-red-400/25",
@@ -91,7 +91,7 @@ export function WeekdayHeatmap({ weekdays }: Props) {
             <div key={i} className={cx("w-5 h-[6px] rounded-[2px]", cls)} />
           ))}
         </div>
-        <span className="font-mono text-[9px] text-white/15">red = loss · green = win</span>
+        <span className="font-mono text-[9px] text-[var(--tx-4)]">red = loss · green = win</span>
       </div>
     </div>
   );

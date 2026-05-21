@@ -95,8 +95,8 @@ export function PairSelect({ selected, allPairs, onChange }: PairSelectProps) {
         className={cx(
           "flex items-center gap-2 px-3 py-1.75 rounded-md font-mono text-[11px] border transition-all duration-150",
           open || selected.length > 0
-            ? "bg-teal-400/8 border-teal-400/25 text-teal-400"
-            : "bg-white/2.5 border-white/8 text-white/40 hover:border-white/15 hover:text-white/60",
+            ? "bg-[var(--ac-2-dim)] border-[var(--ac-2-ring)] text-[var(--ac-2)]"
+            : "bg-[var(--bg-overlay)] border-[var(--bd)] text-[var(--tx-3)] hover:border-[var(--bd-hi)] hover:text-[var(--tx-2)]",
         )}
       >
         {label}
@@ -115,15 +115,15 @@ export function PairSelect({ selected, allPairs, onChange }: PairSelectProps) {
             left:            rect.left   + window.scrollX,
             minWidth:        180,
             zIndex:          9999,
-            backgroundColor: "#0d1117",
+            backgroundColor: "var(--bg-elevated)",
           }}
-          className="rounded-[8px] border border-white/[0.1] shadow-[0_16px_48px_rgba(0,0,0,0.8)] py-1.5 overflow-hidden"
+          className="rounded-[8px] border border-[var(--bd-hi)] shadow-[0_16px_48px_rgba(0,0,0,0.5)] py-1.5 overflow-hidden"
         >
           {selected.length > 0 && (
             <button
               type="button"
               onClick={() => { onChange([]); setOpen(false); }}
-              className="w-full text-left px-3 py-[7px] font-mono text-[10px] text-white/30 hover:text-white/55 hover:bg-white/[0.04] transition-colors tracking-[0.06em] uppercase border-b border-white/[0.05] mb-1"
+              className="w-full text-left px-3 py-[7px] font-mono text-[10px] text-[var(--tx-3)] hover:text-[var(--tx-2)] hover:bg-[var(--bg-overlay)] transition-colors tracking-[0.06em] uppercase border-b border-[var(--bd)] mb-1"
             >
               Clear all
             </button>
@@ -136,11 +136,11 @@ export function PairSelect({ selected, allPairs, onChange }: PairSelectProps) {
                 type="button"
                 onMouseDown={e => e.preventDefault()}
                 onClick={() => toggle(pair)}
-                className="w-full flex items-center justify-between px-3 py-2 font-mono text-[12px] text-white/60 hover:bg-white/4 hover:text-white/80 transition-colors cursor-pointer"
+                className="w-full flex items-center justify-between px-3 py-2 font-mono text-[12px] text-[var(--tx-2)] hover:bg-[var(--bg-overlay)] hover:text-[var(--tx-1)] transition-colors cursor-pointer"
               >
                 <span className="tracking-[0.04em]">{pair}</span>
                 {active && (
-                  <svg width="10" height="8" viewBox="0 0 10 8" fill="none" className="text-teal-400 shrink-0">
+                  <svg width="10" height="8" viewBox="0 0 10 8" fill="none" className="text-[var(--ac-2)] shrink-0">
                     <path d="M1 4l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 )}
@@ -158,7 +158,7 @@ export function FilterContent({ filters, allPairs, onUpdate, isPending }: Filter
   return (
     <div className="flex flex-wrap items-center gap-2">
 
-      <div className="flex items-center gap-1 p-1 rounded-[7px] bg-white/3 border border-white/6">
+      <div className="flex items-center gap-1 p-1 rounded-[7px] bg-[var(--bg-overlay)] border border-[var(--bd)]">
         {DATE_RANGES.map(({ value, label }) => {
           const active = filters.dateRange === value;
           return (
@@ -170,8 +170,8 @@ export function FilterContent({ filters, allPairs, onUpdate, isPending }: Filter
               className={cx(
                 "px-3 py-1.25 rounded-[5px] font-mono text-[11px] tracking-[0.06em] transition-all duration-150 cursor-pointer disabled:cursor-not-allowed",
                 active
-                  ? "bg-white/8 text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
-                  : "text-white/30 hover:text-white/55",
+                  ? "bg-[var(--bg-elevated)] text-[var(--tx-1)]"
+                  : "text-[var(--tx-3)] hover:text-[var(--tx-2)]",
               )}
             >
               {label}
@@ -180,7 +180,7 @@ export function FilterContent({ filters, allPairs, onUpdate, isPending }: Filter
         })}
       </div>
 
-      <div className="flex items-center gap-1 p-1 rounded-[7px] bg-white/3 border border-white/6">
+      <div className="flex items-center gap-1 p-1 rounded-[7px] bg-[var(--bg-overlay)] border border-[var(--bd)]">
         {DIRECTIONS.map(({ value, label }) => {
           const active = filters.direction === value;
           return (
@@ -193,11 +193,11 @@ export function FilterContent({ filters, allPairs, onUpdate, isPending }: Filter
                 "px-3 py-1.25 rounded-[5px] font-mono text-[11px] tracking-[0.04em] transition-all duration-150 cursor-pointer disabled:cursor-not-allowed",
                 active
                   ? value === "LONG"
-                    ? "bg-emerald-400/12 text-emerald-400"
+                    ? "bg-[var(--win-dim)] text-[var(--win)]"
                     : value === "SHORT"
-                    ? "bg-red-400/10 text-red-400"
-                    : "bg-white/8 text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
-                  : "text-white/30 hover:text-white/55",
+                    ? "bg-[var(--loss-dim)] text-[var(--loss)]"
+                    : "bg-[var(--bg-elevated)] text-[var(--tx-1)]"
+                  : "text-[var(--tx-3)] hover:text-[var(--tx-2)]",
               )}
             >
               {label}
@@ -238,22 +238,22 @@ export function BottomSheet({ open, onClose, children }: BottomSheetProps) {
       />
       <div
         className={cx(
-          "fixed bottom-0 left-0 right-0 z-50 rounded-t-2xl border-t border-white/8 p-5 transition-transform duration-300 ease-out",
+          "fixed bottom-0 left-0 right-0 z-50 rounded-t-2xl border-t border-[var(--bd)] p-5 transition-transform duration-300 ease-out",
         )}
         style={{
-          backgroundColor: "#0d1117",
+          backgroundColor: "var(--bg-surface)",
           transform: open ? "translateY(0)" : "translateY(100%)",
         }}
       >
-        <div className="w-8 h-0.75 rounded-full bg-white/15 mx-auto mb-5" />
-        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/25 mb-4">
+        <div className="w-8 h-0.75 rounded-full bg-[var(--bd-hi)] mx-auto mb-5" />
+        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--tx-3)] mb-4">
           Filters
         </p>
         {children}
         <button
           type="button"
           onClick={onClose}
-          className="mt-5 w-full py-2.75 rounded-lg bg-white/4 border border-white/8 font-mono text-[12px] text-white/40 hover:text-white/60 transition-colors"
+          className="mt-5 w-full py-2.75 rounded-lg bg-[var(--bg-overlay)] border border-[var(--bd)] font-mono text-[12px] text-[var(--tx-3)] hover:text-[var(--tx-2)] transition-colors"
         >
           Done
         </button>
@@ -290,7 +290,7 @@ export function AnalyticsFilters({ filters, allPairs }: Props) {
       </div>
 
       <div className="flex items-center justify-between sm:hidden">
-        <span className="font-mono text-[11px] text-white/30 tracking-[0.06em]">
+        <span className="font-mono text-[11px] text-[var(--tx-3)] tracking-[0.06em]">
           {filters.dateRange !== "all" ? `Last ${filters.dateRange}` : "All time"}
           {filters.direction !== "ALL" && ` · ${filters.direction}`}
           {filters.pairs.length > 0 && ` · ${filters.pairs.length} pair${filters.pairs.length > 1 ? "s" : ""}`}
@@ -302,8 +302,8 @@ export function AnalyticsFilters({ filters, allPairs }: Props) {
           className={cx(
             "flex items-center gap-2 px-3 py-1.75 rounded-md font-mono text-[11px] border transition-all duration-150",
             badgeCount > 0
-              ? "bg-teal-400/8 border-teal-400/25 text-teal-400"
-              : "bg-white/2.5 border-white/8 text-white/40",
+              ? "bg-[var(--ac-2-dim)] border-[var(--ac-2-ring)] text-[var(--ac-2)]"
+              : "bg-[var(--bg-overlay)] border-[var(--bd)] text-[var(--tx-3)]",
           )}
         >
           <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
@@ -313,7 +313,7 @@ export function AnalyticsFilters({ filters, allPairs }: Props) {
           </svg>
           Filters
           {badgeCount > 0 && (
-            <span className="w-4 h-4 rounded-full bg-teal-400 text-[#07090d] font-mono text-[9px] font-bold flex items-center justify-center">
+            <span className="w-4 h-4 rounded-full bg-[var(--ac-2)] text-[var(--bg-base)] font-mono text-[9px] font-bold flex items-center justify-center">
               {badgeCount}
             </span>
           )}

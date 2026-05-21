@@ -54,11 +54,11 @@ function Dropdown({
       style={{ position: "absolute", top, left, width: anchorRect.width, zIndex: 9999, minWidth: 220 }}
     >
       <div
-        style={{ backgroundColor: "#0d1117" }}
-        className="rounded-[10px] border border-white/[0.1] shadow-[0_24px_80px_rgba(0,0,0,0.85),0_0_0_1px_rgba(255,255,255,0.05)] overflow-hidden"
+        style={{ backgroundColor: "var(--bg-elevated)" }}
+        className="rounded-[10px] border border-[var(--bd-hi)] shadow-[0_24px_80px_rgba(0,0,0,0.85)] overflow-hidden"
       >
-        <div className="px-3 pt-3 pb-2 border-b border-white/[0.06]">
-          <div className="flex items-center gap-2 px-3 py-[9px] rounded-[6px] bg-white/[0.04] border border-white/[0.07]">
+        <div className="px-3 pt-3 pb-2 border-b border-[var(--bd)]">
+          <div className="flex items-center gap-2 px-3 py-[9px] rounded-[6px] bg-[var(--bg-overlay)] border border-[var(--bd)]">
             <svg width="11" height="11" viewBox="0 0 11 11" fill="none" className="shrink-0 opacity-30">
               <circle cx="4.5" cy="4.5" r="3.5" stroke="currentColor" strokeWidth="1.2"/>
               <path d="M7.5 7.5L10 10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
@@ -68,7 +68,7 @@ function Dropdown({
               value={query}
               onChange={e => onQueryChange(e.target.value.toUpperCase())}
               placeholder="Search pairs…"
-              className="flex-1 bg-transparent font-mono text-[12px] text-white/80 outline-none placeholder:text-white/20 tracking-[0.04em]"
+              className="flex-1 bg-transparent font-mono text-[12px] text-[var(--tx-1)] outline-none placeholder:text-[var(--tx-4)] tracking-[0.04em]"
               onKeyDown={e => {
                 if (e.key === "ArrowDown") { e.preventDefault(); onActiveChange(Math.min(activeIndex + 1, filteredPairs.length - 1 + (hasCustom ? 1 : 0))); }
                 if (e.key === "ArrowUp")   { e.preventDefault(); onActiveChange(Math.max(activeIndex - 1, 0)); }
@@ -84,7 +84,7 @@ function Dropdown({
                 type="button"
                 onClick={() => onQueryChange("")}
                 onMouseDown={e => e.preventDefault()}
-                className="text-white/20 hover:text-white/50 transition-colors text-[14px] leading-none"
+                className="text-[var(--tx-4)] hover:text-[var(--tx-2)] transition-colors text-[14px] leading-none"
               >
                 ×
               </button>
@@ -95,7 +95,7 @@ function Dropdown({
         {/* List */}
         <div ref={listRef} className="max-h-[240px] overflow-y-auto py-2">
           {grouped.length === 0 && !hasCustom ? (
-            <div className="px-4 py-6 text-center font-mono text-[11px] text-white/20">
+            <div className="px-4 py-6 text-center font-mono text-[11px] text-[var(--tx-4)]">
               No pairs found
             </div>
           ) : (
@@ -104,7 +104,7 @@ function Dropdown({
                 return (
                   <div key={group}>
                     <div className="px-3 pt-2 pb-1">
-                      <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/20">
+                      <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--tx-4)]">
                         {group}
                       </span>
                     </div>
@@ -119,14 +119,14 @@ function Dropdown({
                           onMouseEnter={() => onActiveChange(flatIdx)}
                           onMouseDown={e => e.preventDefault()}
                           onClick={() => onSelect(item)}
-                          style={isActive ? { backgroundColor: "rgba(255,255,255,0.05)" } : {}}
+                          style={isActive ? { backgroundColor: "var(--bg-overlay)" } : {}}
                           className="w-full flex items-center justify-between px-3 py-[8px] transition-colors duration-75 cursor-pointer"
                         >
-                          <span className="font-mono text-[12px] text-white/70 tracking-[0.06em]">
+                          <span className="font-mono text-[12px] text-[var(--tx-2)] tracking-[0.06em]">
                             {item}
                           </span>
                           {isActive && (
-                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className="text-emerald-400/60">
+                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className="text-[var(--ac-1)] opacity-60">
                               <path d="M2 5l2.5 2.5L8 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
                           )}
@@ -140,7 +140,7 @@ function Dropdown({
               {hasCustom && (
                 <div>
                   <div className="px-3 pt-2 pb-1">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/20">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--tx-4)]">
                       Custom
                     </span>
                   </div>
@@ -150,13 +150,13 @@ function Dropdown({
                     onMouseEnter={() => onActiveChange(filteredPairs.length)}
                     onMouseDown={e => e.preventDefault()}
                     onClick={() => onSelect(query)}
-                    style={activeIndex === filteredPairs.length ? { backgroundColor: "rgba(255,255,255,0.05)" } : {}}
+                    style={activeIndex === filteredPairs.length ? { backgroundColor: "var(--bg-overlay)" } : {}}
                     className="w-full flex items-center justify-between px-3 py-[8px] transition-colors duration-75 cursor-pointer"
                   >
-                    <span className="font-mono text-[12px] text-white/70 tracking-[0.06em]">
+                    <span className="font-mono text-[12px] text-[var(--tx-2)] tracking-[0.06em]">
                       {query}
                     </span>
-                    <span className="font-mono text-[9px] text-white/20 uppercase tracking-[0.1em]">
+                    <span className="font-mono text-[9px] text-[var(--tx-4)] uppercase tracking-[0.1em]">
                       use this
                     </span>
                   </button>
@@ -232,13 +232,13 @@ export function PairSelect({ value, onChange, hasError }: Props) {
           "w-full px-[14px] py-[11px] rounded-[6px] font-mono text-[13px] text-left outline-none",
           "transition-all duration-200 flex items-center justify-between gap-2",
           open
-            ? "bg-white/[0.04] border border-emerald-400/40 shadow-[0_0_0_3px_rgba(74,222,128,0.06)]"
+            ? "bg-[var(--bg-input-focus)] border border-[var(--ac-1-ring)] shadow-[0_0_0_3px_var(--ac-1-dim)]"
             : hasError
-            ? "bg-white/[0.025] border border-red-400/60"
-            : "bg-white/[0.025] border border-white/[0.08] hover:border-white/15",
+            ? "bg-[var(--bg-input)] border border-red-400/60"
+            : "bg-[var(--bg-input)] border border-[var(--bd)] hover:border-[var(--bd-hi)]",
         ].join(" ")}
       >
-        <span className={hasValue ? "text-white/88" : "text-white/25"}>
+        <span className={hasValue ? "text-[var(--tx-1)]" : "text-[var(--tx-4)]"}>
           {displayValue}
         </span>
         <svg

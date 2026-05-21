@@ -17,7 +17,7 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
 
     return (
       <div className="flex flex-col gap-1.5">
-        <label className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/38">
+        <label className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--tx-3)]">
           {label}
         </label>
 
@@ -43,7 +43,7 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
               onClick={() => setShow((s) => !s)}
               tabIndex={-1}
               aria-label={show ? "Hide password" : "Show password"}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/22 hover:text-white/55 transition-colors"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--tx-4)] hover:text-[var(--tx-2)] transition-colors"
             >
               {show ? <EyeOff /> : <EyeOn />}
             </button>
@@ -56,7 +56,7 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
           </p>
         )}
         {hint && !error && (
-          <p className="font-mono text-[10px] text-white/20">{hint}</p>
+          <p className="font-mono text-[10px] text-[var(--tx-4)]">{hint}</p>
         )}
       </div>
     );
@@ -77,7 +77,7 @@ export function PasswordStrength({ value }: { value: string }) {
   const score = checks.filter((c) => c.ok).length;
   const barColor = (["bg-red-500", "bg-teal-500", "bg-yellow-400", "bg-emerald-400"] as const)[
     Math.min(score - 1, 3)
-  ] ?? "bg-white/10";
+  ] ?? "bg-[var(--bd)]";
 
   return (
     <div className="mt-2 space-y-2">
@@ -85,7 +85,7 @@ export function PasswordStrength({ value }: { value: string }) {
         {[0, 1, 2, 3].map((i) => (
           <div
             key={i}
-            className={cx("h-0.5 flex-1 rounded-full transition-all duration-300", i < score ? barColor : "bg-white/[0.07]")}
+            className={cx("h-0.5 flex-1 rounded-full transition-all duration-300", i < score ? barColor : "bg-[var(--bd)]")}
           />
         ))}
       </div>
@@ -96,8 +96,8 @@ export function PasswordStrength({ value }: { value: string }) {
             className={cx(
               "font-mono text-[9px] px-1.5 py-0.5 border transition-colors duration-200",
               ok
-                ? "border-emerald-400/25 text-emerald-400/70 bg-emerald-400/6"
-                : "border-white/6 text-white/20",
+                ? "border-[var(--ac-1-ring)] text-[var(--ac-1)] bg-[var(--ac-1-dim)]"
+                : "border-[var(--bd)] text-[var(--tx-4)]",
             )}
           >
             {ok && "✓ "}{label}
@@ -125,10 +125,10 @@ export function AuthButton({
       className={cx(
         "group relative overflow-hidden w-full font-mono font-bold text-[11px] uppercase tracking-[0.16em]",
         "px-6 py-4 transition-all duration-150",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#07090d]",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ac-1-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-base)]",
         isPrimary
-          ? "bg-emerald-400 text-black hover:bg-emerald-300 disabled:bg-emerald-400/35 disabled:text-black/40"
-          : "border border-white/[0.08] text-white/35 hover:border-white/20 hover:text-white/60 disabled:opacity-40",
+          ? "bg-[var(--ac-1)] text-[var(--bg-base)] hover:opacity-90 disabled:opacity-40"
+          : "border border-[var(--bd)] text-[var(--tx-3)] hover:border-[var(--bd-hi)] hover:text-[var(--tx-2)] disabled:opacity-40",
         loading && "cursor-wait",
         className,
       )}
@@ -147,9 +147,9 @@ export function AuthButton({
 export function AuthDivider({ label = "or" }: { label?: string }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="flex-1 h-px bg-white/6" />
-      <span className="font-mono text-[9px] uppercase tracking-widest text-white/18">{label}</span>
-      <div className="flex-1 h-px bg-white/6" />
+      <div className="flex-1 h-px bg-[var(--bd)]" />
+      <span className="font-mono text-[9px] uppercase tracking-widest text-[var(--tx-4)]">{label}</span>
+      <div className="flex-1 h-px bg-[var(--bd)]" />
     </div>
   );
 }

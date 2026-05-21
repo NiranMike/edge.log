@@ -64,7 +64,7 @@ function AnimatedR({ value }: { value: number }) {
     <span
       className={[
         "font-mono text-[22px] sm:text-[28px] font-medium tracking-[-0.04em] inline-block transition-all duration-200",
-        value >= 0 ? "text-emerald-400" : "text-red-400",
+        value >= 0 ? "text-[var(--win)]" : "text-[var(--loss)]",
         flash ? "scale-110 opacity-85" : "scale-100 opacity-100",
       ].join(" ")}
       style={{ transitionTimingFunction: "cubic-bezier(0.34,1.56,0.64,1)" }}
@@ -78,10 +78,11 @@ function StepDot({ active, done }: { active: boolean; done: boolean }) {
   return (
     <div className={[
       "w-[6px] h-[6px] rounded-full transition-all duration-300",
-      done    ? "bg-emerald-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]"
-      : active ? "bg-emerald-400/50"
-               : "bg-white/10",
-    ].join(" ")} />
+      done    ? "shadow-[0_0_8px_rgba(74,222,128,0.5)]" : "",
+    ].join(" ")}
+    style={{
+      background: done ? "var(--ac-1)" : active ? "color-mix(in srgb, var(--ac-1) 50%, transparent)" : "var(--bd-hi)",
+    }} />
   );
 }
 
@@ -91,9 +92,9 @@ function SectionLabel({ label, optional }: { label: string; optional?: boolean }
       <div className="w-5 h-px bg-emerald-400/40 shrink-0" />
       <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-emerald-400/60">
         {label}
-        {optional && <span className="ml-[6px] text-white/20 normal-case tracking-normal"> — optional</span>}
+        {optional && <span className="ml-[6px] text-[var(--tx-4)] normal-case tracking-normal"> — optional</span>}
       </span>
-      <div className="flex-1 h-px bg-white/[0.04]" />
+      <div className="flex-1 h-px bg-[var(--bd)]" />
     </div>
   );
 }
@@ -106,11 +107,11 @@ function Field({
   return (
     <div>
       <div className="flex items-baseline justify-between mb-[7px]">
-        <label className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">
+        <label className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--tx-3)]">
           {label}
-          {optional && <span className="ml-[6px] text-white/18 normal-case tracking-normal">optional</span>}
+          {optional && <span className="ml-[6px] text-[var(--tx-4)] normal-case tracking-normal">optional</span>}
         </label>
-        {hint && <span className="font-mono text-[10px] text-white/22 hidden sm:inline">{hint}</span>}
+        {hint && <span className="font-mono text-[10px] text-[var(--tx-4)] hidden sm:inline">{hint}</span>}
       </div>
       {children}
       <div className={["overflow-hidden transition-all duration-200", error ? "max-h-[30px] mt-[5px]" : "max-h-0"].join(" ")}>
@@ -128,17 +129,18 @@ function Input({ hasError, ...props }: React.InputHTMLAttributes<HTMLInputElemen
       onFocus={e => { setFocused(true); props.onFocus?.(e); }}
       onBlur={e  => { setFocused(false); props.onBlur?.(e); }}
       className={[
-        "w-full px-[14px] py-[13px] sm:py-[11px] rounded-[6px] font-mono text-[14px] sm:text-[13px] text-white/88 outline-none",
-        "transition-all duration-200 placeholder:text-white/18 [color-scheme:dark]",
+        "w-full px-[14px] py-[13px] sm:py-[11px] rounded-[6px] font-mono text-[14px] sm:text-[13px] text-[var(--tx-1)] outline-none",
+        "transition-all duration-200 placeholder:text-[var(--tx-4)]",
         "[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
         focused
           ? hasError
-            ? "bg-white/[0.04] border border-red-400/60 shadow-[0_0_0_3px_rgba(248,113,113,0.08)]"
-            : "bg-white/[0.04] border border-emerald-400/40 shadow-[0_0_0_3px_rgba(74,222,128,0.06)]"
+            ? "border border-red-400/60 shadow-[0_0_0_3px_rgba(248,113,113,0.08)]"
+            : "border border-[var(--ac-1-ring)] shadow-[0_0_0_3px_var(--ac-1-dim)]"
           : hasError
-          ? "bg-white/[0.025] border border-red-400/60"
-          : "bg-white/[0.025] border border-white/[0.08]",
+          ? "border border-red-400/60"
+          : "border border-[var(--bd)]",
       ].join(" ")}
+      style={{ background: focused ? "var(--bg-input-focus)" : "var(--bg-input)" }}
     />
   );
 }
@@ -154,14 +156,15 @@ function Textarea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
         onBlur={e  => { setFocused(false); props.onBlur?.(e); }}
         onChange={e => { setCharCount(e.target.value.length); props.onChange?.(e); }}
         className={[
-          "w-full px-[14px] py-[13px] sm:py-[12px] rounded-[6px] font-mono text-[14px] sm:text-[13px] text-white/88 outline-none",
-          "resize-vertical leading-[1.65] transition-all duration-200 placeholder:text-white/18",
+          "w-full px-[14px] py-[13px] sm:py-[12px] rounded-[6px] font-mono text-[14px] sm:text-[13px] text-[var(--tx-1)] outline-none",
+          "resize-vertical leading-[1.65] transition-all duration-200 placeholder:text-[var(--tx-4)]",
           focused
-            ? "bg-white/[0.04] border border-emerald-400/40 shadow-[0_0_0_3px_rgba(74,222,128,0.06)]"
-            : "bg-white/[0.025] border border-white/[0.08]",
+            ? "border border-[var(--ac-1-ring)] shadow-[0_0_0_3px_var(--ac-1-dim)]"
+            : "border border-[var(--bd)]",
         ].join(" ")}
+        style={{ background: focused ? "var(--bg-input-focus)" : "var(--bg-input)" }}
       />
-      <span className="absolute bottom-[10px] right-[12px] font-mono text-[10px] text-white/18 pointer-events-none">
+      <span className="absolute bottom-[10px] right-[12px] font-mono text-[10px] text-[var(--tx-4)] pointer-events-none">
         {charCount}
       </span>
     </div>
@@ -223,7 +226,7 @@ function ScreenshotUploader({
   return (
     <div>
       {preview ? (
-        <div className="relative rounded-[6px] overflow-hidden border border-white/[0.08] bg-white/[0.02] group">
+        <div className="relative rounded-[6px] overflow-hidden border border-[var(--bd)] bg-[var(--bg-overlay)] group">
           <div className="relative w-full aspect-video">
             <Image
               src={preview}
@@ -238,7 +241,7 @@ function ScreenshotUploader({
             <button
               type="button"
               onClick={() => inputRef.current?.click()}
-              className="px-3 py-1.5 rounded font-mono text-[11px] text-white/70 bg-white/[0.08] border border-white/[0.12] hover:bg-white/[0.14] transition-colors duration-150"
+              className="px-3 py-1.5 rounded font-mono text-[11px] text-[var(--tx-2)] bg-[var(--bg-overlay)] border border-[var(--bd-hi)] hover:bg-[var(--bg-elevated)] transition-colors duration-150"
             >
               Replace
             </button>
@@ -253,8 +256,8 @@ function ScreenshotUploader({
           {/* Upload progress overlay */}
           {uploading && (
             <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center gap-2">
-              <span className="w-5 h-5 rounded-full border-2 border-white/15 border-t-emerald-400 animate-spin" />
-              <span className="font-mono text-[11px] text-white/50">Uploading…</span>
+              <span className="w-5 h-5 rounded-full border-2 border-[var(--bd)] border-t-[var(--ac-1)] animate-spin" />
+              <span className="font-mono text-[11px] text-[var(--tx-2)]">Uploading…</span>
             </div>
           )}
         </div>
@@ -267,25 +270,25 @@ function ScreenshotUploader({
             "relative flex flex-col items-center justify-center gap-2 w-full py-8 sm:py-10 rounded-[6px] border border-dashed cursor-pointer",
             "transition-all duration-200",
             uploading
-              ? "border-emerald-400/30 bg-emerald-400/[0.03]"
-              : "border-white/[0.10] bg-white/[0.02] hover:border-white/[0.18] hover:bg-white/[0.04]",
+              ? "border-[var(--ac-1-ring)] bg-[var(--ac-1-dim)]"
+              : "border-[var(--bd)] bg-[var(--bg-overlay)] hover:border-[var(--bd-hi)] hover:bg-[var(--bg-input)]",
           ].join(" ")}
         >
           {uploading ? (
             <>
-              <span className="w-5 h-5 rounded-full border-2 border-white/15 border-t-emerald-400 animate-spin" />
-              <span className="font-mono text-[11px] text-white/35">Uploading…</span>
+              <span className="w-5 h-5 rounded-full border-2 border-[var(--bd)] border-t-[var(--ac-1)] animate-spin" />
+              <span className="font-mono text-[11px] text-[var(--tx-3)]">Uploading…</span>
             </>
           ) : (
             <>
-              <div className="w-8 h-8 rounded-full bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-white/25 text-[14px]">
+              <div className="w-8 h-8 rounded-full bg-[var(--bg-overlay)] border border-[var(--bd)] flex items-center justify-center text-[var(--tx-4)] text-[14px]">
                 ↑
               </div>
               <div className="text-center">
-                <p className="font-mono text-[12px] text-white/40">
-                  Drop screenshot here or <span className="text-emerald-400/70">browse</span>
+                <p className="font-mono text-[12px] text-[var(--tx-3)]">
+                  Drop screenshot here or <span className="text-[var(--ac-1)] opacity-70">browse</span>
                 </p>
-                <p className="font-mono text-[10px] text-white/20 mt-[3px]">
+                <p className="font-mono text-[10px] text-[var(--tx-4)] mt-[3px]">
                   PNG, JPG, WEBP — max 8MB
                 </p>
               </div>
@@ -371,7 +374,7 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
         <div className="w-[52px] h-[52px] rounded-full bg-emerald-400/10 border border-emerald-400/30 flex items-center justify-center text-[22px] text-emerald-400 animate-[popIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
           ✓
         </div>
-        <p className="font-mono text-[13px] text-white/50 text-center">Logged. Redirecting…</p>
+        <p className="font-mono text-[13px] text-[var(--tx-3)] text-center">Logged. Redirecting…</p>
       </div>
     );
   }
@@ -394,24 +397,24 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
             <StepDot active={!step1done} done={step1done} />
             <StepDot active={step1done && !step2done} done={step2done} />
             <StepDot active={step2done && !step3done} done={step3done} />
-            <span className="ml-2 font-mono text-[10px] uppercase tracking-[0.14em] text-white/20">
+            <span className="ml-2 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--tx-4)]">
               {!step1done ? "start here" : !step2done ? "add levels" : !step3done ? "add exit" : "ready to log"}
             </span>
           </div>
           <div className="flex items-start gap-3">
             <div className="w-[3px] h-10 sm:h-11 mt-1 rounded-full shrink-0 bg-gradient-to-b from-emerald-400 to-transparent" />
             <div>
-              <h1 className="font-display font-normal text-[20px] sm:text-[24px] tracking-[-0.03em] text-white/95 mb-[5px] leading-[1.15]">
+              <h1 className="font-display font-black text-[20px] sm:text-[24px] tracking-[-0.04em] text-[var(--tx-1)] mb-[5px] leading-[1.15]">
                 {title}
               </h1>
-              <p className="font-mono text-[11px] sm:text-[12px] text-white/30 leading-[1.6]">
+              <p className="font-mono text-[11px] sm:text-[12px] text-[var(--tx-3)] leading-[1.6]">
                 Accurate data builds accurate self-knowledge.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-white/[0.05] mb-6 sm:mb-7" />
+        <div className="border-t border-[var(--bd)] mb-6 sm:mb-7" />
 
         {/* Identity */}
         <div className="form-section mb-6 sm:mb-7" style={{ animationDelay: "0.05s" }}>
@@ -448,7 +451,7 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
                       ? isLong
                         ? "bg-emerald-400/[0.08] border border-emerald-400/40 text-emerald-400 shadow-[0_0_20px_rgba(74,222,128,0.08)]"
                         : "bg-red-400/[0.08] border border-red-400/40 text-red-400 shadow-[0_0_20px_rgba(248,113,113,0.08)]"
-                      : "bg-white/[0.025] border border-white/[0.08] text-white/35 hover:text-white/55 hover:bg-white/[0.04]",
+                      : "bg-[var(--bg-input)] border border-[var(--bd)] text-[var(--tx-3)] hover:text-[var(--tx-2)] hover:bg-[var(--bg-input-focus)]",
                   ].join(" ")}
                 >
                   {active && <div className={["absolute top-0 left-0 right-0 h-[2px] opacity-70", isLong ? "bg-emerald-400" : "bg-red-400"].join(" ")} />}
@@ -496,11 +499,11 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
               <div className={["absolute top-0 left-0 right-0 h-px", liveR >= 0 ? "bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent" : "bg-gradient-to-r from-transparent via-red-400/40 to-transparent"].join(" ")} />
               <div className="flex-1 min-w-0">
                 <p className={["font-mono text-[12px] font-medium mb-1 truncate", liveR >= 0 ? "text-emerald-400/90" : "text-red-400/90"].join(" ")}>{rComment.text}</p>
-                <p className="font-mono text-[10px] sm:text-[11px] text-white/30 leading-[1.5]">{rComment.sub}</p>
+                <p className="font-mono text-[10px] sm:text-[11px] text-[var(--tx-3)] leading-[1.5]">{rComment.sub}</p>
               </div>
               <div className="text-right shrink-0">
                 <AnimatedR value={liveR} />
-                <p className="font-mono text-[10px] text-white/20 mt-[2px] tracking-[0.1em] uppercase">result</p>
+                <p className="font-mono text-[10px] text-[var(--tx-4)] mt-[2px] tracking-[0.1em] uppercase">result</p>
               </div>
             </div>
           )}
@@ -544,7 +547,7 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
         <div className="form-section flex flex-col-reverse sm:grid sm:gap-2.5 gap-2" style={{ gridTemplateColumns: "auto 1fr", animationDelay: "0.25s" }}>
           <button
             type="button" onClick={() => router.back()}
-            className="w-full sm:w-auto px-5 py-[14px] sm:py-[13px] rounded-md bg-transparent border border-white/8 font-mono text-[12px] tracking-[0.06em] text-white/35 cursor-pointer transition-all duration-150 hover:border-white/18 hover:text-white/55"
+            className="w-full sm:w-auto px-5 py-[14px] sm:py-[13px] rounded-md bg-transparent border border-[var(--bd)] font-mono text-[12px] tracking-[0.06em] text-[var(--tx-3)] cursor-pointer transition-all duration-150 hover:border-[var(--bd-hi)] hover:text-[var(--tx-2)]"
           >
             Cancel
           </button>
@@ -554,8 +557,8 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
               "w-full py-[15px] sm:py-[13px] rounded-[6px] font-mono text-[12px] font-semibold tracking-[0.1em] uppercase",
               "transition-all duration-200 border border-transparent",
               loading || isUploading
-                ? "bg-white/[0.04] text-white/30 cursor-not-allowed"
-                : "bg-emerald-400 text-[#07090d] shadow-[0_0_24px_rgba(74,222,128,0.25)] hover:bg-emerald-300 cursor-pointer",
+                ? "bg-[var(--bg-input)] text-[var(--tx-4)] cursor-not-allowed"
+                : "bg-[var(--ac-1)] text-[var(--bg-base)] shadow-[0_0_24px_var(--ac-1-glow)] hover:opacity-90 cursor-pointer",
             ].join(" ")}
           >
             {loading ? "Saving…" : isUploading ? "Uploading…" : submitLabel}

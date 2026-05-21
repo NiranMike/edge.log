@@ -15,16 +15,16 @@ export function SessionBreakdown({ sessions }: Props) {
   const active = sessions?.filter(s => s?.trades > 0);
 
   return (
-    <div className="rounded-xl bg-[#0d1117] border border-white/[0.065] overflow-hidden">
-      <div className="flex items-center gap-3 px-5 py-4 border-b border-white/[0.05]">
-        <div className="w-4 h-px bg-teal-400/50" />
-        <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/40">Session Performance</h2>
+    <div className="rounded-xl bg-[var(--bg-surface)] border border-[var(--bd)] overflow-hidden">
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-[var(--bd)]">
+        <div className="w-4 h-px bg-[var(--ac-2)] opacity-50" />
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--tx-3)]">Session Performance</h2>
         <Tooltip content={TOOLTIP_COPY.sessionBreakdown} />
       </div>
 
       <div className="p-4">
         {active?.length === 0 ? (
-          <p className="font-mono text-[12px] text-white/20 text-center py-6">No data</p>
+          <p className="font-mono text-[12px] text-[var(--tx-4)] text-center py-6">No data</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {sessions?.filter(s => s.trades > 0).map(session => {
@@ -32,7 +32,7 @@ export function SessionBreakdown({ sessions }: Props) {
               return (
                 <div
                   key={session.session}
-                  className="flex items-start gap-3 px-4 py-3.5 rounded-[8px] bg-white/[0.02] border border-white/[0.05] hover:border-white/10 transition-colors duration-200"
+                  className="flex items-start gap-3 px-4 py-3.5 rounded-[8px] bg-[var(--bg-overlay)] border border-[var(--bd)] hover:border-[var(--bd-hi)] transition-colors duration-200"
                 >
                   <div className={cx("w-[6px] h-[6px] rounded-full mt-1.5 shrink-0", meta.dot)} />
 
@@ -41,29 +41,29 @@ export function SessionBreakdown({ sessions }: Props) {
                       <span className={cx("font-mono text-[12px] font-medium", meta.color)}>
                         {session.session}
                       </span>
-                      <span className="font-mono text-[10px] text-white/20">{meta.hours}</span>
+                      <span className="font-mono text-[10px] text-[var(--tx-4)]">{meta.hours}</span>
                     </div>
 
                     <div className="grid grid-cols-3 gap-2">
                       {/* Trades */}
                       <div>
                         <div className="flex items-center gap-1 mb-0.5">
-                          <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-white/20">Trades</p>
+                          <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-[var(--tx-4)]">Trades</p>
                           <Tooltip content={TOOLTIP_COPY.trades} />
                         </div>
-                        <p className="font-mono text-[13px] text-white/60">{session.trades}</p>
+                        <p className="font-mono text-[13px] text-[var(--tx-2)]">{session.trades}</p>
                       </div>
 
                       {/* Win % */}
                       <div>
                         <div className="flex items-center gap-1 mb-0.5">
-                          <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-white/20">Win %</p>
+                          <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-[var(--tx-4)]">Win %</p>
                           <Tooltip content={TOOLTIP_COPY.winRate} />
                         </div>
                         <p className={cx(
                           "font-mono text-[13px]",
-                          session.winRate >= 55 ? "text-emerald-400" :
-                          session.winRate >= 45 ? "text-white/60"    : "text-red-400/70",
+                          session.winRate >= 55 ? "text-[var(--win)]"  :
+                          session.winRate >= 45 ? "text-[var(--tx-2)]" : "text-[var(--loss)]",
                         )}>
                           {session.winRate}%
                         </p>
@@ -72,7 +72,7 @@ export function SessionBreakdown({ sessions }: Props) {
                       {/* Avg R — now uses RLabel with ratio */}
                       <div>
                         <div className="flex items-center gap-1 mb-0.5">
-                          <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-white/20">Avg R</p>
+                          <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-[var(--tx-4)]">Avg R</p>
                           <Tooltip content={TOOLTIP_COPY.avgR} />
                         </div>
                         <RLabel value={session.avgR} size="sm" />

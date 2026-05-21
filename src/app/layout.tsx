@@ -10,12 +10,14 @@ const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
   weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
 });
 
 const syne = Syne({
   subsets: ["latin"],
   variable: "--font-display",
-  weight: ["400","500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -24,15 +26,30 @@ export const metadata: Metadata = {
     "A fast, insight-focused trading journal for discretionary traders.",
 };
 
+/* Runs synchronously before paint — prevents any flash of wrong theme. */
+const themeScript = `
+(function(){
+  try {
+    var t = localStorage.getItem('edgelog-theme');
+    if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  } catch(e) {}
+})();
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body
-        className={`${jetBrainsMono.variable} ${syne.variable} font-display antialiased`}
+        className={`${jetBrainsMono.variable} ${syne.variable} font-mono antialiased`}
       >
         <Providers>
           <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />

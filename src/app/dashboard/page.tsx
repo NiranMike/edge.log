@@ -38,9 +38,16 @@ export default async function DashboardPage({
         <div className="w-full max-w-[1120px] mx-auto">
 
           {upgraded && (
-            <div className="mb-6 flex items-center gap-3 px-4 py-3 rounded-lg bg-teal-400/[0.08] border border-teal-400/20">
-              <span className="text-teal-400 text-[13px]">✓</span>
-              <p className="font-mono text-[12px] text-teal-400">
+            <div
+              className="mb-6 flex items-center gap-3 px-4 py-3"
+              style={{
+                background: "var(--ac-2-dim)",
+                border: "1px solid var(--ac-2-ring)",
+                clipPath: "polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))",
+              }}
+            >
+              <span className="text-[var(--ac-2)] text-[13px]">✓</span>
+              <p className="font-mono text-[12px] text-[var(--ac-2)]">
                 You&apos;re now on Pro. Welcome to the full analytics suite.
               </p>
             </div>
@@ -49,17 +56,17 @@ export default async function DashboardPage({
           <div className="animate-fade-up mb-6 sm:mb-8 flex items-end justify-between gap-4">
             <div className="min-w-0">
               <div className="flex items-center gap-3 mb-2 sm:mb-3">
-                <div className="w-5 h-px bg-teal-400/50" />
-                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-teal-400/60">
+                <div className="w-5 h-px bg-[var(--ac-2)] opacity-50" />
+                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--ac-2)] opacity-60">
                   Overview
                 </span>
               </div>
-              <h1 className="font-mono font-medium text-[22px] sm:text-[26px] tracking-[-0.03em] text-white mb-1">
+              <h1 className="font-display font-black text-[22px] sm:text-[28px] tracking-[-0.04em] text-[var(--tx-1)] mb-1">
                 {metrics.totalTrades === 0
                   ? `Welcome, ${firstName}.`
                   : `Your edge, ${firstName}.`}
               </h1>
-              <p className="font-mono text-[11px] sm:text-[12px] text-white/35">
+              <p className="font-mono text-[11px] sm:text-[12px] text-[var(--tx-3)]">
                 {metrics.totalTrades === 0
                   ? "Start logging to discover your patterns."
                   : `${metrics.totalTrades} trades · expectancy ${metrics.expectancy >= 0 ? "+" : ""}${metrics.expectancy}R`}
@@ -69,7 +76,8 @@ export default async function DashboardPage({
             {metrics.totalTrades > 0 && (
               <Link
                 href="/trades/new"
-                className="shrink-0 inline-flex items-center gap-2 px-3 sm:px-4 py-[9px] bg-teal-400/[0.08] border border-teal-400/20 rounded-lg font-mono text-[11px] text-teal-400 no-underline hover:bg-teal-400/[0.14] hover:border-teal-400/35 transition-all duration-150 tracking-[0.04em] whitespace-nowrap"
+                className="shrink-0 inline-flex items-center gap-2 px-3 sm:px-4 py-[9px] rounded-lg font-mono text-[11px] no-underline transition-all duration-150 tracking-[0.04em] whitespace-nowrap"
+                style={{ background: "var(--ac-2-dim)", border: "1px solid var(--ac-2-ring)", color: "var(--ac-2)" }}
               >
                 + New trade
               </Link>
@@ -87,12 +95,12 @@ export default async function DashboardPage({
               />
 
               {!isPro && (
-                <div className="animate-fade-up mb-8 sm:mb-10 flex items-center justify-between gap-4 px-5 py-4 rounded-xl bg-[#0d1117] border border-white/[0.065]">
+                <div className="animate-fade-up mb-8 sm:mb-10 flex items-center justify-between gap-4 px-5 py-4 rounded-xl bg-[var(--bg-surface)] border border-[var(--bd)]">
                   <div className="min-w-0">
-                    <p className="font-mono text-[12px] text-white/70 mb-0.5">
+                    <p className="font-mono text-[12px] text-[var(--tx-2)] mb-0.5">
                       Unlock analytics
                     </p>
-                    <p className="font-mono text-[11px] text-white/35">
+                    <p className="font-mono text-[11px] text-[var(--tx-3)]">
                       See your edge. Pair stats, equity curve, session breakdown.
                     </p>
                   </div>
@@ -103,14 +111,14 @@ export default async function DashboardPage({
               <div className="animate-fade-up">
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-4 h-px bg-white/15" />
-                    <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/30">
+                    <div className="w-4 h-px bg-[var(--bd-hi)]" />
+                    <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--tx-3)]">
                       Recent trades
                     </h2>
                   </div>
                   <Link
                     href="/trades"
-                    className="font-mono text-[11px] text-teal-400/60 no-underline hover:text-teal-400 transition-colors duration-150 tracking-[0.04em]"
+                    className="font-mono text-[11px] text-[var(--ac-2)] opacity-60 hover:opacity-100 no-underline transition-opacity duration-150 tracking-[0.04em]"
                   >
                     View all →
                   </Link>
