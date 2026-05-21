@@ -39,7 +39,4 @@ export const subscriptionRepository = {
     return !!existing;
   },
 
-  async markEventProcessed(eventId: string, eventName: string): Promise<void> {
-    await db.webhookEvent.create({ data: { eventId, eventName } });
-  },
 };

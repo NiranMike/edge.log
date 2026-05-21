@@ -11,6 +11,7 @@ const NAV = [
   { href: "/trades",     icon: "≡", label: "Trades",     sub: "journal"   },
   { href: "/analytics",  icon: "⌬", label: "Analytics",  sub: "patterns"  },
   { href: "/calendar",   icon: "▦", label: "Calendar",   sub: "daily p&l" },
+  { href: "/settings",   icon: "⚙", label: "Settings",   sub: "plan & billing" },
   { href: "/trades/new", icon: "+", label: "New Trade",  sub: null        },
 ];
 

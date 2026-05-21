@@ -55,7 +55,7 @@ function RStatPill({
         <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/25">{label}</span>
         <Tooltip content={tooltip} />
       </div>
-      <RLabel value={value} size="md" />
+      <RLabel value={Number(value.toFixed(2))} size="md" />
       {sub && <span className="font-mono text-[10px] text-white/25 mt-0.5">{sub}</span>}
     </div>
   );
@@ -76,7 +76,7 @@ export function AnalyticsOverviewStrip({ overview }: Props) {
     <div className="flex flex-wrap gap-3">
       <StatPill
         label="Profit Factor"
-        value={String(profitFactor)}
+        value={String(profitFactor.toFixed(2))}
         sub={profitFactor >= 2 ? "Strong edge" : profitFactor >= 1 ? "Positive" : "Losing"}
         valueClass={pfClass}
         delay={0}

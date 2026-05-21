@@ -85,8 +85,8 @@ export function CtaSection() {
           className={cx(ds.body, "max-w-lg mb-12")}
           style={{ fontSize: "clamp(13px, 1.5vw, 15px)" }}
         >
-          Join 1,247 traders who stopped guessing and started growing.
-          It takes 30 seconds to set up.
+          Stop guessing. Start knowing exactly where your edge lives.
+          Takes 30 seconds to log your first trade.
         </p>
 
         {!done ? (
@@ -174,9 +174,9 @@ export function CtaSection() {
 
         <div className={cx("w-full max-w-lg mt-14 pt-8 flex items-center justify-center gap-8 flex-wrap", ds.divider)}>
           {[
-            { value: "1,247", label: "traders" },
-            { value: "94%",   label: "retention" },
-            { value: "4.9★",  label: "avg rating" },
+            { value: "Free",  label: "to start" },
+            { value: "30s",   label: "to log a trade" },
+            { value: "$19",   label: "/ mo for Pro" },
           ].map(({ value, label }) => (
             <div key={label} className="text-center">
               <p

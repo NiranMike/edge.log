@@ -212,7 +212,7 @@ export function PricingSection() {
                       textShadow: "0 0 40px rgba(45,212,191,0.2)",
                     }}
                   >
-                    $9
+                    $19
                   </span>
                   <span className="font-mono text-[12px] text-white/25">/ month</span>
                 </div>

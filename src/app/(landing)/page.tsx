@@ -1,5 +1,5 @@
 
-import { auth, authOptions } from "#/auth";
+import { auth } from "#/auth";
 import { PricingSection } from "@/components/billing/pricing-section";
 import { CtaSection } from "@/components/landing-page/cta-section";
 import { FeaturesSection } from "@/components/landing-page/feature-section";
@@ -7,11 +7,8 @@ import { HeroSection } from "@/components/landing-page/hero-section";
 import { HowItWorksSection } from "@/components/landing-page/how-it-work-section";
 import { LandingFooter } from "@/components/landing-page/landing-footer";
 import { LandingNav } from "@/components/landing-page/landing-nav";
-import { MetricsSection } from "@/components/landing-page/matric-section";
-import { TestimonialsSection } from "@/components/landing-page/testimonials-section";
 import { TickerTape } from "@/components/landing-page/ticker-tape";
 import type { Metadata } from "next";
-import  getServerSession from 'next-auth';
 import { redirect } from "next/navigation";
 
 
@@ -33,9 +30,7 @@ export default async function LandingPage() {
       <HeroSection />
       <TickerTape />
       <FeaturesSection />
-      <MetricsSection />
       <HowItWorksSection />
-      <TestimonialsSection />
       <PricingSection />
       <CtaSection />
       <LandingFooter />

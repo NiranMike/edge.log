@@ -87,16 +87,19 @@ export function LandingNav() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-7">
-          {NAV_LINKS.map(({ label, href }) => (
-            <a
-              key={href}
-              href={href}
-              className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/30 hover:text-white/70 transition-colors duration-150 relative group"
-            >
-              {label}
-              <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-emerald-400/50 group-hover:w-full transition-all duration-300" />
-            </a>
-          ))}
+          {NAV_LINKS.map(({ label, href }) => {
+            const cls = "font-mono text-[10px] uppercase tracking-[0.16em] text-white/30 hover:text-white/70 transition-colors duration-150 relative group";
+            const underline = <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-emerald-400/50 group-hover:w-full transition-all duration-300" />;
+            return href.startsWith("/") ? (
+              <Link key={href} href={href} className={cls}>
+                {label}{underline}
+              </Link>
+            ) : (
+              <a key={href} href={href} className={cls}>
+                {label}{underline}
+              </a>
+            );
+          })}
         </nav>
 
         <div className="hidden md:flex items-center gap-3">
@@ -159,17 +162,18 @@ export function LandingNav() {
         )}
       >
         <div className="flex flex-col px-5 py-6 gap-1">
-          {NAV_LINKS.map(({ label, href }, i) => (
-            <a
-              key={href}
-              href={href}
-              onClick={() => setMobileOpen(false)}
-              className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/35 hover:text-white/70 py-3 border-b border-white/[0.04] transition-colors duration-150"
-              style={{ transitionDelay: `${i * 30}ms` }}
-            >
-              {label}
-            </a>
-          ))}
+          {NAV_LINKS.map(({ label, href }, i) => {
+            const cls = "font-mono text-[11px] uppercase tracking-[0.18em] text-white/35 hover:text-white/70 py-3 border-b border-white/[0.04] transition-colors duration-150";
+            return href.startsWith("/") ? (
+              <Link key={href} href={href} onClick={() => setMobileOpen(false)} className={cls} style={{ transitionDelay: `${i * 30}ms` }}>
+                {label}
+              </Link>
+            ) : (
+              <a key={href} href={href} onClick={() => setMobileOpen(false)} className={cls} style={{ transitionDelay: `${i * 30}ms` }}>
+                {label}
+              </a>
+            );
+          })}
 
           <div className="flex flex-col gap-2.5 mt-5">
             <Link

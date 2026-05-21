@@ -3,24 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-function useCountUp(target: number, duration = 2000, start = false) {
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    if (!start) return;
-    let startTime: number | null = null;
-    let rafId: number;
-    const step = (ts: number) => {
-      if (!startTime) startTime = ts;
-      const p = Math.min((ts - startTime) / duration, 1);
-      const ease = 1 - Math.pow(1 - p, 3);
-      setVal(Math.floor(ease * target));
-      if (p < 1) rafId = requestAnimationFrame(step);
-    };
-    rafId = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(rafId);
-  }, [target, duration, start]);
-  return val;
-}
 
 function Sparkline({ points, up }: { points: number[]; up: boolean }) {
   const w = 72, h = 26;
@@ -78,16 +60,7 @@ const TRADES = [
 ];
 
 export function HeroSection() {
-  const [started, setStarted] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-  const pnl    = useCountUp(284720, 2000, started);
-  const trades = useCountUp(1247,   1800, started);
-  const wr     = useCountUp(68,     1600, started);
-
-  useEffect(() => {
-    const id = requestAnimationFrame(() => requestAnimationFrame(() => setStarted(true)));
-    return () => cancelAnimationFrame(id);
-  }, []);
 
   useEffect(() => {
     const t = setInterval(() => setActiveTab(p => (p + 1) % TRADES.length), 3000);
@@ -190,7 +163,7 @@ export function HeroSection() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative rounded-full w-1.5 h-1.5 bg-emerald-400" />
             </span>
-            Live Beta · 1,247 active traders
+            Now in early access
           </div>
 
           <h1 className="a3 syne font-extrabold text-white leading-[1.06] tracking-tight mb-5" style={{ fontSize: "clamp(30px,4vw,50px)" }}>
@@ -204,56 +177,31 @@ export function HeroSection() {
           </p>
 
           <div className="a4 flex flex-wrap gap-2 mb-7">
-            {["30-sec entry","AI pattern detection","Emotion tagging","Risk analytics"].map(f => (
+            {["30-sec entry","Analytics dashboard","Emotion tagging","Risk analytics"].map(f => (
               <span key={f} className="mono text-[10px] tracking-wide px-3 py-1.5 rounded-full text-white/35" style={{ background: "var(--s)", border: "1px solid var(--br)" }}>
                 {f}
               </span>
             ))}
           </div>
 
-          {/* Stats */}
-          <div className="a5 flex items-stretch gap-3 mb-8 w-full max-w-xs">
-            {[
-              { label: "P&L Tracked", val: `$${pnl.toLocaleString()}`, color: "#10b981" },
-              { label: "Trades",      val: trades.toLocaleString(),    color: "#38bdf8" },
-              { label: "Win Rate ↑",  val: `+${wr}%`,                  color: "#f59e0b" },
-            ].map(({ label, val, color }) => (
-              <div key={label} className="flex-1 rounded-xl p-3 flex flex-col gap-1.5" style={{ background: "var(--s)", border: "1px solid var(--br)" }}>
-                <span className="syne font-bold tabular-nums leading-none" style={{ color, fontSize: "clamp(16px,2.5vw,24px)", filter: `drop-shadow(0 0 8px ${color}60)` }}>{val}</span>
-                <span className="mono text-[9px] tracking-wider uppercase" style={{ color: "var(--muted)" }}>{label}</span>
-              </div>
-            ))}
-          </div>
-
           {/* CTAs */}
           <div className="a5 flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <Link
-              href="/dashboard"
+              href="/register"
               className="group relative overflow-hidden rounded-xl mono font-medium text-[12px] tracking-wide text-black text-center px-8 py-3.5 transition-transform duration-200 hover:scale-[1.02] active:scale-[0.99]"
               style={{ background: "linear-gradient(135deg,#10b981,#059669)", boxShadow: "0 0 0 1px rgba(16,185,129,0.35), 0 6px 28px rgba(16,185,129,0.28)" }}
             >
               <span className="relative z-10">→ Start Free</span>
               <div className="absolute inset-0 bg-white/10 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12" />
             </Link>
-            <a href="#features" className="mono text-[12px] tracking-wide text-white/35 text-center px-8 py-3.5 rounded-xl hover:text-white/60 hover:bg-white/[0.04] transition-all duration-150" style={{ border: "1px solid var(--br)" }}>
-              Watch demo ↓
+            <a href="#howItWorks" className="mono text-[12px] tracking-wide text-white/35 text-center px-8 py-3.5 rounded-xl hover:text-white/60 hover:bg-white/[0.04] transition-all duration-150" style={{ border: "1px solid var(--br)" }}>
+              How it works ↓
             </a>
           </div>
 
-          {/* Social proof */}
-          <div className="a6 flex items-center gap-3 mt-6">
-            <div className="flex -space-x-2">
-              {["#10b981","#38bdf8","#f59e0b","#e879f9","#fb923c"].map((c, i) => (
-                <div key={i} className="w-6 h-6 rounded-full border-[2px] flex items-center justify-center text-[7px] font-black" style={{ background: `${c}18`, borderColor: "#07090d", color: c }}>
-                  {String.fromCharCode(65+i)}
-                </div>
-              ))}
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-teal-400 text-[9px]">★★★★★</span>
-              <span className="mono text-[10px]" style={{ color: "var(--muted)" }}>4.9 · 1,247 traders</span>
-            </div>
-          </div>
+          <p className="a6 mono text-[10px] mt-4" style={{ color: "var(--muted)" }}>
+            Free forever · No credit card required
+          </p>
         </div>
 
         {/* RIGHT — Dashboard card */}
@@ -294,13 +242,6 @@ export function HeroSection() {
                     <span className="mono text-[10px] text-emerald-400/70">▲ +4.2% today</span>
                     <span className="mono text-[10px]" style={{ color: "var(--muted)" }}>· 3 trades · 6h</span>
                   </div>
-                </div>
-                <div className="flex flex-col items-end gap-2 pt-1">
-                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg" style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.2)" }}>
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="#10b981" strokeWidth="1.2"/><path d="M5 3v2.5L6.5 7" stroke="#10b981" strokeWidth="1.2" strokeLinecap="round"/></svg>
-                    <span className="mono text-[10px] text-emerald-400 font-medium">FOCUS 9.1</span>
-                  </div>
-                  <span className="mono text-[9px]" style={{ color: "var(--muted)" }}>Emotion score</span>
                 </div>
               </div>
 
@@ -346,19 +287,18 @@ export function HeroSection() {
               </div>
             </div>
 
-            {/* AI insight strip */}
-            <div className="mx-5 mb-5 mt-3 rounded-xl p-3.5 flex items-center gap-3" style={{ background: "rgba(59,130,246,0.07)", border: "1px solid rgba(59,130,246,0.14)" }}>
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: "rgba(59,130,246,0.12)" }}>
+            {/* Pattern insight strip */}
+            <div className="mx-5 mb-5 mt-3 rounded-xl p-3.5 flex items-center gap-3" style={{ background: "rgba(16,185,129,0.05)", border: "1px solid rgba(16,185,129,0.12)" }}>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: "rgba(16,185,129,0.08)" }}>
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <rect x="2" y="2" width="10" height="10" rx="2" stroke="#3b82f6" strokeWidth="1.2"/>
-                  <path d="M4.5 7l2 2L9.5 5" stroke="#3b82f6" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M2 10l3-4 3 2 4-6" stroke="#10b981" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="mono text-[10px] text-blue-400 mb-0.5 font-medium">AI Pattern Detected</p>
-                <p className="mono text-[10px] truncate" style={{ color: "var(--muted)" }}>You trade 40% better in AM sessions →</p>
+                <p className="mono text-[10px] text-emerald-400 mb-0.5 font-medium">Pattern surfaced</p>
+                <p className="mono text-[10px] truncate" style={{ color: "var(--muted)" }}>London session: 80% WR · NY: 42% WR</p>
               </div>
-              <span className="mono text-[9px] text-blue-400/50 shrink-0">→</span>
+              <span className="mono text-[9px] text-emerald-400/40 shrink-0">→</span>
             </div>
           </div>
         </div>

@@ -53,8 +53,8 @@ function getDayColors(stat: DayStat | null, isFuture: boolean) {
 function DayTooltip({ stat, date }: { stat: DayStat; date: string }) {
   const d = new Date(date + "T12:00:00");
   return (
-    <div className="absolute z-50 bottom-[calc(100%+6px)] left-1/2 -translate-x-1/2 w-[160px] pointer-events-none">
-      <div className="bg-[#0d1117] border border-white/[0.12] rounded-[6px] shadow-[0_16px_48px_rgba(0,0,0,0.8)] px-3 py-2.5">
+    <div className="absolute z-50 bottom-[calc(100%+6px)] left-1/2 -translate-x-1/2 w-40 pointer-events-none">
+      <div className="bg-[#0d1117] border border-white/12 rounded-md shadow-[0_16px_48px_rgba(0,0,0,0.8)] px-3 py-2.5">
         <p className="font-mono text-[10px] text-white/40 mb-1.5">
           {d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
         </p>
