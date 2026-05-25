@@ -7,6 +7,7 @@ import { autoMatchColumns, mapRow, FIELD_META } from "@/lib/import/column-matche
 import { importTradesAction } from "@/lib/actions/import-action";
 import type { AppField, MappedRow } from "@/lib/import/column-matcher";
 import { cx } from "@/style";
+import { TableShell, TH_CLASS } from "@/components/ui/app-table";
 
 const MAX_FILE_MB  = 5;
 const MAX_FILE_BYTES = MAX_FILE_MB * 1024 * 1024;
@@ -389,52 +390,48 @@ function PreviewStep({
         </div>
       )}
 
-      <div className="rounded-[8px] border border-white/[0.065] overflow-hidden mb-5">
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse min-w-[540px]">
-            <thead>
-              <tr className="border-b border-white/[0.05]">
-                {["Pair", "Dir", "Entry", "Exit", "Stop", "Date", "Notes"].map(h => (
-                  <th key={h} className="px-3 py-2.5 text-left bg-[#0a0e14] font-mono text-[9px] uppercase tracking-[0.16em] text-white/22 font-normal whitespace-nowrap">
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {validRows.slice(0, 8).map((r, i) => (
-                <tr key={i} className={cx(
-                  "transition-colors duration-150",
-                  i < Math.min(validRows.length, 8) - 1 ? "border-b border-white/[0.04]" : "",
-                )}>
-                  <td className="px-3 py-2.5 font-mono text-[12px] text-white font-medium">{r.pair}</td>
-                  <td className="px-3 py-2.5 font-mono text-[11px]">
-                    <span className={r.direction === "LONG" ? "text-teal-400" : "text-red-400"}>
-                      {r.direction === "LONG" ? "▲" : "▼"} {r.direction}
-                    </span>
-                  </td>
-                  <td className="px-3 py-2.5 font-mono text-[11px] text-white/50">{r.entryPrice}</td>
-                  <td className="px-3 py-2.5 font-mono text-[11px] text-white/50">{r.exitPrice}</td>
-                  <td className="px-3 py-2.5 font-mono text-[11px] text-white/30">{r.stopLoss ?? <span className="text-white/18">—</span>}</td>
-                  <td className="px-3 py-2.5 font-mono text-[11px] text-white/30 whitespace-nowrap">
-                    {new Date(r.tradedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "2-digit" })}
-                  </td>
-                  <td className="px-3 py-2.5 font-mono text-[11px] text-white/25 max-w-[100px] truncate">
-                    {r.notes || <span className="text-white/15">—</span>}
-                  </td>
-                </tr>
+      <TableShell className="mb-5 rounded-[8px]">
+        <table className="w-full border-collapse min-w-[540px]">
+          <thead>
+            <tr className="border-b border-[var(--bd)]">
+              {["Pair", "Dir", "Entry", "Exit", "Stop", "Date", "Notes"].map(h => (
+                <th key={h} className={cx(TH_CLASS, "py-2.5")}>{h}</th>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </tr>
+          </thead>
+          <tbody>
+            {validRows.slice(0, 8).map((r, i) => (
+              <tr key={i} className={cx(
+                "transition-colors duration-150",
+                i < Math.min(validRows.length, 8) - 1 ? "border-b border-[var(--bd)]" : "",
+              )}>
+                <td className="px-3 py-2.5 font-mono text-[12px] text-[var(--tx-1)] font-medium">{r.pair}</td>
+                <td className="px-3 py-2.5 font-mono text-[11px]">
+                  <span className={r.direction === "LONG" ? "text-teal-400" : "text-red-400"}>
+                    {r.direction === "LONG" ? "▲" : "▼"} {r.direction}
+                  </span>
+                </td>
+                <td className="px-3 py-2.5 font-mono text-[11px] text-[var(--tx-2)]">{r.entryPrice}</td>
+                <td className="px-3 py-2.5 font-mono text-[11px] text-[var(--tx-2)]">{r.exitPrice}</td>
+                <td className="px-3 py-2.5 font-mono text-[11px] text-[var(--tx-3)]">{r.stopLoss ?? <span className="text-[var(--tx-4)]">—</span>}</td>
+                <td className="px-3 py-2.5 font-mono text-[11px] text-[var(--tx-3)] whitespace-nowrap">
+                  {new Date(r.tradedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "2-digit" })}
+                </td>
+                <td className="px-3 py-2.5 font-mono text-[11px] text-[var(--tx-3)] max-w-[100px] truncate">
+                  {r.notes || <span className="text-[var(--tx-4)]">—</span>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
         {validRows.length > 8 && (
-          <div className="px-4 py-2.5 border-t border-white/[0.04] bg-[#0a0e14]">
-            <span className="font-mono text-[10px] text-white/20">
+          <div className="px-4 py-2.5 border-t border-[var(--bd)] bg-[var(--bg-base)]">
+            <span className="font-mono text-[10px] text-[var(--tx-4)]">
               +{validRows.length - 8} more rows not shown
             </span>
           </div>
         )}
-      </div>
+      </TableShell>
 
       {/* Warnings */}
       {noSLRows.length > 0 && (

@@ -11,7 +11,8 @@ import {
   type SortingState,
   type VisibilityState,
 } from "@tanstack/react-table";
-import { DirectionTag, RBadge, TD_CLASS, TH_CLASS } from "./trade-components";
+import { DirectionTag, RBadge } from "./trade-components";
+import { TableShell, TH_CLASS, TD_CLASS } from "@/components/ui/app-table";
 import { cx } from "@/style";
 import type { Trade } from "@/types";
 
@@ -251,10 +252,10 @@ export function TradesList({ trades, total, page, pageCount }: Props) {
         </div>
       </div>
 
-      <div className="bg-[#0d1117] border border-white/[0.065] rounded-xl overflow-hidden">
+      <TableShell>
         <table className="w-full border-collapse">
           <thead>
-            <tr className="border-b border-white/[0.05]">
+            <tr className="border-b border-[var(--bd)]">
               {table.getFlatHeaders().map(header => {
                 const canSort = header.column.getCanSort();
                 const sorted  = header.column.getIsSorted();
@@ -279,7 +280,7 @@ export function TradesList({ trades, total, page, pageCount }: Props) {
                 key={row.id}
                 className={cx(
                   "transition-colors duration-150 hover:bg-white/[0.02] group",
-                  i < rows.length - 1 ? "border-b border-white/[0.04]" : "",
+                  i < rows.length - 1 ? "border-b border-[var(--bd)]" : "",
                 )}
               >
                 {row.getVisibleCells().map(cell => (
@@ -291,7 +292,7 @@ export function TradesList({ trades, total, page, pageCount }: Props) {
             ))}
           </tbody>
         </table>
-      </div>
+      </TableShell>
 
       {pageCount > 1 && (
         <div className="flex items-center justify-between pt-1">

@@ -1,13 +1,15 @@
 "use client";
 
-
 import type { Trade } from "@/types";
 import Link from "next/link";
 import { cx } from "@/style";
+import { AppTable, type TableColumn } from "@/components/ui/app-table";
+
+// Re-export so existing imports in trades-list.tsx keep working.
+export { TH_CLASS, TD_CLASS } from "@/components/ui/app-table";
 
 
 export function RBadge({ r }: { r: number }) {
-  // Intensity levels for win magnitude
   const absR = Math.abs(r);
   const intensity =
     absR >= 3 ? "strong" :
@@ -45,13 +47,12 @@ export function DirectionTag({ dir }: { dir: "LONG" | "SHORT" }) {
   );
 }
 
-// Mini R bar — shows magnitude visually
 export function RBar({ r }: { r: number }) {
-  const capped = Math.min(Math.abs(r), 5); // cap at 5R display
+  const capped = Math.min(Math.abs(r), 5);
   const pct = (capped / 5) * 100;
   return (
     <div className="flex items-center gap-2">
-      <div className="w-[40px] h-[3px] bg-white/[0.05] rounded-full overflow-hidden">
+      <div className="w-[40px] h-[3px] bg-[var(--bd)] rounded-full overflow-hidden">
         <div
           className={cx("h-full rounded-full", r >= 0 ? "bg-emerald-400/50" : "bg-red-400/50")}
           style={{ width: `${pct}%` }}
@@ -61,64 +62,68 @@ export function RBar({ r }: { r: number }) {
   );
 }
 
-export const TH_CLASS = "px-4 py-3 text-left bg-[#0a0e14] font-mono text-[9px] uppercase tracking-[0.16em] text-white/22 font-normal whitespace-nowrap";
-export const TD_CLASS = "px-4 py-[12px]";
+const RECENT_COLUMNS: TableColumn<Trade>[] = [
+  {
+    header: "Date",
+    cell: t => (
+      <span className="font-mono text-[11px] text-[var(--tx-3)] whitespace-nowrap">
+        {new Date(t.tradedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+      </span>
+    ),
+  },
+  {
+    header: "Pair",
+    cell: t => (
+      <span className="font-mono text-[13px] text-[var(--tx-1)] font-medium tracking-[0.06em]">
+        {t.pair}
+      </span>
+    ),
+  },
+  {
+    header: "Side",
+    cell: t => <DirectionTag dir={t.direction} />,
+  },
+  {
+    header: "Entry → Exit",
+    cell: t => (
+      <span className="font-mono text-[12px]">
+        <span className="text-[var(--tx-2)]">{t.entryPrice}</span>
+        <span className="text-[var(--tx-4)] mx-[6px]">→</span>
+        <span className="text-[var(--tx-2)]">{t.exitPrice}</span>
+      </span>
+    ),
+  },
+  {
+    header: "R",
+    cell: t => (
+      <div className="flex items-center gap-2">
+        <RBadge r={t.rMultiple} />
+        <RBar r={t.rMultiple} />
+      </div>
+    ),
+  },
+  {
+    header: "",
+    className: "whitespace-nowrap",
+    cell: t => (
+      <Link
+        href={`/trades/${t.id}/edit`}
+        className="font-mono text-[10px] text-[var(--tx-4)] no-underline group-hover:text-[var(--ac-2)] hover:!text-[var(--ac-2)] transition-colors duration-150 tracking-[0.06em] uppercase"
+      >
+        Edit
+      </Link>
+    ),
+  },
+];
 
 export function RecentTrades({ trades }: { trades: Trade[] }) {
   if (trades.length === 0) return null;
 
   return (
-    <div className="bg-[#0d1117] border border-white/[0.065] rounded-xl overflow-hidden">
-      <table className="w-full border-collapse">
-        <thead>
-          <tr className="border-b border-white/[0.05]">
-            {["Date", "Pair", "Side", "Entry → Exit", "R", ""].map(h => (
-              <th key={h} className={TH_CLASS}>{h}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {trades.map((t, i) => (
-            <tr
-              key={t.id}
-              className={cx(
-                "transition-colors duration-150 hover:bg-white/[0.02] group",
-                i < trades.length - 1 ? "border-b border-white/[0.04]" : "",
-              )}
-            >
-              <td className={cx(TD_CLASS, "font-mono text-[11px] text-white/25 whitespace-nowrap")}>
-                {new Date(t.tradedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-              </td>
-              <td className={cx(TD_CLASS, "font-mono text-[13px] text-white font-medium tracking-[0.06em]")}>
-                {t.pair}
-              </td>
-              <td className={TD_CLASS}>
-                <DirectionTag dir={t.direction} />
-              </td>
-              <td className={cx(TD_CLASS, "font-mono text-[12px]")}>
-                <span className="text-white/45">{t.entryPrice}</span>
-                <span className="text-white/18 mx-[6px]">→</span>
-                <span className="text-white/55">{t.exitPrice}</span>
-              </td>
-              <td className={TD_CLASS}>
-                <div className="flex items-center gap-2">
-                  <RBadge r={t.rMultiple} />
-                  <RBar r={t.rMultiple} />
-                </div>
-              </td>
-              <td className={cx(TD_CLASS, "whitespace-nowrap")}>
-                <Link
-                  href={`/trades/${t.id}/edit`}
-                  className="font-mono text-[10px] text-white/20 no-underline group-hover:text-teal-400/60 hover:!text-teal-400 transition-colors duration-150 tracking-[0.06em] uppercase"
-                >
-                  Edit
-                </Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <AppTable
+      columns={RECENT_COLUMNS}
+      rows={trades}
+      getKey={t => t.id}
+    />
   );
 }
-

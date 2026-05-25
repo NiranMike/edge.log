@@ -27,23 +27,54 @@ function getWinRateColor(wr: number): string {
 
 function EquityCurve({ rValues }: { rValues: number[] }) {
   if (rValues.length < 2) return null;
+
   const cum: number[] = [];
   let running = 0;
   for (const r of rValues) { running += r; cum.push(running); }
-  const min = Math.min(...cum), max = Math.max(...cum);
+
+  const final      = cum[cum.length - 1];
+  const isPositive = final >= 0;
+  const color      = isPositive ? "#4ade80" : "#f87171";
+  const gradId     = isPositive ? "ec-pos" : "ec-neg";
+
+  const W = 200, H = 52, padY = 5;
+  const min = Math.min(0, ...cum);
+  const max = Math.max(0, ...cum);
   const range = max - min || 1;
-  const W = 80, H = 28;
-  const pts = cum.map((v, i) => {
-    const x = (i / (cum.length - 1)) * W;
-    const y = H - ((v - min) / range) * H;
-    return `${x},${y}`;
-  });
-  const isPositive = cum[cum.length - 1] >= 0;
-  const color = isPositive ? "#4ade80" : "#f87171";
+
+  const toX = (i: number) => (i / (cum.length - 1)) * W;
+  const toY = (v: number) => H - padY - ((v - min) / range) * (H - padY * 2);
+
+  const zeroY = toY(0);
+  const pts   = cum.map((v, i) => `${toX(i)},${toY(v)}`);
+  const lineD = `M ${pts.join(" L ")}`;
+  const fillD = `M ${toX(0)},${zeroY} L ${pts.join(" L ")} L ${toX(cum.length - 1)},${zeroY} Z`;
+
   return (
-    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} fill="none" className="opacity-60">
-      <polyline points={pts.join(" ")} stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      <circle cx={W} cy={H - ((cum[cum.length - 1] - min) / range) * H} r="2" fill={color} />
+    <svg width="100%" viewBox={`0 0 ${W} ${H}`} fill="none" preserveAspectRatio="none" className="block">
+      <defs>
+        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stopColor={color} stopOpacity="0.22" />
+          <stop offset="100%" stopColor={color} stopOpacity="0.01" />
+        </linearGradient>
+      </defs>
+
+      {/* Zero baseline */}
+      <line
+        x1={0} y1={zeroY} x2={W} y2={zeroY}
+        stroke="rgba(255,255,255,0.08)"
+        strokeWidth="0.8"
+        strokeDasharray="3 4"
+      />
+
+      {/* Fill under curve */}
+      <path d={fillD} fill={`url(#${gradId})`} />
+
+      {/* Line */}
+      <path d={lineD} stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+
+      {/* End dot */}
+      <circle cx={toX(cum.length - 1)} cy={toY(final)} r="2.5" fill={color} />
     </svg>
   );
 }
@@ -154,11 +185,28 @@ export function MetricsGrid({ metrics, className, rHistory = [] }: Props) {
         {rHistory.length > 0 && <div className="mt-2"><StreakBadge rHistory={rHistory} /></div>}
       </MetricCard>
 
-      {/* Total R */}
-      <MetricCard label="Total R" sub="cumulative P&L in R" delay={180}>
-        <RLabel value={totalR} size="md" />
-        {rHistory.length > 1 && <div className="mt-2"><EquityCurve rValues={rHistory} /></div>}
-      </MetricCard>
+      {/* Total R — full-bleed equity curve */}
+      <div
+        className="relative rounded-xl border border-white/[0.065] bg-[#0d1117] overflow-hidden hover:border-white/10 transition-all duration-200 group"
+        style={{ animationDelay: "180ms" }}
+      >
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/[0.07] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="px-4 pt-4 sm:px-5 sm:pt-5 pb-2">
+          <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/25 mb-2 sm:mb-3">
+            Total R
+          </div>
+          <div className="mb-1">
+            <RLabel value={totalR} size="md" />
+          </div>
+          <div className="font-mono text-[10px] sm:text-[11px] text-white/35">
+            cumulative P&L in R
+          </div>
+        </div>
+        {rHistory.length > 1
+          ? <div className="mt-2"><EquityCurve rValues={rHistory} /></div>
+          : <div className="pb-4" />
+        }
+      </div>
 
       {/* Trades */}
       <MetricCard label="Trades" sub="logged in journal" delay={240}>
