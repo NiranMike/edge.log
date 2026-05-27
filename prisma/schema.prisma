@@ -21,11 +21,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  accounts          Account[]
-  sessions          Session[]
-  trades            Trade[]
-  subscription      Subscription?
-  emailVerifyTokens EmailVerifyToken[]
+  accounts            Account[]
+  sessions            Session[]
+  trades              Trade[]
+  subscription        Subscription?
+  emailVerifyTokens   EmailVerifyToken[]
+  passwordResetTokens PasswordResetToken[]
 
   @@index([email])
 }
@@ -42,6 +43,20 @@ model EmailVerifyToken {
   @@index([userId])
   @@index([token])
   @@map("email_verify_tokens")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("password_reset_tokens")
 }
 
 model Subscription {
@@ -120,7 +135,7 @@ enum Direction {
 }
 
 model Trade {
-  id            Int       @id @default(autoincrement())
+  id            String    @id @default(cuid())
   userId        String
   pair          String
   direction     Direction

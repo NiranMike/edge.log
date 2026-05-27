@@ -12,6 +12,9 @@ export function FeaturesSection() {
         FEATURES
       </div>
 
+      {/* Top gradient divider */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-emerald-400/20 to-transparent" />
+
       <div className={cx(ds.container, ds.pageX, "relative")}>
         <RevealOnScroll>
           <div className={cx(ds.sectionLabel)}>
@@ -35,23 +38,27 @@ export function FeaturesSection() {
                 <div
                   className={cx(
                     "group relative bg-black p-7 sm:p-9 lg:p-10 overflow-hidden cursor-default",
-                    "hover:bg-white/[0.025] transition-colors duration-300"
+                    "hover:bg-white/[0.025] transition-all duration-300"
                   )}
                 >
+                  {/* Hover glow */}
+                  <div
+                    className="absolute -top-16 -right-16 w-40 h-40 rounded-full blur-[60px] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{ background: a.glowHex }}
+                  />
+
+                  {/* Corner accents */}
                   <div className={cx("absolute top-4 right-4 w-5 h-5 border-t border-r opacity-0 group-hover:opacity-100 transition-opacity duration-300", a.border)} />
                   <div className={cx("absolute bottom-4 left-4 w-5 h-5 border-b border-l opacity-0 group-hover:opacity-100 transition-opacity duration-300", a.border)} />
 
                   <div className="flex items-start justify-between mb-6">
-                    <span className="text-2xl sm:text-3xl">{f.icon}</span>
+                    <span className="text-2xl sm:text-3xl group-hover:scale-110 transition-transform duration-300">{f.icon}</span>
                     <span className={cx("font-mono text-[11px] font-bold", "text-white/15")}>{f.num}</span>
                   </div>
 
                   <h3
-                    className={cx(
-                      "font-display font-black text-[19px] sm:text-[22px] leading-tight tracking-[-0.03em] text-white mb-3",
-                      `group-hover:${a.text}`,
-                      "transition-colors duration-300"
-                    )}
+                    className="font-display font-black text-[19px] sm:text-[22px] leading-tight tracking-[-0.03em] text-white mb-3 transition-colors duration-300"
+                    style={{ textShadow: "none" }}
                   >
                     {f.title}
                   </h3>
@@ -59,7 +66,7 @@ export function FeaturesSection() {
                   <p className={cx(ds.body, "mb-5 text-[12px] sm:text-[13px]")}>{f.desc}</p>
 
                   <div className={cx("inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.15em] opacity-50 group-hover:opacity-100 transition-opacity duration-300", a.text)}>
-                    <span className="w-3 h-px bg-current" />
+                    <span className="w-3 h-px bg-current group-hover:w-6 transition-all duration-300" />
                     {f.tag}
                   </div>
                 </div>
@@ -68,6 +75,9 @@ export function FeaturesSection() {
           })}
         </div>
       </div>
+
+      {/* Bottom gradient divider */}
+      <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
     </section>
   );
 }

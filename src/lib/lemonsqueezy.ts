@@ -69,6 +69,12 @@ export async function createCheckout(params: {
   return res.data.attributes.url;
 }
 
+export async function cancelSubscription(subscriptionId: string): Promise<void> {
+  await request(`/subscriptions/${subscriptionId}`, {
+    method: "DELETE",
+  });
+}
+
 export async function getCustomerPortalUrl(customerId: string): Promise<string> {
   const res = await request<{ data: { attributes: { urls: { customer_portal: string } } } }>(
     `/customers/${customerId}`,

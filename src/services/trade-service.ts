@@ -114,7 +114,7 @@ export const tradeService = {
     }
   },
 
-  async update(userId: string, id: number, values: TradeFormValues): Promise<Result<Trade>> {
+  async update(userId: string, id: string, values: TradeFormValues): Promise<Result<Trade>> {
     const errors = validate(values);
     if (errors) return { ok: false, error: Object.values(errors)[0]! };
 
@@ -140,7 +140,7 @@ export const tradeService = {
     }
   },
 
-  async delete(userId: string, id: number): Promise<Result<void>> {
+  async delete(userId: string, id: string): Promise<Result<void>> {
     try {
       const deleted = await tradeRepository.delete(id, userId);
       if (!deleted) return { ok: false, error: "Trade not found." };
@@ -154,12 +154,16 @@ export const tradeService = {
     return tradeRepository.findAllByUser(userId);
   },
 
-  async getById(userId: string, id: number): Promise<Trade | null> {
+  async getById(userId: string, id: string): Promise<Trade | null> {
     return tradeRepository.findById(id, userId);
   },
 
-  async getPage(userId: string, page: number): Promise<{ trades: Trade[]; total: number }> {
-    return tradeRepository.findPage(userId, page, TRADES_PAGE_SIZE);
+  async getPage(
+    userId:  string,
+    page:    number,
+    filters?: { pair?: string; direction?: "LONG" | "SHORT"; won?: boolean },
+  ): Promise<{ trades: Trade[]; total: number }> {
+    return tradeRepository.findPage(userId, page, TRADES_PAGE_SIZE, filters);
   },
 
   /** Dashboard data via DB aggregates — no full table scan */

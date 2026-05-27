@@ -1,5 +1,5 @@
 import { db }                                   from "@/lib/db";
-import { createCheckout, getCustomerPortalUrl } from "@/lib/lemonsqueezy";
+import { createCheckout, getCustomerPortalUrl, cancelSubscription } from "@/lib/lemonsqueezy";
 import { subscriptionRepository }               from "@/repositories/subscription.repository";
 
 const ACTIVE_STATUSES = new Set(["active", "on_trial"]);
@@ -54,6 +54,15 @@ export const billingService = {
     });
     if (!user?.lemonSqueezyCustomerId) return null;
     return getCustomerPortalUrl(user.lemonSqueezyCustomerId);
+  },
+
+  async cancelSubscription(userId: string): Promise<void> {
+    const subscription = await subscriptionRepository.findByUserId(userId);
+    if (!subscription) throw new Error("No subscription found");
+    if (subscription.status === "cancelled" || subscription.status === "expired") {
+      throw new Error("Subscription is already cancelled");
+    }
+    await cancelSubscription(subscription.lemonSqueezyId);
   },
 
   async handleSubscriptionEvent(event: {

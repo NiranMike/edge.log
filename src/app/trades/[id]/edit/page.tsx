@@ -10,7 +10,7 @@ export default async function EditTradePage({ params }: { params: Promise<{ id: 
   if (!session) redirect("/login");
 
   const { id } = await params;
-  const trade = await tradeService.getById(session.user.id, parseInt(id));
+  const trade = await tradeService.getById(session.user.id, id);
   if (!trade) notFound();
 
   const rPositive = trade.rMultiple >= 0;

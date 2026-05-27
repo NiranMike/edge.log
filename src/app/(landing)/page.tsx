@@ -7,6 +7,8 @@ import { HeroSection } from "@/components/landing-page/hero-section";
 import { HowItWorksSection } from "@/components/landing-page/how-it-work-section";
 import { LandingFooter } from "@/components/landing-page/landing-footer";
 import { LandingNav } from "@/components/landing-page/landing-nav";
+import { MetricsSection } from "@/components/landing-page/matric-section";
+import { TestimonialsSection } from "@/components/landing-page/testimonials-section";
 import { TickerTape } from "@/components/landing-page/ticker-tape";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
@@ -29,8 +31,10 @@ export default async function LandingPage() {
       <LandingNav />
       <HeroSection />
       <TickerTape />
+      <MetricsSection />
       <FeaturesSection />
       <HowItWorksSection />
+      <TestimonialsSection />
       <PricingSection />
       <CtaSection />
       <LandingFooter />

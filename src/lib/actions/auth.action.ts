@@ -11,8 +11,9 @@ import {
   type LoginInput,
   type RegisterInput,
 } from "@/lib/validations/auth";
-import { signIn, signOut } from "#/auth";
-import type { Result }     from "@/types";
+import { signIn, signOut }        from "#/auth";
+import { emailVerifyService }     from "@/services/email-verify-service";
+import type { Result }            from "@/types";
 
 // ─── Map AuthError → user string ──────────────────────────────────────────────
 
@@ -82,12 +83,16 @@ export async function registerAction(
 
   const user = await db.user.create({ data: { name, email, passwordHash } });
 
-  // Auto sign-in after registration
+  // Send verification email (non-blocking — don't fail registration if email fails)
+  emailVerifyService.issue(user.id, email, name).catch(err => {
+    console.error("[registerAction] failed to send verification email:", err);
+  });
+
+  // Auto sign-in so middleware can read the session and gate unverified users
   try {
     await signIn("credentials", { email, password, redirect: false });
   } catch (err) {
     console.error("[registerAction] auto sign-in failed after registration:", err);
-    // User was created but not signed in — client will refresh to /login
   }
 
   return { ok: true, data: { userId: user.id } };
@@ -107,4 +112,13 @@ export async function googleSignInAction(callbackUrl = "/dashboard"): Promise<vo
 export async function logoutAction(): Promise<void> {
   await signOut({ redirect: false });
   redirect("/login");
+}
+
+// ─── signOutThenRedirect ───────────────────────────────────────────────────────
+// Used by the email-verification token page. Cookies can only be modified in a
+// Server Action, not directly in a Server Component page.
+
+export async function signOutThenRedirect(to: string): Promise<void> {
+  await signOut({ redirect: false });
+  redirect(to);
 }

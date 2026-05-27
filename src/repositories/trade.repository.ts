@@ -63,7 +63,7 @@ function toTrade(row: Prisma.TradeGetPayload<object>): Trade {
 
 
 export const tradeRepository = {
-  async findById(id: number, userId: string): Promise<Trade | null> {
+  async findById(id: string, userId: string): Promise<Trade | null> {
     const row = await db.trade.findFirst({ where: { id, userId } });
     return row ? toTrade(row) : null;
   },
@@ -76,19 +76,31 @@ export const tradeRepository = {
     return rows.map(toTrade);
   },
 
-  /** Paginated list — page is 1-based */
-  async findPage(userId: string, page: number, perPage = 25): Promise<{
-    trades: Trade[];
-    total:  number;
-  }> {
+  /** Paginated list — page is 1-based, optional column filters */
+  async findPage(
+    userId:  string,
+    page:    number,
+    perPage: number = 25,
+    filters?: {
+      pair?:      string;
+      direction?: "LONG" | "SHORT";
+      won?:       boolean;
+    },
+  ): Promise<{ trades: Trade[]; total: number }> {
+    const where = {
+      userId,
+      ...(filters?.pair      && { pair:      { contains: filters.pair.toUpperCase() } }),
+      ...(filters?.direction && { direction: filters.direction }),
+      ...(filters?.won !== undefined && { won: filters.won }),
+    };
     const [rows, total] = await db.$transaction([
       db.trade.findMany({
-        where:   { userId },
+        where,
         orderBy: { tradedAt: "desc" },
         skip:    (page - 1) * perPage,
         take:    perPage,
       }),
-      db.trade.count({ where: { userId } }),
+      db.trade.count({ where }),
     ]);
     return { trades: rows.map(toTrade), total };
   },
@@ -192,7 +204,7 @@ export const tradeRepository = {
     await db.trade.createMany({ data: rows, skipDuplicates: false });
   },
 
-  async update(id: number, userId: string, input: UpdateTradeRow): Promise<Trade> {
+  async update(id: string, userId: string, input: UpdateTradeRow): Promise<Trade> {
     const row = await db.trade.update({
       where: { id, userId },
       data:  input,
@@ -201,7 +213,7 @@ export const tradeRepository = {
   },
 
   /** Returns true if a record was deleted, false if it didn't exist */
-  async delete(id: number, userId: string): Promise<boolean> {
+  async delete(id: string, userId: string): Promise<boolean> {
     const { count } = await db.trade.deleteMany({ where: { id, userId } });
     return count > 0;
   },

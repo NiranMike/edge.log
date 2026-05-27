@@ -34,6 +34,19 @@ export async function getPortalUrlAction(): Promise<Result<{ url: string }>> {
   }
 }
 
+export async function cancelSubscriptionAction(): Promise<Result<{ message: string }>> {
+  const session = await auth();
+  if (!session?.user?.id) return { ok: false, error: "Not authenticated" };
+
+  try {
+    await billingService.cancelSubscription(session.user.id);
+    return { ok: true, data: { message: "Subscription renewal cancelled. You'll keep access until the end of your billing period." } };
+  } catch (err) {
+    console.error("[cancelSubscriptionAction]", err);
+    return { ok: false, error: err instanceof Error ? err.message : "Failed to cancel subscription." };
+  }
+}
+
 export async function getSubscriptionStatusAction(): Promise<Result<{
   isPro:   boolean;
   status:  string | null;

@@ -9,15 +9,28 @@ import { TRADES_PAGE_SIZE } from "@/const/trades-const";
 export default async function TradesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{
+    page?:      string;
+    q?:         string;
+    direction?: string;
+    outcome?:   string;
+  }>;
 }) {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const { page: pageParam } = await searchParams;
-  const page = Math.max(1, parseInt(pageParam ?? "1", 10));
+  const params    = await searchParams;
+  const page      = Math.max(1, parseInt(params.page ?? "1", 10));
+  const pairQuery = params.q?.trim() || undefined;
+  const direction = (params.direction === "LONG" || params.direction === "SHORT")
+    ? params.direction : undefined;
+  const won       = params.outcome === "win" ? true
+    : params.outcome === "loss"              ? false
+    : undefined;
 
-  const { trades, total } = await tradeService.getPage(session.user.id, page);
+  const { trades, total } = await tradeService.getPage(session.user.id, page, {
+    pair: pairQuery, direction, won,
+  });
 
   const pageCount = Math.ceil(total / TRADES_PAGE_SIZE);
   if (total > 0 && page > pageCount) redirect(`/trades?page=${pageCount}`);
@@ -25,9 +38,8 @@ export default async function TradesPage({
   return (
     <AppShell>
       <div className="w-full px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-9">
-        <div className="w-full max-w-[1120px] mx-auto">
+        <div className="w-full max-w-[1200px] mx-auto">
 
-          {/* Header */}
           <div className="animate-fade-up flex items-end justify-between mb-6 sm:mb-7 gap-4">
             <div className="min-w-0">
               <div className="flex items-center gap-3 mb-2 sm:mb-3">
@@ -44,7 +56,6 @@ export default async function TradesPage({
               </p>
             </div>
 
-            {/* Action buttons */}
             <div className="flex items-center gap-2 shrink-0">
               <Link
                 href="/trades/import"
@@ -62,7 +73,13 @@ export default async function TradesPage({
             </div>
           </div>
 
-          <TradesList trades={trades} total={total} page={page} pageCount={pageCount} />
+          <TradesList
+            trades={trades}
+            total={total}
+            page={page}
+            pageCount={pageCount}
+            filters={{ q: params.q, direction: params.direction, outcome: params.outcome }}
+          />
 
         </div>
       </div>

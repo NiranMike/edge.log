@@ -16,7 +16,7 @@ async function generateToken(userId: string): Promise<string> {
 async function sendVerificationEmail(email: string, name: string | null, token: string): Promise<void> {
   const url = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email/${token}`;
 
-  await fetch("https://api.resend.com/emails", {
+  const res = await fetch("https://api.resend.com/emails", {
     method:  "POST",
     headers: {
       Authorization:  `Bearer ${process.env.RESEND_API_KEY}`,
@@ -53,6 +53,11 @@ async function sendVerificationEmail(email: string, name: string | null, token: 
       `,
     }),
   });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(`Resend API error ${res.status}: ${JSON.stringify(body)}`);
+  }
 }
 
 export const emailVerifyService = {

@@ -114,6 +114,14 @@ export function HeroSection() {
           0%   { transform: translateX(0); }
           100% { transform: translateX(-50%); }
         }
+        @keyframes borderRotate {
+          0%   { --border-angle: 0deg; }
+          100% { --border-angle: 360deg; }
+        }
+        @keyframes glowPulse {
+          0%, 100% { opacity: 0.4; }
+          50%      { opacity: 0.7; }
+        }
 
         .syne { font-family: 'Syne', sans-serif; }
         .mono { font-family: 'DM Mono', monospace; }
@@ -132,23 +140,46 @@ export function HeroSection() {
         .tab-row { transition: background 0.2s, border-color 0.2s; }
         .tab-row:hover { background: rgba(255,255,255,0.02) !important; }
         .tab-active { background: rgba(16,185,129,0.07) !important; border-color: rgba(16,185,129,0.22) !important; }
+
+        .hero-card-border {
+          position: relative;
+        }
+        .hero-card-border::before {
+          content: '';
+          position: absolute;
+          inset: -1px;
+          border-radius: 17px;
+          padding: 1px;
+          background: conic-gradient(
+            from var(--border-angle, 0deg),
+            transparent 25%,
+            rgba(16,185,129,0.5) 50%,
+            transparent 75%
+          );
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          animation: borderRotate 4s linear infinite;
+          pointer-events: none;
+        }
+
+        @property --border-angle {
+          syntax: '<angle>';
+          initial-value: 0deg;
+          inherits: false;
+        }
       `}</style>
 
       {/* Background layers */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Base */}
         <div className="absolute inset-0" style={{ background: "#07090d" }} />
-        {/* Dot grid */}
         <div className="absolute inset-0 opacity-20" style={{
           backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.35) 1px, transparent 1px)",
           backgroundSize: "40px 40px"
         }} />
-        {/* Ambient glows */}
         <div className="absolute top-0 right-0 w-[700px] h-[500px] rounded-full opacity-[0.07]" style={{ background: "radial-gradient(circle, #10b981 0%, transparent 65%)", transform: "translate(30%,-20%)" }} />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-[0.05]" style={{ background: "radial-gradient(circle, #3b82f6 0%, transparent 65%)", transform: "translate(-30%,30%)" }} />
-        {/* Vignette */}
         <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(7,9,13,0.8) 100%)" }} />
-        {/* Noise */}
         <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E\")" }} />
       </div>
 
@@ -178,7 +209,7 @@ export function HeroSection() {
 
           <div className="a4 flex flex-wrap gap-2 mb-7">
             {["30-sec entry","Analytics dashboard","Emotion tagging","Risk analytics"].map(f => (
-              <span key={f} className="mono text-[10px] tracking-wide px-3 py-1.5 rounded-full text-white/35" style={{ background: "var(--s)", border: "1px solid var(--br)" }}>
+              <span key={f} className="mono text-[10px] tracking-wide px-3 py-1.5 rounded-full text-white/35 hover:text-white/55 hover:border-white/[0.12] transition-colors duration-200 cursor-default" style={{ background: "var(--s)", border: "1px solid var(--br)" }}>
                 {f}
               </span>
             ))}
@@ -188,14 +219,14 @@ export function HeroSection() {
           <div className="a5 flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <Link
               href="/register"
-              className="group relative overflow-hidden rounded-xl mono font-medium text-[12px] tracking-wide text-black text-center px-8 py-3.5 transition-transform duration-200 hover:scale-[1.02] active:scale-[0.99]"
+              className="group relative overflow-hidden rounded-xl mono font-medium text-[12px] tracking-wide text-black text-center px-8 py-3.5 transition-all duration-200 hover:scale-[1.02] active:scale-[0.99] hover:shadow-[0_0_32px_rgba(16,185,129,0.35)]"
               style={{ background: "linear-gradient(135deg,#10b981,#059669)", boxShadow: "0 0 0 1px rgba(16,185,129,0.35), 0 6px 28px rgba(16,185,129,0.28)" }}
             >
-              <span className="relative z-10">→ Start Free</span>
+              <span className="relative z-10">Start Free</span>
               <div className="absolute inset-0 bg-white/10 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12" />
             </Link>
             <a href="#howItWorks" className="mono text-[12px] tracking-wide text-white/35 text-center px-8 py-3.5 rounded-xl hover:text-white/60 hover:bg-white/[0.04] transition-all duration-150" style={{ border: "1px solid var(--br)" }}>
-              How it works ↓
+              How it works
             </a>
           </div>
 
@@ -206,116 +237,130 @@ export function HeroSection() {
 
         {/* RIGHT — Dashboard card */}
         <div className="a6 card-float flex justify-center lg:justify-end">
-          <div
-            className="relative w-full max-w-[460px] rounded-2xl overflow-hidden card-shadow"
-            style={{ background: "linear-gradient(155deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.018) 100%)", border: "1px solid rgba(255,255,255,0.07)" }}
-          >
-            {/* Animated scan line */}
+          <div className="relative w-full max-w-[460px]">
+            {/* Ambient glow behind card */}
             <div
-              className="absolute top-[38%] h-px pointer-events-none z-10"
-              style={{ background: "linear-gradient(90deg,transparent,rgba(16,185,129,0.5),transparent)", width: "40%", animation: "scan 5s ease-in-out infinite" }}
+              className="absolute -inset-8 rounded-3xl pointer-events-none"
+              style={{
+                background: "radial-gradient(ellipse at 50% 30%, rgba(16,185,129,0.12), transparent 70%)",
+                animation: "glowPulse 4s ease-in-out infinite",
+              }}
             />
 
-            {/* Window chrome */}
-            <div className="flex items-center justify-between px-5 py-3.5" style={{ borderBottom: "1px solid var(--br)" }}>
-              <div className="flex items-center gap-2.5">
-                <div className="relative w-2 h-2">
-                  <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                  <div className="absolute inset-0 rounded-full bg-emerald-400" style={{ animation: "pulseRing 2.5s ease-out infinite" }} />
-                </div>
-                <span className="mono text-[10px] tracking-wider text-white/40">Today's Session · Feb 28</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                {["#ef4444","#f59e0b","#10b981"].map(c => <div key={c} className="w-2.5 h-2.5 rounded-full" style={{ background: c, opacity: 0.5 }} />)}
-              </div>
-            </div>
+            <div
+              className="hero-card-border relative rounded-2xl overflow-hidden card-shadow"
+              style={{ background: "linear-gradient(155deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.018) 100%)" }}
+            >
+              {/* Animated scan line */}
+              <div
+                className="absolute top-[38%] h-px pointer-events-none z-10"
+                style={{ background: "linear-gradient(90deg,transparent,rgba(16,185,129,0.5),transparent)", width: "40%", animation: "scan 5s ease-in-out infinite" }}
+              />
 
-            {/* PnL section */}
-            <div className="px-5 pt-5 pb-4" style={{ borderBottom: "1px solid var(--br)" }}>
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="mono text-[9px] tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--muted)" }}>Net P&L</p>
-                  <p className="syne font-bold text-emerald-400 leading-none tabular-nums" style={{ fontSize: 42, filter: "drop-shadow(0 0 20px rgba(16,185,129,0.45))" }}>
-                    +$2,840
-                  </p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="mono text-[10px] text-emerald-400/70">▲ +4.2% today</span>
-                    <span className="mono text-[10px]" style={{ color: "var(--muted)" }}>· 3 trades · 6h</span>
+              {/* Window chrome */}
+              <div className="flex items-center justify-between px-5 py-3.5" style={{ borderBottom: "1px solid var(--br)" }}>
+                <div className="flex items-center gap-2.5">
+                  <div className="relative w-2 h-2">
+                    <div className="w-2 h-2 rounded-full bg-emerald-400" />
+                    <div className="absolute inset-0 rounded-full bg-emerald-400" style={{ animation: "pulseRing 2.5s ease-out infinite" }} />
+                  </div>
+                  <span className="mono text-[10px] tracking-wider text-white/40">Today&apos;s Session · Feb 28</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {["#ef4444","#f59e0b","#10b981"].map(c => <div key={c} className="w-2.5 h-2.5 rounded-full" style={{ background: c, opacity: 0.5 }} />)}
+                </div>
+              </div>
+
+              {/* PnL section */}
+              <div className="px-5 pt-5 pb-4" style={{ borderBottom: "1px solid var(--br)" }}>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="mono text-[9px] tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--muted)" }}>Net P&L</p>
+                    <p className="syne font-bold text-emerald-400 leading-none tabular-nums" style={{ fontSize: 42, filter: "drop-shadow(0 0 20px rgba(16,185,129,0.45))" }}>
+                      +$2,840
+                    </p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="mono text-[10px] text-emerald-400/70">▲ +4.2% today</span>
+                      <span className="mono text-[10px]" style={{ color: "var(--muted)" }}>· 3 trades · 6h</span>
+                    </div>
                   </div>
                 </div>
+
+                <div className="mt-4">
+                  <p className="mono text-[9px] tracking-[0.18em] uppercase mb-2" style={{ color: "var(--muted)" }}>Win/Loss by Hour</p>
+                  <MiniBarChart />
+                </div>
               </div>
 
-              <div className="mt-4">
-                <p className="mono text-[9px] tracking-[0.18em] uppercase mb-2" style={{ color: "var(--muted)" }}>Win/Loss by Hour</p>
-                <MiniBarChart />
-              </div>
-            </div>
+              {/* Trades */}
+              <div className="px-5 pt-4 pb-2">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="mono text-[9px] tracking-[0.18em] uppercase" style={{ color: "var(--muted)" }}>Recent Trades</p>
+                  <span className="mono text-[9px] text-emerald-400/50 hover:text-emerald-400 transition-colors cursor-pointer">View all</span>
+                </div>
 
-            {/* Trades */}
-            <div className="px-5 pt-4 pb-2">
-              <div className="flex items-center justify-between mb-3">
-                <p className="mono text-[9px] tracking-[0.18em] uppercase" style={{ color: "var(--muted)" }}>Recent Trades</p>
-                <span className="mono text-[9px] text-emerald-400/50 hover:text-emerald-400 transition-colors cursor-pointer">View all →</span>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                {TRADES.map((t, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveTab(i)}
-                    className={`w-full text-left rounded-xl px-3 py-2.5 border tab-row ${activeTab === i ? "tab-active" : ""}`}
-                    style={{ background: "var(--s)", borderColor: "var(--br)" }}
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className="mono font-medium text-[11px] text-white/80 w-9 shrink-0">{t.sym}</span>
-                        <span className={`mono text-[8px] px-1.5 py-0.5 rounded font-medium tracking-wider shrink-0 ${t.side === "LONG" ? "text-emerald-400 bg-emerald-500/10" : "text-red-400 bg-red-500/10"}`}>
-                          {t.side}
-                        </span>
-                        <span className="mono text-[9px] hidden sm:block truncate" style={{ color: "var(--muted)" }}>{t.entry} → {t.exit}</span>
-                      </div>
-                      <div className="flex items-center gap-2.5 shrink-0">
-                        <Sparkline points={t.spark} up={t.up} />
-                        <div className="text-right w-14">
-                          <p className={`mono font-medium text-[11px] ${t.up ? "text-emerald-400" : "text-red-400"}`}>{t.pnl}</p>
-                          <p className="mono text-[9px]" style={{ color: "var(--muted)" }}>{t.pct}</p>
+                <div className="flex flex-col gap-1.5">
+                  {TRADES.map((t, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveTab(i)}
+                      className={`w-full text-left rounded-xl px-3 py-2.5 border tab-row ${activeTab === i ? "tab-active" : ""}`}
+                      style={{ background: "var(--s)", borderColor: "var(--br)" }}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="mono font-medium text-[11px] text-white/80 w-9 shrink-0">{t.sym}</span>
+                          <span className={`mono text-[8px] px-1.5 py-0.5 rounded font-medium tracking-wider shrink-0 ${t.side === "LONG" ? "text-emerald-400 bg-emerald-500/10" : "text-red-400 bg-red-500/10"}`}>
+                            {t.side}
+                          </span>
+                          <span className="mono text-[9px] hidden sm:block truncate" style={{ color: "var(--muted)" }}>{t.entry} → {t.exit}</span>
+                        </div>
+                        <div className="flex items-center gap-2.5 shrink-0">
+                          <Sparkline points={t.spark} up={t.up} />
+                          <div className="text-right w-14">
+                            <p className={`mono font-medium text-[11px] ${t.up ? "text-emerald-400" : "text-red-400"}`}>{t.pnl}</p>
+                            <p className="mono text-[9px]" style={{ color: "var(--muted)" }}>{t.pct}</p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </button>
-                ))}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Pattern insight strip */}
-            <div className="mx-5 mb-5 mt-3 rounded-xl p-3.5 flex items-center gap-3" style={{ background: "rgba(16,185,129,0.05)", border: "1px solid rgba(16,185,129,0.12)" }}>
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: "rgba(16,185,129,0.08)" }}>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M2 10l3-4 3 2 4-6" stroke="#10b981" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+              {/* Pattern insight strip */}
+              <div className="mx-5 mb-5 mt-3 rounded-xl p-3.5 flex items-center gap-3" style={{ background: "rgba(16,185,129,0.05)", border: "1px solid rgba(16,185,129,0.12)" }}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: "rgba(16,185,129,0.08)" }}>
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M2 10l3-4 3 2 4-6" stroke="#10b981" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="mono text-[10px] text-emerald-400 mb-0.5 font-medium">Pattern surfaced</p>
+                  <p className="mono text-[10px] truncate" style={{ color: "var(--muted)" }}>London session: 80% WR · NY: 42% WR</p>
+                </div>
+                <span className="mono text-[9px] text-emerald-400/40 shrink-0">→</span>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="mono text-[10px] text-emerald-400 mb-0.5 font-medium">Pattern surfaced</p>
-                <p className="mono text-[10px] truncate" style={{ color: "var(--muted)" }}>London session: 80% WR · NY: 42% WR</p>
-              </div>
-              <span className="mono text-[9px] text-emerald-400/40 shrink-0">→</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Bottom ticker */}
-      <div className="relative z-10 overflow-hidden py-2" style={{ borderTop: "1px solid var(--br)", background: "rgba(0,0,0,0.3)" }}>
-        <div className="flex whitespace-nowrap" style={{ animation: "ticker 22s linear infinite" }}>
-          {[...Array(2)].fill(["NQ +1.04%","ES +0.72%","BTC +2.1%","TSLA −0.9%","SPY +0.3%","NVDA +1.8%","AAPL +0.5%","QQQ +0.6%","GC +0.2%","CL −1.1%"]).flat().map((t, i) => {
-            const up = t.includes("+");
-            return (
-              <span key={i} className="inline-flex items-center gap-1.5 px-6 mono text-[10px] tracking-widest shrink-0" style={{ color: up ? "rgba(16,185,129,0.55)" : "rgba(239,68,68,0.55)" }}>
-                <span className="w-1 h-1 rounded-full" style={{ background: up ? "#10b981" : "#ef4444", opacity: 0.5 }} />
-                {t}
-              </span>
-            );
-          })}
+      {/* Bottom gradient fade into ticker */}
+      <div className="relative z-10">
+        <div className="absolute -top-20 inset-x-0 h-20 bg-gradient-to-b from-transparent to-black/60 pointer-events-none" />
+        <div className="overflow-hidden py-2.5" style={{ borderTop: "1px solid var(--br)", background: "rgba(0,0,0,0.3)" }}>
+          <div className="flex whitespace-nowrap" style={{ animation: "ticker 22s linear infinite" }}>
+            {[...Array(2)].fill(["NQ +1.04%","ES +0.72%","BTC +2.1%","TSLA −0.9%","SPY +0.3%","NVDA +1.8%","AAPL +0.5%","QQQ +0.6%","GC +0.2%","CL −1.1%"]).flat().map((t, i) => {
+              const up = t.includes("+");
+              return (
+                <span key={i} className="inline-flex items-center gap-1.5 px-6 mono text-[10px] tracking-widest shrink-0" style={{ color: up ? "rgba(16,185,129,0.55)" : "rgba(239,68,68,0.55)" }}>
+                  <span className="w-1 h-1 rounded-full" style={{ background: up ? "#10b981" : "#ef4444", opacity: 0.5 }} />
+                  {t}
+                </span>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

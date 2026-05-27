@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { cx } from "@/style";
-import { TableShell } from "@/components/ui/app-table";
 import { Tooltip } from "@/components/ui/tooltip";
 import { RLabel } from "../shared/r-label";
 import type { PairStat } from "@/types";
@@ -49,7 +48,7 @@ export function PairBreakdown({ pairs }: Props) {
   const maxR = Math.max(...pairs.map(p => Math.abs(p.totalR)), 0.01);
 
   return (
-    <TableShell scrollX={false} className="rounded-xl">
+    <div className="rounded-xl bg-[#0d1117] border border-white/[0.065] overflow-hidden">
       <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.05]">
         <div className="flex items-center gap-3">
           <div className="w-4 h-px bg-teal-400/50" />
@@ -69,7 +68,7 @@ export function PairBreakdown({ pairs }: Props) {
 
       <div className="overflow-x-auto">
         {pairs.length === 0 ? (
-          <div className="px-5 py-10 text-center font-mono text-[12px] text-[var(--tx-4)]">No pair data</div>
+          <div className="px-5 py-10 text-center font-mono text-[12px] text-white/20">No pair data</div>
         ) : (
           <table className="w-full border-collapse min-w-[440px]">
             <tbody>
@@ -130,6 +129,6 @@ export function PairBreakdown({ pairs }: Props) {
           </table>
         )}
       </div>
-    </TableShell>
+    </div>
   );
 }

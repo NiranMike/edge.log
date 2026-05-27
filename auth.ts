@@ -16,8 +16,9 @@ import authConfig      from "./auth.config";
 declare module "next-auth" {
   interface Session {
     user: {
-      id:      string;
-      picture?: string | null;
+      id:              string;
+      isEmailVerified: boolean;
+      picture?:        string | null;
     } & DefaultSession["user"];
   }
 
@@ -26,8 +27,9 @@ declare module "next-auth" {
   }
 
   interface JWT {
-    id:       string;
-    picture?: string | null;
+    id:              string;
+    isEmailVerified: boolean;
+    picture?:        string | null;
   }
 }
 
@@ -147,14 +149,17 @@ export const authOptions:NextAuthConfig = {
       if (user?.id) {
         token.id      = user.id;
         token.picture = user.image ?? null;
+        const dbUser  = await db.user.findUnique({ where: { id: user.id }, select: { emailVerified: true } });
+        token.isEmailVerified = !!dbUser?.emailVerified;
       }
 
       // Google first sign-in — look up by email since adapter may not populate user
       if (account?.provider === "google" && profile?.email && !token.id) {
         const dbUser = await db.user.findUnique({ where: { email: profile.email } });
         if (dbUser) {
-          token.id      = dbUser.id;
-          token.picture = dbUser.image ?? null;
+          token.id            = dbUser.id;
+          token.picture       = dbUser.image ?? null;
+          token.isEmailVerified = !!dbUser.emailVerified; // Google users are always verified
         }
       }
 
@@ -164,6 +169,7 @@ export const authOptions:NextAuthConfig = {
     async session({ session, token }) {
       if (token.id && typeof token.id === "string") session.user.id = token.id;
       if (token.picture && typeof token.picture === "string") session.user.image = token.picture;
+      session.user.isEmailVerified = Boolean(token.isEmailVerified);
       return session;
     },
   },

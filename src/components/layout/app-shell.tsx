@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import type { ReactNode } from "react";
 import { useState, useEffect } from "react";
@@ -83,6 +83,11 @@ function NavLink({
         )}>
           <span className="text-[14px] leading-none">{icon}</span>
           {!compact && <span>{label}</span>}
+          {!compact && (
+            <span className="ml-auto font-mono text-[9px] text-white/15 border border-white/[0.06] rounded px-1 py-0.5 leading-none">
+              N
+            </span>
+          )}
         </div>
       </Link>
     );
@@ -219,10 +224,28 @@ function SidebarContent({
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const router   = useRouter();
   const { data: session } = useSession();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
+
+  // Global keyboard shortcut: n → new trade
+  useEffect(() => {
+    function handler(e: KeyboardEvent) {
+      const tag = (e.target as HTMLElement).tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      if ((e.target as HTMLElement).isContentEditable) return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+      if (e.key === "n") {
+        e.preventDefault();
+        router.push("/trades/new");
+      }
+    }
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [router]);
 
   useEffect(() => {
     document.body.style.overflow = drawerOpen ? "hidden" : "";
