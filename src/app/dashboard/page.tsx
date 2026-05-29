@@ -103,7 +103,6 @@ export default async function DashboardPage({
               <div className="animate-fade-up">
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-4 h-px bg-white/15" />
                     <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/30">
                       Recent trades
                     </h2>
