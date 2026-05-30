@@ -41,7 +41,7 @@ async function sendVerificationEmail(email: string, name: string | null, token: 
 
             <a href="${url}"
               style="display:inline-block;background:#2dd4bf;color:#07090d;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.12em;padding:14px 28px;text-decoration:none;margin-bottom:28px;">
-              Verify Email →
+              Verify Email 
             </a>
 
             <p style="font-size:11px;color:#334155;margin-top:24px;border-top:1px solid #1e293b;padding-top:20px;">

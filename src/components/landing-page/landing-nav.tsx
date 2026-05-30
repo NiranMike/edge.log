@@ -123,7 +123,7 @@ export function LandingNav() {
             style={ds.clip12}
           >
             <span className={ds.btnShimmer} />
-            <span className="relative z-10">Get Started →</span>
+            <span className="relative z-10">Get Started</span>
           </Link>
         </div>
 
@@ -187,7 +187,7 @@ export function LandingNav() {
               style={ds.clip12}
             >
               <span className={ds.btnShimmer} />
-              <span className="relative z-10">Get Started Free →</span>
+              <span className="relative z-10">Get Started Free</span>
             </Link>
             <Link
               href="/login"

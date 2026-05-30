@@ -6,13 +6,73 @@ import type { ReactNode } from "react";
 import { useState, useEffect } from "react";
 import { cx } from "@/style";
 
+function DashboardIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="9" rx="1.5" />
+      <rect x="14" y="3" width="7" height="5" rx="1.5" />
+      <rect x="14" y="12" width="7" height="9" rx="1.5" />
+      <rect x="3" y="16" width="7" height="5" rx="1.5" />
+    </svg>
+  );
+}
+function TradesIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+    </svg>
+  );
+}
+function AnalyticsIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+    </svg>
+  );
+}
+function CalendarIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2" />
+      <line x1="16" y1="2" x2="16" y2="6" />
+      <line x1="8" y1="2" x2="8" y2="6" />
+      <line x1="3" y1="10" x2="21" y2="10" />
+    </svg>
+  );
+}
+function SettingsIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1.08-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1.08 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H10a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001.08 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V10c.26.6.83 1.02 1.51 1.08H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1.08z" />
+    </svg>
+  );
+}
+function PlusIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19" />
+      <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+  );
+}
+
+const NAV_ICONS: Record<string, () => React.ReactNode> = {
+  "/dashboard":  DashboardIcon,
+  "/trades":     TradesIcon,
+  "/analytics":  AnalyticsIcon,
+  "/calendar":   CalendarIcon,
+  "/settings":   SettingsIcon,
+  "/trades/new": PlusIcon,
+};
+
 const NAV = [
-  { href: "/dashboard",  icon: "◈", label: "Dashboard",  sub: "overview"  },
-  { href: "/trades",     icon: "≡", label: "Trades",     sub: "journal"   },
-  { href: "/analytics",  icon: "⌬", label: "Analytics",  sub: "patterns"  },
-  { href: "/calendar",   icon: "▦", label: "Calendar",   sub: "daily p&l" },
-  { href: "/settings",   icon: "⚙", label: "Settings",   sub: "plan & billing" },
-  { href: "/trades/new", icon: "+", label: "New Trade",  sub: null        },
+  { href: "/dashboard",  label: "Dashboard",  sub: "overview"       },
+  { href: "/trades",     label: "Trades",     sub: "journal"        },
+  { href: "/analytics",  label: "Analytics",  sub: "patterns"       },
+  { href: "/calendar",   label: "Calendar",   sub: "daily p&l"      },
+  { href: "/settings",   label: "Settings",   sub: "plan & billing" },
+  { href: "/trades/new", label: "New Trade",  sub: null             },
 ];
 
 function getGreeting(): string {
@@ -69,25 +129,29 @@ function MenuIcon({ open }: { open: boolean }) {
 function NavLink({
   href, icon, label, sub, active, compact = false, onClick,
 }: {
-  href: string; icon: string; label: string; sub: string | null;
+  href: string; icon: React.ReactNode; label: string; sub: string | null;
   active: boolean; compact?: boolean; onClick?: () => void;
 }) {
   const isNew = href === "/trades/new";
 
   if (isNew) {
     return (
-      <Link href={href} className="no-underline block mt-2" onClick={onClick}>
+      <Link href={href} className="no-underline block mt-auto pt-2" onClick={onClick}>
         <div className={cx(
-          "flex items-center gap-[9px] rounded-lg font-mono text-[12px] tracking-[0.04em] border border-teal-400/25 bg-teal-400/[0.06] text-teal-400 hover:bg-teal-400/[0.12] hover:border-teal-400/40 transition-all duration-150 cursor-pointer",
-          compact ? "px-0 py-[10px] justify-center" : "px-3 py-[10px]",
+          "group/new relative overflow-hidden flex items-center gap-2 rounded-lg font-mono text-[11px] font-medium tracking-[0.08em] uppercase",
+          "bg-emerald-400 text-[#07090d]",
+          "hover:brightness-110 active:scale-[0.97]",
+          "transition-all duration-150 cursor-pointer",
+          compact ? "px-0 py-[10px] justify-center" : "px-3.5 py-[9px]",
         )}>
-          <span className="text-[14px] leading-none">{icon}</span>
-          {!compact && <span>{label}</span>}
+          <span className="shrink-0">{icon}</span>
+          {!compact && <span>New Trade</span>}
           {!compact && (
-            <span className="ml-auto font-mono text-[9px] text-white/15 border border-white/[0.06] rounded px-1 py-0.5 leading-none">
+            <span className="ml-auto font-mono text-[8px] text-[#07090d]/40 border border-[#07090d]/15 rounded px-1 py-0.5 leading-none">
               N
             </span>
           )}
+          <div className="absolute inset-0 bg-white/15 -translate-x-full group-hover/new:translate-x-full transition-transform duration-500 skew-x-12 pointer-events-none" />
         </div>
       </Link>
     );
@@ -103,7 +167,7 @@ function NavLink({
           : "border border-transparent hover:bg-white/[0.03] hover:border-white/[0.04]",
       )}>
         <span className={cx(
-          "text-sm leading-none shrink-0 transition-colors duration-150",
+          "shrink-0 transition-colors duration-150",
           active ? "text-white" : "text-white/30 group-hover:text-white/50",
         )}>
           {icon}
@@ -170,14 +234,15 @@ function SidebarContent({
       </div>
 
       <nav className={cx("py-4 flex-1 flex flex-col gap-[2px]", compact ? "px-2 relative" : "px-3")}>
-        {NAV.map(({ href, icon, label, sub }) => {
+        {NAV.map(({ href, label, sub }) => {
           const isNew = href === "/trades/new";
           const active = !isNew && (
             pathname === href ||
             (href !== "/dashboard" && pathname.startsWith(href))
           );
+          const IconComp = NAV_ICONS[href];
           return (
-            <NavLink key={href} href={href} icon={icon} label={label} sub={sub}
+            <NavLink key={href} href={href} icon={IconComp ? <IconComp /> : null} label={label} sub={sub}
               active={active} compact={compact} onClick={onNavClick} />
           );
         })}

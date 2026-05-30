@@ -430,7 +430,7 @@ export default function PricingPage() {
                     href="/register"
                     className="font-mono text-[10px] text-white/40 hover:text-white/70 transition-colors duration-150 whitespace-nowrap"
                   >
-                    Free →
+                    Free
                   </Link>
                 </div>
                 <div className="flex justify-center">
@@ -513,7 +513,7 @@ export default function PricingPage() {
               style={ds.clip12}
             >
               <span className={ds.btnShimmer} />
-              <span className="relative z-10">Start Free →</span>
+              <span className="relative z-10">Start Free</span>
             </Link>
             <Link
               href="/login"

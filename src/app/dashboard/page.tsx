@@ -69,9 +69,11 @@ export default async function DashboardPage({
             {metrics.totalTrades > 0 && (
               <Link
                 href="/trades/new"
-                className="shrink-0 inline-flex items-center gap-2 px-3 sm:px-4 py-[9px] bg-teal-400/[0.08] border border-teal-400/20 rounded-lg font-mono text-[11px] text-teal-400 no-underline hover:bg-teal-400/[0.14] hover:border-teal-400/35 transition-all duration-150 tracking-[0.04em] whitespace-nowrap"
+                className="group relative overflow-hidden shrink-0 inline-flex items-center gap-1.5 px-3 sm:px-4 py-[9px] bg-emerald-400 rounded-lg text-[#07090d] font-mono text-[11px] font-medium no-underline hover:brightness-110 active:scale-[0.97] transition-all duration-150 tracking-[0.06em] uppercase whitespace-nowrap"
               >
-                + New trade
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                New trade
+                <div className="absolute inset-0 bg-white/15 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12 pointer-events-none" />
               </Link>
             )}
           </div>
@@ -111,7 +113,7 @@ export default async function DashboardPage({
                     href="/trades"
                     className="font-mono text-[11px] text-teal-400/60 no-underline hover:text-teal-400 transition-colors duration-150 tracking-[0.04em]"
                   >
-                    View all →
+                    View all
                   </Link>
                 </div>
                 <RecentTrades trades={recent} />

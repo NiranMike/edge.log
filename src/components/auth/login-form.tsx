@@ -118,14 +118,14 @@ export function LoginForm({ callbackUrl, urlError, emailVerified, passwordReset 
         </div>
 
         <AuthButton type="submit" loading={isLoading}>
-          → Sign In
+          Sign In
         </AuthButton>
       </form>
 
       <p className="font-mono text-[11px] text-center text-white/22">
         No account?{" "}
         <Link href="/register" className="text-emerald-400/80 hover:text-emerald-400 transition-colors">
-          Create one free →
+          Create one free
         </Link>
       </p>
 

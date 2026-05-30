@@ -325,7 +325,7 @@ function MappingStep({
               : "bg-white/[0.04] text-white/20 cursor-not-allowed",
           )}
         >
-          Preview {rawRows.length} trades →
+          Preview {rawRows.length} trades
         </button>
       </div>
     </div>

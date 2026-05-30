@@ -86,7 +86,7 @@ export function SecurityCard({ hasPassword, providers }: Props) {
               onClick={() => { setOpen(true); setSuccess(false); }}
               className="font-mono text-[10px] uppercase tracking-[0.12em] text-emerald-400/70 hover:text-emerald-400 transition-colors"
             >
-              Change →
+              Change
             </button>
           )}
         </div>

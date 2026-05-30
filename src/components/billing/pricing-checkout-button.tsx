@@ -36,7 +36,7 @@ export function PricingCheckoutButton() {
       >
         <span className={ds.btnShimmer} />
         <span className="relative z-10">
-          {loading ? "Redirecting…" : "Start Pro →"}
+          {loading ? "Redirecting…" : "Start Pro"}
         </span>
       </button>
       {error && (

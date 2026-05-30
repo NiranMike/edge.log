@@ -161,7 +161,7 @@ export function RegisterForm({ defaultEmail }: RegisterFormProps) {
         />
 
         <AuthButton type="submit" loading={isLoading} className="mt-1">
-          → Create Account
+           Create Account
         </AuthButton>
       </form>
 
@@ -171,7 +171,7 @@ export function RegisterForm({ defaultEmail }: RegisterFormProps) {
           href="/login"
           className="text-emerald-400/80 hover:text-emerald-400 transition-colors duration-150"
         >
-          Sign in →
+          Sign in
         </Link>
       </p>
 

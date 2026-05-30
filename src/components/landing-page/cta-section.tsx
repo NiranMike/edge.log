@@ -125,7 +125,7 @@ export function CtaSection() {
               >
                 <span className={ds.btnShimmer} />
                 <span className="relative z-10 whitespace-nowrap">
-                  Start Free →
+                  Start Free
                 </span>
               </button>
             </form>
@@ -154,7 +154,7 @@ export function CtaSection() {
                 href="/login"
                 className="text-emerald-400/60 hover:text-emerald-400 transition-colors duration-150 underline underline-offset-2"
               >
-                Sign in →
+                Sign in
               </Link>
             </p>
           </div>

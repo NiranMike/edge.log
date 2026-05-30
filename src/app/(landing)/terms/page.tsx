@@ -227,10 +227,10 @@ export default function TermsPage() {
           {/* Bottom nav */}
           <div className="mt-16 pt-8 border-t border-white/[0.06] flex flex-wrap items-center gap-6">
             <Link href="/privacy" className="font-mono text-[11px] text-white/25 hover:text-white/50 transition-colors">
-              Privacy Policy →
+              Privacy Policy 
             </Link>
             <Link href="/" className="font-mono text-[11px] text-white/25 hover:text-white/50 transition-colors">
-              ← Back to home
+               Back to home
             </Link>
           </div>
         </div>

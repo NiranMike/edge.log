@@ -24,7 +24,7 @@ export function DangerZoneCard() {
             onClick={() => setShowModal(true)}
             className="shrink-0 font-mono text-[11px] uppercase tracking-[0.12em] px-4 py-2.5 rounded-lg border border-red-500/30 text-red-400/70 bg-red-500/[0.05] hover:bg-red-500/[0.1] hover:border-red-500/45 hover:text-red-400 transition-all duration-150"
           >
-            Delete →
+            Delete
           </button>
         </div>
       </div>

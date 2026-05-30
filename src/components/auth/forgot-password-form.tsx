@@ -76,7 +76,7 @@ export function ForgotPasswordForm() {
       />
 
       <AuthButton type="submit" loading={isLoading}>
-        → Send Reset Link
+       Send Reset Link
       </AuthButton>
 
       <p className="font-mono text-[11px] text-center text-white/22">

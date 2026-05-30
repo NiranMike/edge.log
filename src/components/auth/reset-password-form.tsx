@@ -72,7 +72,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
       />
 
       <AuthButton type="submit" loading={isLoading}>
-        → Set New Password
+         Set New Password
       </AuthButton>
     </form>
   );
