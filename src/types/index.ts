@@ -12,11 +12,11 @@ export interface Trade {
   stopLoss:    number;
   takeProfit:  number;
   exitPrice:   number;
-  rMultiple:   number;   
+  rMultiple:   number;
   won:         boolean;
   notes:       string | null;
-  tradedAt:    string; 
-  createdAt:   string; 
+  tradedAt:    string;
+  createdAt:   string;
 }
 
 
