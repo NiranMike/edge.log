@@ -3,20 +3,19 @@
 export type Direction = "LONG" | "SHORT";
 
 export interface Trade {
-  id:            string;
-  userId:        string;
-  pair:          string;
-  direction:     Direction;
-  entryPrice:    number;
-  stopLoss:      number;
-  takeProfit:    number;
-  exitPrice:     number;
-  rMultiple:     number;
-  won:           boolean;
-  screenshotUrl: string | null;
-  notes:         string | null;
-  tradedAt:      string;
-  createdAt:     string;
+  id:          number;
+  userId:      string;
+  pair:        string;
+  direction:   Direction;
+  entryPrice:  number;
+  stopLoss:    number;
+  takeProfit:  number;
+  exitPrice:   number;
+  rMultiple:   number;   
+  won:         boolean;
+  notes:       string | null;
+  tradedAt:    string; 
+  createdAt:   string; 
 }
 
 
