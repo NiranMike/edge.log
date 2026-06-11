@@ -39,26 +39,27 @@ export interface UpdateTradeRow {
 
 function toTrade(row: Prisma.TradeGetPayload<object>): Trade {
   return {
-    id:         row.id,
-    userId:     row.userId,
-    pair:       row.pair,
-    direction:  row.direction as Trade["direction"],
-    entryPrice: Number(row.entryPrice),
-    stopLoss:   Number(row.stopLoss),
-    takeProfit: Number(row.takeProfit),
-    exitPrice:  Number(row.exitPrice),
-    rMultiple:  Number(row.rMultiple),
-    won:        row.won,
-    notes:      row.notes,
-    tradedAt:   row.tradedAt.toISOString(),
-    createdAt:  row.createdAt.toISOString(),
+    id:            row.id,
+    userId:        row.userId,
+    pair:          row.pair,
+    direction:     row.direction as Trade["direction"],
+    entryPrice:    Number(row.entryPrice),
+    stopLoss:      Number(row.stopLoss),
+    takeProfit:    Number(row.takeProfit),
+    exitPrice:     Number(row.exitPrice),
+    rMultiple:     Number(row.rMultiple),
+    won:           row.won,
+    screenshotUrl: row.screenshotUrl,
+    notes:         row.notes,
+    tradedAt:      row.tradedAt.toISOString(),
+    createdAt:     row.createdAt.toISOString(),
   };
 }
 
 // ─── Repository ───────────────────────────────────────────────────────────────
 
 export const tradeRepository = {
-  async findById(id: number, userId: string): Promise<Trade | null> {
+  async findById(id: string, userId: string): Promise<Trade | null> {
     const row = await db.trade.findFirst({ where: { id, userId } });
     return row ? toTrade(row) : null;
   },
@@ -93,7 +94,7 @@ export const tradeRepository = {
     return toTrade(row);
   },
 
-  async update(id: number, userId: string, input: UpdateTradeRow): Promise<Trade> {
+  async update(id: string, userId: string, input: UpdateTradeRow): Promise<Trade> {
     const row = await db.trade.update({
       where: { id, userId },
       data:  input,
@@ -101,7 +102,7 @@ export const tradeRepository = {
     return toTrade(row);
   },
 
-  async delete(id: number, userId: string): Promise<void> {
+  async delete(id: string, userId: string): Promise<void> {
     await db.trade.deleteMany({ where: { id, userId } });
   },
 

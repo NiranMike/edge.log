@@ -11,7 +11,7 @@ export default async function EditTradePage({ params }: { params: Promise<{ id: 
 
   const { id } = await params;
   const trades = await tradeService.getAll(session.user.id);
-  const trade = trades.find(t => t.id === parseInt(id));
+  const trade = trades.find(t => t.id === id);
   if (!trade) notFound();
 
   const rPositive = trade.rMultiple >= 0;
