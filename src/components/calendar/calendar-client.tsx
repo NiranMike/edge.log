@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { DayPicker } from "react-day-picker";
 import type { Trade } from "@/types";
 import {
   buildDayStats,
@@ -16,6 +15,8 @@ const MONTHS = [
   "January","February","March","April","May","June",
   "July","August","September","October","November","December",
 ];
+
+const WEEKDAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -52,6 +53,26 @@ function getDayColors(stat: DayStat | null, isFuture: boolean) {
 
 function formatDateKey(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+/** Build an array of dates for a calendar month grid (includes leading/trailing blanks) */
+function getCalendarDays(year: number, month: number): (Date | null)[] {
+  const firstDay = new Date(year, month, 1);
+  const startDow = firstDay.getDay(); // 0=Sun
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  const cells: (Date | null)[] = [];
+
+  // Leading blanks
+  for (let i = 0; i < startDow; i++) cells.push(null);
+
+  // Actual days
+  for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(year, month, d));
+
+  // Trailing blanks to complete last row
+  while (cells.length % 7 !== 0) cells.push(null);
+
+  return cells;
 }
 
 // ─── Day Tooltip ─────────────────────────────────────────────────────────────
@@ -188,6 +209,77 @@ function YearStrip({
   );
 }
 
+// ─── Day Cell ────────────────────────────────────────────────────────────────
+
+function DayCell({
+  date, stat, isToday, isFuture, hoveredDay, setHoveredDay,
+}: {
+  date: Date;
+  stat: DayStat | null;
+  isToday: boolean;
+  isFuture: boolean;
+  hoveredDay: string | null;
+  setHoveredDay: (key: string | null) => void;
+}) {
+  const dateKey = formatDateKey(date);
+  const hasStat = !!stat;
+  const colors = getDayColors(stat, isFuture);
+
+  return (
+    <div
+      className="relative p-0.5 sm:p-1"
+      onMouseEnter={() => hasStat && setHoveredDay(dateKey)}
+      onMouseLeave={() => setHoveredDay(null)}
+    >
+      <div className={cx(
+        "relative flex flex-col justify-between h-[52px] sm:h-[88px] p-1.5 sm:p-2 rounded-[6px] border transition-all duration-150",
+        isToday
+          ? "border-teal-400/40 bg-teal-400/[0.04]"
+          : hasStat && !isFuture
+          ? cx(colors.bg, colors.border, "hover:brightness-110 cursor-default")
+          : "border-white/[0.04] bg-white/[0.01]",
+        isFuture && "opacity-30",
+      )}>
+        <div className="flex items-center justify-between">
+          <span className={cx(
+            "font-mono text-[11px] sm:text-[12px] leading-none",
+            isToday
+              ? "text-teal-400 font-medium"
+              : hasStat && !isFuture
+              ? colors.text
+              : "text-white/18",
+          )}>
+            {date.getDate()}
+          </span>
+          {hasStat && !isFuture && (
+            <span className="font-mono text-[9px] text-white/25 leading-none hidden sm:block">
+              {stat!.trades}t
+            </span>
+          )}
+        </div>
+
+        {hasStat && !isFuture && (
+          <div className="mt-auto">
+            <span className={cx(
+              "font-mono text-[10px] sm:text-[11px] font-medium leading-none block",
+              colors.rText,
+            )}>
+              {stat!.totalR >= 0 ? "+" : ""}{stat!.totalR}R
+            </span>
+            <span className="font-mono text-[8px] text-white/20 mt-0.5 block sm:hidden">
+              {stat!.trades} trade{stat!.trades > 1 ? "s" : ""}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {hoveredDay === dateKey && hasStat && stat && (
+        <DayTooltip stat={stat} date={date} />
+      )}
+    </div>
+  );
+}
+
 // ─── Main Calendar ───────────────────────────────────────────────────────────
 
 export function CalendarClient({ trades }: { trades: Trade[] }) {
@@ -201,6 +293,11 @@ export function CalendarClient({ trades }: { trades: Trade[] }) {
 
   const currentYear  = month.getFullYear();
   const currentMonth = month.getMonth();
+
+  const calendarDays = useMemo(
+    () => getCalendarDays(currentYear, currentMonth),
+    [currentYear, currentMonth],
+  );
 
   const monthStat = useMemo(
     () => buildMonthStat(currentYear, currentMonth, dayStats),
@@ -242,79 +339,6 @@ export function CalendarClient({ trades }: { trades: Trade[] }) {
 
   const isAtCurrent = currentYear === now.getFullYear() && currentMonth === now.getMonth();
 
-  // Custom day rendering for DayPicker
-  const renderDay = useCallback((dayProps: { day: { date: Date }; children?: React.ReactNode }) => {
-    const date = dayProps.day.date;
-    const dateKey = formatDateKey(date);
-    const isCurrentMonth = date.getMonth() === currentMonth && date.getFullYear() === currentYear;
-
-    if (!isCurrentMonth) {
-      return <td className="p-0.5 sm:p-1"><div className="aspect-square sm:aspect-auto sm:h-[88px]" /></td>;
-    }
-
-    const stat = dayStats.get(dateKey) ?? null;
-    const isToday = dateKey === todayStr;
-    const isFuture = dateKey > todayStr;
-    const hasStat = !!stat;
-    const colors = getDayColors(stat, isFuture);
-
-    return (
-      <td className="p-0.5 sm:p-1">
-        <div
-          className="relative"
-          onMouseEnter={() => hasStat && setHoveredDay(dateKey)}
-          onMouseLeave={() => setHoveredDay(null)}
-        >
-          <div className={cx(
-            "relative flex flex-col justify-between aspect-square sm:aspect-auto sm:h-[88px] p-1.5 sm:p-2 rounded-[6px] border transition-all duration-150",
-            isToday
-              ? "border-teal-400/40 bg-teal-400/[0.04]"
-              : hasStat && !isFuture
-              ? cx(colors.bg, colors.border, "hover:brightness-110 cursor-default")
-              : "border-white/[0.04] bg-white/[0.01]",
-            isFuture && "opacity-30",
-          )}>
-            <div className="flex items-center justify-between">
-              <span className={cx(
-                "font-mono text-[11px] sm:text-[12px] leading-none",
-                isToday
-                  ? "text-teal-400 font-medium"
-                  : hasStat && !isFuture
-                  ? colors.text
-                  : "text-white/18",
-              )}>
-                {date.getDate()}
-              </span>
-              {hasStat && !isFuture && (
-                <span className="font-mono text-[9px] text-white/25 leading-none hidden sm:block">
-                  {stat!.trades}t
-                </span>
-              )}
-            </div>
-
-            {hasStat && !isFuture && (
-              <div className="mt-auto">
-                <span className={cx(
-                  "font-mono text-[10px] sm:text-[11px] font-medium leading-none block",
-                  colors.rText,
-                )}>
-                  {stat!.totalR >= 0 ? "+" : ""}{stat!.totalR}R
-                </span>
-                <span className="font-mono text-[8px] text-white/20 mt-0.5 block sm:hidden">
-                  {stat!.trades} trade{stat!.trades > 1 ? "s" : ""}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {hoveredDay === dateKey && hasStat && stat && (
-            <DayTooltip stat={stat} date={date} />
-          )}
-        </div>
-      </td>
-    );
-  }, [dayStats, todayStr, currentMonth, currentYear, hoveredDay]);
-
   if (trades.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -355,7 +379,7 @@ export function CalendarClient({ trades }: { trades: Trade[] }) {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
           </button>
 
-          {/* Clickable header → picker */}
+          {/* Clickable header -> picker */}
           <div className="relative" ref={pickerRef}>
             <button
               onClick={() => setPickerOpen(v => !v)}
@@ -472,32 +496,49 @@ export function CalendarClient({ trades }: { trades: Trade[] }) {
         <span className="font-mono text-[9px] text-white/18 ml-auto">Darker = larger R</span>
       </div>
 
-      {/* Calendar — react-day-picker */}
+      {/* Calendar grid */}
       <div className="rounded-xl border border-white/[0.065] bg-[#0d1117] overflow-hidden">
-        <DayPicker
-          mode="single"
-          month={month}
-          onMonthChange={setMonth}
-          hideNavigation
-          showOutsideDays={false}
-          fixedWeeks={false}
-          classNames={{
-            months:        "w-full",
-            month:         "w-full",
-            month_caption: "hidden",
-            nav:           "hidden",
-            month_grid:    "w-full",
-            weekdays:      "flex border-b border-white/[0.05]",
-            weekday:       "flex-1 px-2 py-2.5 text-center font-mono text-[9px] uppercase tracking-[0.14em] text-white/20 bg-[#0a0e14]",
-            week:          "flex",
-            day:           "flex-1",
-            outside:       "opacity-0 pointer-events-none",
-            hidden:        "invisible",
-          }}
-          components={{
-            Day: renderDay,
-          }}
-        />
+        {/* Weekday header */}
+        <div className="grid grid-cols-7 border-b border-white/[0.05]">
+          {WEEKDAYS.map(d => (
+            <div
+              key={d}
+              className="px-2 py-2.5 text-center font-mono text-[9px] uppercase tracking-[0.14em] text-white/20 bg-[#0a0e14]"
+            >
+              {d}
+            </div>
+          ))}
+        </div>
+
+        {/* Day cells */}
+        <div className="grid grid-cols-7">
+          {calendarDays.map((date, i) => {
+            if (!date) {
+              return (
+                <div key={`blank-${i}`} className="p-0.5 sm:p-1">
+                  <div className="h-[52px] sm:h-[88px]" />
+                </div>
+              );
+            }
+
+            const dateKey = formatDateKey(date);
+            const stat = dayStats.get(dateKey) ?? null;
+            const isToday = dateKey === todayStr;
+            const isFuture = dateKey > todayStr;
+
+            return (
+              <DayCell
+                key={dateKey}
+                date={date}
+                stat={stat}
+                isToday={isToday}
+                isFuture={isFuture}
+                hoveredDay={hoveredDay}
+                setHoveredDay={setHoveredDay}
+              />
+            );
+          })}
+        </div>
       </div>
 
       {/* Bottom link */}
