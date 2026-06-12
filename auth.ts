@@ -70,7 +70,7 @@ async function findOrCreateGoogleUser(profile: {
   }
 
   // 3. Brand new user → create atomically
-  return db.$transaction(async (tx: { user: { create: (arg0: { data: { email: string; name: string | null | undefined; image: string | null | undefined; emailVerified: Date; }; }) => any; }; account: { create: (arg0: { data: { userId: any; type: "oauth"; provider: "google"; providerAccountId: string; }; }) => any; }; }) => {
+  return db.$transaction(async (tx) => {
     const user = await tx.user.create({
       data: { email, name, image, emailVerified: new Date() },
     });
