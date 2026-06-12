@@ -10,14 +10,18 @@ import { LandingNav } from "@/components/landing-page/landing-nav";
 import { MetricsSection } from "@/components/landing-page/matric-section";
 import { TestimonialsSection } from "@/components/landing-page/testimonials-section";
 import { TickerTape } from "@/components/landing-page/ticker-tape";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { redirect } from "next/navigation";
 
 
 export const metadata: Metadata = {
   title: "EDGE.LOG — Stop Losing to Yourself. Start Trading With Edge.",
   description: "A 30-second trade journal that turns your behavioral patterns into an unfair advantage. Know your best sessions, worst emotions, and exactly where your edge lives.",
-  viewport: "width=device-width, initial-scale=1",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default async function LandingPage() {
