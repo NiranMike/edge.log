@@ -12,8 +12,13 @@ export default defineConfig({
     path: "prisma/migrations",
   },
 
-  datasource: {
-    url: env("DIRECT_URL"), 
-  },
+  // Only override datasource when DIRECT_URL is set (local migrations).
+  // On Vercel (where DIRECT_URL is absent), this block is omitted so
+  // prisma generate can run without needing a DB connection.
+  ...(process.env.DIRECT_URL && {
+    datasource: {
+      url: env("DIRECT_URL"),
+    },
+  }),
 });
 
