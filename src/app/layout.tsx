@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Syne } from "next/font/google";
-import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
-import { extractRouterConfig } from "uploadthing/server";
-import { ourFileRouter } from "@/app/api/uploadthing/core";
 import "./globals.css";
 import { Providers } from "./provider";
 
@@ -35,7 +32,6 @@ export default function RootLayout({
         className={`${jetBrainsMono.variable} ${syne.variable} font-display antialiased`}
       >
         <Providers>
-          <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
           {children}
         </Providers>
       </body>
