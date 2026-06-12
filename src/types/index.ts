@@ -3,7 +3,7 @@
 export type Direction = "LONG" | "SHORT";
 
 export interface Trade {
-  id:          number;
+  id:          string;
   userId:      string;
   pair:        string;
   direction:   Direction;

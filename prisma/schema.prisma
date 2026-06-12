@@ -74,7 +74,7 @@ enum Direction {
 // Those are V2 behavioural layer additions.
 
 model Trade {
-  id           Int       @id @default(autoincrement())
+  id           String    @id @default(cuid())
   userId       String
 
   // Core fields — Decimal prevents float rounding on pip values

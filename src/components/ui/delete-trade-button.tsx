@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { deleteTradeAction } from "@/lib/actions/trade-action";
 
 interface Props {
-  tradeId: number;
+  tradeId: string;
   pair: string;
 }
 

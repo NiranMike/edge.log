@@ -79,7 +79,7 @@ export const tradeService = {
     }
   },
 
-  async update(userId: string, id: number, values: TradeFormValues): Promise<Result<Trade>> {
+  async update(userId: string, id: string, values: TradeFormValues): Promise<Result<Trade>> {
     const existing = await tradeRepository.findById(id, userId);
     if (!existing) return { ok: false, error: "Trade not found." };
     const errors = validate(values);
@@ -103,7 +103,7 @@ export const tradeService = {
     }
   },
 
-  async delete(userId: string, id: number): Promise<Result<void>> {
+  async delete(userId: string, id: string): Promise<Result<void>> {
     const existing = await tradeRepository.findById(id, userId);
     if (!existing) return { ok: false, error: "Trade not found." };
     try {
@@ -118,7 +118,7 @@ export const tradeService = {
     return tradeRepository.findAllByUser(userId);
   },
 
-  async getById(userId: string, id: number): Promise<Trade | null> {
+  async getById(userId: string, id: string): Promise<Trade | null> {
     return tradeRepository.findById(id, userId);
   },
 

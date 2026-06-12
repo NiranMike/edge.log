@@ -58,7 +58,7 @@ function toTrade(row: Prisma.TradeGetPayload<object>): Trade {
 // ─── Repository ───────────────────────────────────────────────────────────────
 
 export const tradeRepository = {
-  async findById(id: number, userId: string): Promise<Trade | null> {
+  async findById(id: string, userId: string): Promise<Trade | null> {
     const row = await db.trade.findFirst({ where: { id, userId } });
     return row ? toTrade(row) : null;
   },
@@ -93,7 +93,7 @@ export const tradeRepository = {
     return toTrade(row);
   },
 
-  async update(id: number, userId: string, input: UpdateTradeRow): Promise<Trade> {
+  async update(id: string, userId: string, input: UpdateTradeRow): Promise<Trade> {
     const row = await db.trade.update({
       where: { id, userId },
       data:  input,
@@ -101,7 +101,7 @@ export const tradeRepository = {
     return toTrade(row);
   },
 
-  async delete(id: number, userId: string): Promise<void> {
+  async delete(id: string, userId: string): Promise<void> {
     await db.trade.deleteMany({ where: { id, userId } });
   },
 
