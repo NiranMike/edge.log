@@ -26,7 +26,7 @@ const SUBSCRIPTION_EVENTS = new Set([
 interface LemonEvent {
   meta: {
     event_name:   string;
-    event_id?:    string;
+    webhook_id?:  string;
     custom_data?: { user_id?: string };
   };
   data: {
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
   }
 
   const event: LemonEvent = JSON.parse(rawBody);
-  const { event_name, event_id, custom_data } = event.meta;
+  const { event_name, webhook_id, custom_data } = event.meta;
 
   if (!SUBSCRIPTION_EVENTS.has(event_name)) {
     return NextResponse.json({ received: true });
@@ -69,8 +69,11 @@ export async function POST(req: NextRequest) {
 
   const { id: lemonSqueezyId, attributes: attrs } = event.data;
 
+
+  const eventId = webhook_id ?? `${event_name}:${lemonSqueezyId}:${attrs.status}`;
+
   const result = await billingService.handleSubscriptionEvent({
-    eventId:   event_id ?? lemonSqueezyId,
+    eventId,
     eventName: event_name,
     userId,
     lemonSqueezyId,

@@ -43,7 +43,7 @@ export function BillingCard({ isPro, status, endsAt }: Props) {
     setCancelling(false);
   }
 
-  const isCancelled = status === "cancelled" || !!successMsg;
+  const isCancelled = status === "cancelled" || status === "expired" || status === "paused" || !!successMsg;
 
   return (
     <div className="rounded-xl bg-[#0d1117] border border-white/[0.065] p-6">

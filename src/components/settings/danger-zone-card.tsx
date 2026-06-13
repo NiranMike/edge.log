@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { createPortal }            from "react-dom";
 import { deleteAccountAction }     from "@/lib/actions/settings.action";
+import { Trash2 }                  from "lucide-react";
 
 export function DangerZoneCard() {
   const [showModal, setShowModal] = useState(false);
@@ -62,12 +63,7 @@ function DeleteConfirmModal({ onClose }: { onClose: () => void }) {
         {/* Header */}
         <div className="px-5 pt-5 pb-4 border-b border-white/[0.05]">
           <div className="w-10 h-10 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-3">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-red-400">
-              <polyline points="3 6 5 6 21 6"/>
-              <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
-              <path d="M10 11v6M14 11v6"/>
-              <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
-            </svg>
+            <Trash2 size={16} className="text-red-400" />
           </div>
           <p className="font-mono text-[15px] text-white/80 leading-snug mb-1">
             Delete your account?

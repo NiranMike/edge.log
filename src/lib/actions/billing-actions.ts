@@ -4,7 +4,8 @@ import { auth }           from "#/auth";
 import { db }             from "@/lib/db";
 import { billingService } from "@/services/billing-service";
 import type { Result }    from "@/types";
-import { redirect } from "next/navigation";
+import { redirect }       from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export async function createCheckoutAction(): Promise<Result<{ url: string }>> {
   const session = await auth();
@@ -40,6 +41,7 @@ export async function cancelSubscriptionAction(): Promise<Result<{ message: stri
 
   try {
     await billingService.cancelSubscription(session.user.id);
+    revalidatePath("/settings");
     return { ok: true, data: { message: "Subscription renewal cancelled. You'll keep access until the end of your billing period." } };
   } catch (err) {
     console.error("[cancelSubscriptionAction]", err);

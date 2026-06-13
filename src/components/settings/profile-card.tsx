@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useSession }              from "next-auth/react";
 import { updateNameAction }        from "@/lib/actions/settings.action";
 import { cx, ds }                  from "@/style";
+import { CalendarDays, Mail, Pencil } from "lucide-react";
 
 interface Props {
   name:      string | null;
@@ -95,9 +96,7 @@ export function ProfileCard({ name, email, image, joinedAt }: Props) {
                   className="shrink-0 text-white/20 hover:text-white/50 transition-colors"
                   title="Edit name"
                 >
-                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M11.5 2.5a2.121 2.121 0 013 3L5 15H1v-4L11.5 2.5z"/>
-                  </svg>
+                  <Pencil size={13} />
                 </button>
               </>
             )}
@@ -112,19 +111,13 @@ export function ProfileCard({ name, email, image, joinedAt }: Props) {
 
           {/* Email */}
           <div className="flex items-center gap-1.5 mb-2.5">
-            <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-white/20 shrink-0">
-              <rect x="1" y="3" width="14" height="10" rx="2"/>
-              <path d="M1 6l7 4.5L15 6"/>
-            </svg>
+            <Mail size={11} className="text-white/20 shrink-0" />
             <span className="font-mono text-[11px] text-white/35">{email}</span>
           </div>
 
           {/* Joined */}
           <div className="flex items-center gap-1.5">
-            <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-white/20 shrink-0">
-              <rect x="1" y="2" width="14" height="13" rx="2"/>
-              <path d="M1 7h14M5 1v3M11 1v3"/>
-            </svg>
+            <CalendarDays size={11} className="text-white/20 shrink-0" />
             <span className="font-mono text-[10px] text-white/25">Member since {joinedFmt}</span>
           </div>
         </div>
