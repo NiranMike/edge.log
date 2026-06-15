@@ -93,10 +93,10 @@ export function RegisterForm({ defaultEmail }: RegisterFormProps) {
     startTransition(async () => {
       const result = await registerAction(data);
 
-      if (result.success) {
-        setServerSuccess("Account created! Taking you to your dashboard…");
+      if (result.ok) {
+        setServerSuccess("Account created! Check your email to verify your address…");
         router.refresh();
-        setTimeout(() => router.push("/dashboard"), 900);
+        setTimeout(() => router.push("/verify-email"), 900);
       } else {
         setServerError(result.error);
       }
@@ -161,7 +161,7 @@ export function RegisterForm({ defaultEmail }: RegisterFormProps) {
         />
 
         <AuthButton type="submit" loading={isLoading} className="mt-1">
-          → Create Account
+           Create Account
         </AuthButton>
       </form>
 
@@ -171,7 +171,7 @@ export function RegisterForm({ defaultEmail }: RegisterFormProps) {
           href="/login"
           className="text-emerald-400/80 hover:text-emerald-400 transition-colors duration-150"
         >
-          Sign in →
+          Sign in
         </Link>
       </p>
 

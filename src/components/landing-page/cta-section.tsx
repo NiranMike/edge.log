@@ -85,8 +85,8 @@ export function CtaSection() {
           className={cx(ds.body, "max-w-lg mb-12")}
           style={{ fontSize: "clamp(13px, 1.5vw, 15px)" }}
         >
-          Join 1,247 traders who stopped guessing and started growing.
-          It takes 30 seconds to set up.
+          Stop guessing. Start knowing exactly where your edge lives.
+          Takes 30 seconds to log your first trade.
         </p>
 
         {!done ? (
@@ -125,7 +125,7 @@ export function CtaSection() {
               >
                 <span className={ds.btnShimmer} />
                 <span className="relative z-10 whitespace-nowrap">
-                  Start Free →
+                  Start Free
                 </span>
               </button>
             </form>
@@ -154,7 +154,7 @@ export function CtaSection() {
                 href="/login"
                 className="text-emerald-400/60 hover:text-emerald-400 transition-colors duration-150 underline underline-offset-2"
               >
-                Sign in →
+                Sign in
               </Link>
             </p>
           </div>
@@ -174,9 +174,9 @@ export function CtaSection() {
 
         <div className={cx("w-full max-w-lg mt-14 pt-8 flex items-center justify-center gap-8 flex-wrap", ds.divider)}>
           {[
-            { value: "1,247", label: "traders" },
-            { value: "94%",   label: "retention" },
-            { value: "4.9★",  label: "avg rating" },
+            { value: "Free",  label: "to start" },
+            { value: "30s",   label: "to log a trade" },
+            { value: "$12",   label: "/ mo for Pro" },
           ].map(({ value, label }) => (
             <div key={label} className="text-center">
               <p

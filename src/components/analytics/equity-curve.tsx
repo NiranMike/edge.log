@@ -11,7 +11,9 @@ import {
   CrosshairMode,
 } from "lightweight-charts";
 import { cx } from "@/style";
+import { Tooltip } from "@/components/ui/tooltip";
 import type { EquityPoint } from "@/types";
+import { TOOLTIP_COPY } from "@/const/tooltip-const";
 
 interface Props {
   curve: EquityPoint[];
@@ -102,21 +104,11 @@ export function EquityCurve({ curve }: Props) {
 
     seriesRef.current = series;
 
-    // ── Build chart data ──────────────────────────────────────────────────────
-    // Problem 1: Multiple trades on the same date produce duplicate timestamps.
-    // Lightweight Charts requires strictly unique ascending timestamps.
-    // Fix: deduplicate by date, keeping the final cumulative R for each day.
-
     const dedupedByDate = new Map<string, number>();
-    for (const p of curve) {
-      dedupedByDate.set(p.date, p.cumulativeR);
-    }
+    for (const p of curve) dedupedByDate.set(p.date, p.cumulativeR);
 
     const entries = Array.from(dedupedByDate.entries());
 
-    // Problem 2: Without a zero origin, the curve starts floating mid-chart
-    // at whatever the first trade's cumulative R is (e.g. +6R).
-    // Fix: prepend a zero point on the day before the first trade.
     const firstDate = entries[0]?.[0];
     const zeroPoint = firstDate
       ? (() => {
@@ -194,24 +186,26 @@ export function EquityCurve({ curve }: Props) {
       <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4 border-b border-white/[0.05]">
         <div className="flex items-center gap-3">
           <div className="w-4 h-px bg-teal-400/50" />
-          <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/40">
-            Equity Curve
-          </h2>
+          <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/40">Equity Curve</h2>
+          <Tooltip content={TOOLTIP_COPY.equityCurve} />
         </div>
         <div className="flex items-center gap-5">
-          <div>
-            <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-white/20 mr-2">Total</span>
-            <span className={cx("font-mono text-[13px]", finalR >= 0 ? "text-emerald-400" : "text-red-400")}>
+          <div className="flex items-center gap-1.5">
+            <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-white/20">Total</span>
+            <Tooltip content={TOOLTIP_COPY.totalR} />
+            <span className={cx("font-mono text-[13px] ml-1", finalR >= 0 ? "text-emerald-400" : "text-red-400")}>
               {finalR >= 0 ? "+" : ""}{finalR}R
             </span>
           </div>
-          <div>
-            <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-white/20 mr-2">Max DD</span>
-            <span className="font-mono text-[13px] text-red-400/60">{maxDD}R</span>
+          <div className="flex items-center gap-1.5">
+            <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-white/20">Max DD</span>
+            <Tooltip content={TOOLTIP_COPY.maxDrawdown} />
+            <span className="font-mono text-[13px] text-red-400/60 ml-1">{maxDD}R</span>
           </div>
-          <div>
-            <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-white/20 mr-2">Trades</span>
-            <span className="font-mono text-[13px] text-white/40">{curve.length}</span>
+          <div className="flex items-center gap-1.5">
+            <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-white/20">Trades</span>
+            <Tooltip content={TOOLTIP_COPY.trades} />
+            <span className="font-mono text-[13px] text-white/40 ml-1">{curve.length}</span>
           </div>
         </div>
       </div>

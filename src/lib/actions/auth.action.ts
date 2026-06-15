@@ -11,13 +11,9 @@ import {
   type LoginInput,
   type RegisterInput,
 } from "@/lib/validations/auth";
-import { signIn, signOut } from "#/auth";
-
-// ─── Result type ──────────────────────────────────────────────────────────────
-
-export type ActionResult<T = undefined> =
-  | { success: true;  data?: T }
-  | { success: false; error: string; fieldErrors?: Record<string, string[]> };
+import { signIn, signOut }        from "#/auth";
+import { emailVerifyService }     from "@/services/email-verify-service";
+import type { Result }            from "@/types";
 
 // ─── Map AuthError → user string ──────────────────────────────────────────────
 
@@ -34,11 +30,11 @@ function mapAuthError(err: unknown): string {
 
 // ─── loginAction (credentials) ────────────────────────────────────────────────
 
-export async function loginAction(data: LoginInput): Promise<ActionResult> {
+export async function loginAction(data: LoginInput): Promise<Result> {
   const parsed = loginSchema.safeParse(data);
   if (!parsed.success) {
     return {
-      success:     false,
+      ok:          false,
       error:       "Please fix the errors below.",
       fieldErrors: parsed.error.flatten().fieldErrors as Record<string, string[]>,
     };
@@ -50,9 +46,9 @@ export async function loginAction(data: LoginInput): Promise<ActionResult> {
       password: parsed.data.password,
       redirect: false,
     });
-    return { success: true };
+    return { ok: true, data: undefined };
   } catch (err) {
-    return { success: false, error: mapAuthError(err) };
+    return { ok: false, error: mapAuthError(err) };
   }
 }
 
@@ -60,11 +56,11 @@ export async function loginAction(data: LoginInput): Promise<ActionResult> {
 
 export async function registerAction(
   data: RegisterInput,
-): Promise<ActionResult<{ userId: string }>> {
+): Promise<Result<{ userId: string }>> {
   const parsed = registerSchema.safeParse(data);
   if (!parsed.success) {
     return {
-      success:     false,
+      ok:          false,
       error:       "Please fix the errors below.",
       fieldErrors: parsed.error.flatten().fieldErrors as Record<string, string[]>,
     };
@@ -76,7 +72,7 @@ export async function registerAction(
   const existing = await db.user.findUnique({ where: { email } });
   if (existing) {
     return {
-      success:     false,
+      ok:          false,
       error:       "An account with this email already exists.",
       fieldErrors: { email: ["This email is already registered."] },
     };
@@ -87,14 +83,19 @@ export async function registerAction(
 
   const user = await db.user.create({ data: { name, email, passwordHash } });
 
-  // Auto sign-in after registration
+  // Send verification email (non-blocking — don't fail registration if email fails)
+  emailVerifyService.issue(user.id, email, name).catch(err => {
+    console.error("[registerAction] failed to send verification email:", err);
+  });
+
+  // Auto sign-in so middleware can read the session and gate unverified users
   try {
     await signIn("credentials", { email, password, redirect: false });
-  } catch {
-    // Sign-in unexpectedly failed — user was created, they can login manually
+  } catch (err) {
+    console.error("[registerAction] auto sign-in failed after registration:", err);
   }
 
-  return { success: true, data: { userId: user.id } };
+  return { ok: true, data: { userId: user.id } };
 }
 
 // ─── googleSignInAction ───────────────────────────────────────────────────────
@@ -111,4 +112,13 @@ export async function googleSignInAction(callbackUrl = "/dashboard"): Promise<vo
 export async function logoutAction(): Promise<void> {
   await signOut({ redirect: false });
   redirect("/login");
+}
+
+// ─── signOutThenRedirect ───────────────────────────────────────────────────────
+// Used by the email-verification token page. Cookies can only be modified in a
+// Server Action, not directly in a Server Component page.
+
+export async function signOutThenRedirect(to: string): Promise<void> {
+  await signOut({ redirect: false });
+  redirect(to);
 }

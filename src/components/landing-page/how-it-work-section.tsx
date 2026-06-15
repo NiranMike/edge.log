@@ -11,6 +11,9 @@ export function HowItWorksSection() {
 
   return (
     <section id="howItWorks" className={cx("relative bg-black overflow-hidden", ds.sectionY)}>
+      {/* Top gradient divider */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-teal-400/15 to-transparent" />
+
       <div className="pointer-events-none absolute top-0 right-0 w-[500px] h-[500px] opacity-[0.035]"
         style={{ background: "radial-gradient(circle, #10b981 0%, transparent 65%)" }} />
 

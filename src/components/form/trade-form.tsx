@@ -2,8 +2,10 @@
 import { DateTimePicker } from "../ui/date-time-picker";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import type { TradeFormValues, TradeFormErrors, Direction, Trade } from "@/types";
 import { PairSelect } from "../ui/pair-select";
+import { useUploadThing } from "@/lib/uploadthing-hook";
 
 interface Props {
   initialValues?: Partial<TradeFormValues>;
@@ -47,11 +49,9 @@ function getPairMood(pair: string): string {
   return "";
 }
 
-// ── AnimatedR ─────────────────────────────────────────────────────────────────
 function AnimatedR({ value }: { value: number }) {
   const [flash, setFlash] = useState(false);
   const prev = useRef(value);
-
   useEffect(() => {
     if (prev.current !== value) {
       setFlash(true);
@@ -60,7 +60,6 @@ function AnimatedR({ value }: { value: number }) {
       return () => clearTimeout(t);
     }
   }, [value]);
-
   return (
     <span
       className={[
@@ -75,7 +74,6 @@ function AnimatedR({ value }: { value: number }) {
   );
 }
 
-// ── StepDot ───────────────────────────────────────────────────────────────────
 function StepDot({ active, done }: { active: boolean; done: boolean }) {
   return (
     <div className={[
@@ -170,24 +168,172 @@ function Textarea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   );
 }
 
+// ── Screenshot Uploader ────────────────────────────────────────────────────────
+function ScreenshotUploader({
+  value,
+  onChange,
+  onUploadingChange,
+}: {
+  value: string | null;
+  onChange: (url: string | null) => void;
+  onUploadingChange?: (uploading: boolean) => void;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [uploadErr, setUploadErr] = useState<string | null>(null);
+  const [preview,   setPreview]   = useState<string | null>(value);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const { startUpload } = useUploadThing("tradeScreenshot", {
+    onUploadBegin: () => {
+      setUploading(true);
+      setUploadErr(null);
+      onUploadingChange?.(true);
+    },
+    onClientUploadComplete: (res) => {
+      setUploading(false);
+      onUploadingChange?.(false);  
+      const url = res?.[0]?.ufsUrl ?? null;
+      if (url) { setPreview(url); onChange(url); }
+    },
+    onUploadError: (err) => {
+      setUploading(false);
+      onUploadingChange?.(false);
+      setUploadErr(err.message);
+    },
+  });
+
+  const handleFile = async (file: File) => {
+    const localUrl = URL.createObjectURL(file);
+    setPreview(localUrl);
+    await startUpload([file]);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith("image/")) handleFile(file);
+  };
+
+  const handleRemove = () => {
+    setPreview(null);
+    onChange(null);
+    if (inputRef.current) inputRef.current.value = "";
+  };
+
+  return (
+    <div>
+      {preview ? (
+        <div className="relative rounded-[6px] overflow-hidden border border-white/[0.08] bg-white/[0.02] group">
+          <div className="relative w-full aspect-video">
+            <Image
+              src={preview}
+              alt="Trade screenshot"
+              fill
+              className="object-contain"
+              unoptimized
+            />
+          </div>
+          {/* Hover overlay */}
+          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => inputRef.current?.click()}
+              className="px-3 py-1.5 rounded font-mono text-[11px] text-white/70 bg-white/[0.08] border border-white/[0.12] hover:bg-white/[0.14] transition-colors duration-150"
+            >
+              Replace
+            </button>
+            <button
+              type="button"
+              onClick={handleRemove}
+              className="px-3 py-1.5 rounded font-mono text-[11px] text-red-400/80 bg-red-400/[0.08] border border-red-400/20 hover:bg-red-400/[0.14] transition-colors duration-150"
+            >
+              Remove
+            </button>
+          </div>
+          {/* Upload progress overlay */}
+          {uploading && (
+            <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center gap-2">
+              <span className="w-5 h-5 rounded-full border-2 border-white/15 border-t-emerald-400 animate-spin" />
+              <span className="font-mono text-[11px] text-white/50">Uploading…</span>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div
+          onDrop={handleDrop}
+          onDragOver={e => e.preventDefault()}
+          onClick={() => inputRef.current?.click()}
+          className={[
+            "relative flex flex-col items-center justify-center gap-2 w-full py-8 sm:py-10 rounded-[6px] border border-dashed cursor-pointer",
+            "transition-all duration-200",
+            uploading
+              ? "border-emerald-400/30 bg-emerald-400/[0.03]"
+              : "border-white/[0.10] bg-white/[0.02] hover:border-white/[0.18] hover:bg-white/[0.04]",
+          ].join(" ")}
+        >
+          {uploading ? (
+            <>
+              <span className="w-5 h-5 rounded-full border-2 border-white/15 border-t-emerald-400 animate-spin" />
+              <span className="font-mono text-[11px] text-white/35">Uploading…</span>
+            </>
+          ) : (
+            <>
+              <div className="w-8 h-8 rounded-full bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-white/25 text-[14px]">
+                ↑
+              </div>
+              <div className="text-center">
+                <p className="font-mono text-[12px] text-white/40">
+                  Drop screenshot here or <span className="text-emerald-400/70">browse</span>
+                </p>
+                <p className="font-mono text-[10px] text-white/20 mt-[3px]">
+                  PNG, JPG, WEBP — max 8MB
+                </p>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {uploadErr && (
+        <p className="font-mono text-[11px] text-red-400 mt-[5px]">↳ {uploadErr}</p>
+      )}
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={e => {
+          const file = e.target.files?.[0];
+          if (file) handleFile(file);
+        }}
+      />
+    </div>
+  );
+}
+
+// ── Main Form ─────────────────────────────────────────────────────────────────
 export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade", title = "Log a trade" }: Props) {
   const router = useRouter();
 
   const [values, setValues] = useState<TradeFormValues>({
-    pair:       initialValues?.pair       ?? "",
-    direction:  initialValues?.direction  ?? "LONG",
-    entryPrice: initialValues?.entryPrice ?? "",
-    stopLoss:   initialValues?.stopLoss   ?? "",
-    takeProfit: initialValues?.takeProfit ?? "",
-    exitPrice:  initialValues?.exitPrice  ?? "",
-    notes:      initialValues?.notes      ?? "",
-    tradedAt:   initialValues?.tradedAt   ?? new Date().toISOString().slice(0, 16),
+    pair:          initialValues?.pair          ?? "",
+    direction:     initialValues?.direction     ?? "LONG",
+    entryPrice:    initialValues?.entryPrice    ?? "",
+    stopLoss:      initialValues?.stopLoss      ?? "",
+    takeProfit:    initialValues?.takeProfit    ?? "",
+    exitPrice:     initialValues?.exitPrice     ?? "",
+    notes:         initialValues?.notes         ?? "",
+    tradedAt:      initialValues?.tradedAt      ?? new Date().toISOString().slice(0, 16),
+    screenshotUrl: initialValues?.screenshotUrl ?? null,
   });
 
   const [errors,    setErrors]    = useState<TradeFormErrors>({});
   const [serverErr, setServerErr] = useState<string | null>(null);
   const [loading,   setLoading]   = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+
 
   const set = <K extends keyof TradeFormValues>(k: K, v: TradeFormValues[K]) => {
     setValues(prev => ({ ...prev, [k]: v }));
@@ -240,12 +386,9 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
         .form-section { animation: fadeIn 0.35s ease both; }
       `}</style>
 
+      <form onSubmit={handleSubmit} className="w-full max-w-[560px] mx-auto px-4 sm:px-0 pb-8 sm:pb-0">
 
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-[560px] mx-auto px-4 sm:px-0 pb-8 sm:pb-0"
-      >
-
+        {/* Header */}
         <div className="mb-7 sm:mb-9 animate-[fadeIn_0.4s_ease]">
           <div className="flex items-center gap-[6px] mb-4 sm:mb-5">
             <StepDot active={!step1done} done={step1done} />
@@ -270,32 +413,25 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
 
         <div className="border-t border-white/[0.05] mb-6 sm:mb-7" />
 
+        {/* Identity */}
         <div className="form-section mb-6 sm:mb-7" style={{ animationDelay: "0.05s" }}>
           <SectionLabel label="Identity" />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-[14px]">
             <Field label="Pair" error={errors.pair}>
-              <PairSelect
-                value={values.pair}
-                onChange={val => set("pair", val)}
-                hasError={!!errors.pair}
-              />
+              <PairSelect value={values.pair} onChange={val => set("pair", val)} hasError={!!errors.pair} />
               <div className={["overflow-hidden transition-all duration-300", pairMood ? "max-h-[22px] mt-[5px]" : "max-h-0"].join(" ")}>
                 {pairMood && (
-                  <p className="font-mono text-[10px] text-emerald-400/55 animate-[slideDown_0.25s_ease]">
-                    {pairMood}
-                  </p>
+                  <p className="font-mono text-[10px] text-emerald-400/55 animate-[slideDown_0.25s_ease]">{pairMood}</p>
                 )}
               </div>
             </Field>
             <Field label="Date & Time">
-              <DateTimePicker
-                value={values.tradedAt}
-                onChange={val => set("tradedAt", val)}
-              />
+              <DateTimePicker value={values.tradedAt} onChange={val => set("tradedAt", val)} />
             </Field>
           </div>
         </div>
 
+        {/* Direction */}
         <div className="form-section mb-6 sm:mb-7" style={{ animationDelay: "0.1s" }}>
           <SectionLabel label="Direction" />
           <div className="grid grid-cols-2 gap-[10px]">
@@ -304,8 +440,7 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
               const isLong = d === "LONG";
               return (
                 <button
-                  key={d} type="button"
-                  onClick={() => set("direction", d)}
+                  key={d} type="button" onClick={() => set("direction", d)}
                   className={[
                     "relative overflow-hidden flex items-center justify-center gap-2 px-4 py-[15px] sm:py-[13px]",
                     "rounded-[6px] font-mono text-[12px] tracking-[0.08em] uppercase cursor-pointer transition-all duration-200",
@@ -316,9 +451,7 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
                       : "bg-white/[0.025] border border-white/[0.08] text-white/35 hover:text-white/55 hover:bg-white/[0.04]",
                   ].join(" ")}
                 >
-                  {active && (
-                    <div className={["absolute top-0 left-0 right-0 h-[2px] opacity-70", isLong ? "bg-emerald-400" : "bg-red-400"].join(" ")} />
-                  )}
+                  {active && <div className={["absolute top-0 left-0 right-0 h-[2px] opacity-70", isLong ? "bg-emerald-400" : "bg-red-400"].join(" ")} />}
                   <span className="text-[14px] leading-none">{isLong ? "▲" : "▼"}</span>
                   <span>{d}</span>
                 </button>
@@ -327,19 +460,19 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
           </div>
         </div>
 
+        {/* Price Levels */}
         <div className="form-section mb-6 sm:mb-7" style={{ animationDelay: "0.15s" }}>
           <SectionLabel label="Price Levels" />
           <div className="grid grid-cols-2 gap-[12px] sm:gap-[14px]">
             {([
-              { key: "entryPrice", label: "Entry",       placeholder: "1.08450", hint: "where you got in"  },
-              { key: "stopLoss",   label: "Stop Loss",   placeholder: "1.08200", hint: "max risk"           },
-              { key: "takeProfit", label: "Take Profit", placeholder: "1.09000", hint: "original target"    },
-              { key: "exitPrice",  label: "Exit Price",  placeholder: "1.08950", hint: "actual close"       },
+              { key: "entryPrice", label: "Entry",       placeholder: "1.08450", hint: "where you got in" },
+              { key: "stopLoss",   label: "Stop Loss",   placeholder: "1.08200", hint: "max risk"          },
+              { key: "takeProfit", label: "Take Profit", placeholder: "1.09000", hint: "original target"   },
+              { key: "exitPrice",  label: "Exit Price",  placeholder: "1.08950", hint: "actual close"      },
             ] as { key: keyof TradeFormValues; label: string; placeholder: string; hint: string }[]).map(({ key, label, placeholder, hint }) => (
               <Field key={key} label={label} hint={hint} error={(errors as Record<string, string | undefined>)[key]}>
                 <Input
-                  type="number" step="any"
-                  inputMode="decimal"     
+                  type="number" step="any" inputMode="decimal"
                   value={values[key] as string}
                   onChange={e => set(key, e.target.value)}
                   placeholder={placeholder}
@@ -350,6 +483,7 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
           </div>
         </div>
 
+        {/* Live R */}
         <div
           className={["overflow-hidden transition-all", liveR !== null ? "max-h-[160px] mb-6 sm:mb-7" : "max-h-0 mb-0"].join(" ")}
           style={{ transitionDuration: "400ms", transitionTimingFunction: "cubic-bezier(0.4,0,0.2,1)" }}
@@ -359,16 +493,9 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
               "relative overflow-hidden flex items-center justify-between gap-3 px-4 sm:px-5 py-4 sm:py-[18px] rounded-[8px] border",
               liveR >= 0 ? "bg-emerald-400/[0.05] border-emerald-400/15" : "bg-red-400/[0.05] border-red-400/15",
             ].join(" ")}>
-              <div className={[
-                "absolute top-0 left-0 right-0 h-px",
-                liveR >= 0
-                  ? "bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent"
-                  : "bg-gradient-to-r from-transparent via-red-400/40 to-transparent",
-              ].join(" ")} />
+              <div className={["absolute top-0 left-0 right-0 h-px", liveR >= 0 ? "bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent" : "bg-gradient-to-r from-transparent via-red-400/40 to-transparent"].join(" ")} />
               <div className="flex-1 min-w-0">
-                <p className={["font-mono text-[12px] font-medium mb-1 truncate", liveR >= 0 ? "text-emerald-400/90" : "text-red-400/90"].join(" ")}>
-                  {rComment.text}
-                </p>
+                <p className={["font-mono text-[12px] font-medium mb-1 truncate", liveR >= 0 ? "text-emerald-400/90" : "text-red-400/90"].join(" ")}>{rComment.text}</p>
                 <p className="font-mono text-[10px] sm:text-[11px] text-white/30 leading-[1.5]">{rComment.sub}</p>
               </div>
               <div className="text-right shrink-0">
@@ -379,6 +506,19 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
           )}
         </div>
 
+        {/* Screenshot */}
+        <div className="form-section mb-6 sm:mb-7" style={{ animationDelay: "0.18s" }}>
+          <SectionLabel label="Screenshot" />
+          <Field label="Trade chart" optional>
+            <ScreenshotUploader
+              value={values.screenshotUrl ?? null}
+              onChange={url => set("screenshotUrl", url)}
+              onUploadingChange={setIsUploading}
+            />
+          </Field>
+        </div>
+
+        {/* Notes */}
         <div className="form-section mb-6 sm:mb-7" style={{ animationDelay: "0.2s" }}>
           <SectionLabel label="Notes" optional />
           <Field label="What happened" optional>
@@ -391,6 +531,7 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
           </Field>
         </div>
 
+        {/* Server error */}
         <div className={["overflow-hidden transition-all duration-200", serverErr ? "max-h-15 mb-4" : "max-h-0 mb-0"].join(" ")}>
           {serverErr && (
             <div className="px-3.5 py-3 rounded-md bg-red-400/6 border border-red-400/20 font-mono text-[12px] text-red-400">
@@ -399,32 +540,25 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
           )}
         </div>
 
-
+        {/* Actions */}
         <div className="form-section flex flex-col-reverse sm:grid sm:gap-2.5 gap-2" style={{ gridTemplateColumns: "auto 1fr", animationDelay: "0.25s" }}>
           <button
-            type="button"
-            onClick={() => router.back()}
+            type="button" onClick={() => router.back()}
             className="w-full sm:w-auto px-5 py-[14px] sm:py-[13px] rounded-md bg-transparent border border-white/8 font-mono text-[12px] tracking-[0.06em] text-white/35 cursor-pointer transition-all duration-150 hover:border-white/18 hover:text-white/55"
           >
             Cancel
           </button>
           <button
-            type="submit"
-            disabled={loading}
+            type="submit" disabled={loading || isUploading}
             className={[
               "w-full py-[15px] sm:py-[13px] rounded-[6px] font-mono text-[12px] font-semibold tracking-[0.1em] uppercase",
               "transition-all duration-200 border border-transparent",
-              loading
+              loading || isUploading
                 ? "bg-white/[0.04] text-white/30 cursor-not-allowed"
                 : "bg-emerald-400 text-[#07090d] shadow-[0_0_24px_rgba(74,222,128,0.25)] hover:bg-emerald-300 cursor-pointer",
             ].join(" ")}
           >
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <span className="w-[10px] h-[10px] rounded-full border-[1.5px] border-white/15 border-t-white/50 inline-block animate-[spin_0.7s_linear_infinite]" />
-                Saving…
-              </span>
-            ) : submitLabel}
+            {loading ? "Saving…" : isUploading ? "Uploading…" : submitLabel}
           </button>
         </div>
 

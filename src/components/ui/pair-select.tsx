@@ -1,42 +1,14 @@
 "use client";
-// components/ui/PairSelect.tsx
-// Custom combobox for trading pairs — searchable, keyboard navigable, portaled.
 
+import { DEFAULT_PAIRS, GROUP_ORDER } from "@/const/trades-const";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
-
-const DEFAULT_PAIRS = [
-  // Forex majors
-  { group: "Forex",   value: "EURUSD"  },
-  { group: "Forex",   value: "GBPUSD"  },
-  { group: "Forex",   value: "USDJPY"  },
-  { group: "Forex",   value: "USDCHF"  },
-  { group: "Forex",   value: "AUDUSD"  },
-  { group: "Forex",   value: "NZDUSD"  },
-  { group: "Forex",   value: "USDCAD"  },
-  // Metals & commodities
-  { group: "Metals",  value: "XAUUSD"  },
-  { group: "Metals",  value: "XAGUSD"  },
-  // Indices
-  { group: "Indices", value: "NAS100"  },
-  { group: "Indices", value: "SPX500"  },
-  { group: "Indices", value: "US30"    },
-  { group: "Indices", value: "GER40"   },
-  // Crypto
-  { group: "Crypto",  value: "BTCUSDT" },
-  { group: "Crypto",  value: "ETHUSDT" },
-  { group: "Crypto",  value: "SOLUSDT" },
-];
-
-const GROUP_ORDER = ["Forex", "Metals", "Indices", "Crypto"];
 
 interface Props {
   value: string;
   onChange: (value: string) => void;
   hasError?: boolean;
 }
-
-// ── Dropdown (portaled) ───────────────────────────────────────────────────────
 interface DropdownProps {
   anchorRect: DOMRect;
   query: string;
@@ -85,7 +57,6 @@ function Dropdown({
         style={{ backgroundColor: "#0d1117" }}
         className="rounded-[10px] border border-white/[0.1] shadow-[0_24px_80px_rgba(0,0,0,0.85),0_0_0_1px_rgba(255,255,255,0.05)] overflow-hidden"
       >
-        {/* Search input */}
         <div className="px-3 pt-3 pb-2 border-b border-white/[0.06]">
           <div className="flex items-center gap-2 px-3 py-[9px] rounded-[6px] bg-white/[0.04] border border-white/[0.07]">
             <svg width="11" height="11" viewBox="0 0 11 11" fill="none" className="shrink-0 opacity-30">
@@ -166,7 +137,6 @@ function Dropdown({
                 );
               })}
 
-              {/* Custom entry */}
               {hasCustom && (
                 <div>
                   <div className="px-3 pt-2 pb-1">
@@ -201,7 +171,6 @@ function Dropdown({
   );
 }
 
-// ── Main component ────────────────────────────────────────────────────────────
 export function PairSelect({ value, onChange, hasError }: Props) {
   const [open,        setOpen]        = useState(false);
   const [query,       setQuery]       = useState("");
@@ -255,7 +224,6 @@ export function PairSelect({ value, onChange, hasError }: Props) {
 
   return (
     <div className="relative">
-      {/* ── Trigger ── */}
       <button
         ref={triggerRef}
         type="button"
@@ -281,7 +249,6 @@ export function PairSelect({ value, onChange, hasError }: Props) {
         </svg>
       </button>
 
-      {/* ── Portaled dropdown ── */}
       {mounted && open && rect && (
         <Dropdown
           anchorRect={rect}

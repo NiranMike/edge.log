@@ -8,11 +8,11 @@ export const metadata: Metadata = {
 };
 
 interface Props {
-  searchParams: Promise<{ callbackUrl?: string; error?: string }>;
+  searchParams: Promise<{ callbackUrl?: string; error?: string; verified?: string; reset?: string }>;
 }
 
 export default async function LoginPage({ searchParams }: Props) {
-  const { callbackUrl, error } = await searchParams;
+  const { callbackUrl, error, verified, reset } = await searchParams;
 
   const resolvedCallbackUrl = callbackUrl
     ? decodeURIComponent(callbackUrl)
@@ -24,7 +24,12 @@ export default async function LoginPage({ searchParams }: Props) {
       title="Welcome back."
       description="Sign in to your account to continue journaling."
     >
-      <LoginForm callbackUrl={resolvedCallbackUrl} urlError={error} />
+      <LoginForm
+        callbackUrl={resolvedCallbackUrl}
+        urlError={error}
+        emailVerified={verified === "1"}
+        passwordReset={reset === "1"}
+      />
     </AuthShell>
   );
 }

@@ -1,10 +1,22 @@
 import Link from "next/link";
  
 const INSIGHT_ITEMS = [
-  { icon: "◈", text: "Win rate by session (Asia, London, NY)" },
-  { icon: "⌬", text: "Your actual R expectancy vs assumptions" },
-  { icon: "≡", text: "Which pairs you actually perform on" },
-  { icon: "○", text: "Patterns you follow vs patterns you break" },
+  {
+    icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+    text: "Win rate by session (Asia, London, NY)",
+  },
+  {
+    icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>,
+    text: "Your actual R expectancy vs assumptions",
+  },
+  {
+    icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>,
+    text: "Which pairs you actually perform on",
+  },
+  {
+    icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>,
+    text: "Patterns you follow vs patterns you break",
+  },
 ];
  
 export function EmptyDashboard() {
@@ -31,7 +43,7 @@ export function EmptyDashboard() {
  
       <div className="w-full max-w-[380px] sm:max-w-[320px] mb-7 sm:mb-8 text-left">
         <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/20 mb-3">
-          Once you log trades, you'll see →
+          Once you log trades, you'll see
         </p>
         <div className="flex flex-col gap-[6px]">
           {INSIGHT_ITEMS.map(({ icon, text }) => (
@@ -45,9 +57,11 @@ export function EmptyDashboard() {
  
       <Link
         href="/trades/new"
-        className="inline-flex items-center gap-2 px-5 sm:px-6 py-[13px] sm:py-[12px] bg-emerald-400 text-[#07090d] rounde font-mono text-[12px] font-semibold tracking-[0.06em] uppercase no-underline hover:bg-emerald-300 transition-colors duration-150"
+        className="group relative overflow-hidden inline-flex items-center gap-2 px-5 sm:px-6 py-[12px] bg-emerald-400 rounded-lg text-[#07090d] font-mono text-[11px] font-medium tracking-[0.06em] uppercase no-underline hover:brightness-110 active:scale-[0.97] transition-all duration-150"
       >
-        Log your first trade →
+        Log your first trade
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <div className="absolute inset-0 bg-white/15 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12 pointer-events-none" />
       </Link>
  
       <p className="font-mono text-[10px] text-white/15 mt-4 tracking-[0.04em]">
