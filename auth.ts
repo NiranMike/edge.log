@@ -33,7 +33,7 @@ declare module "next-auth" {
   }
 }
 
-// ─── Google account helper ────────────────────────────────────────────────────
+// ─── Google account helper ───────
 
 async function findOrCreateGoogleUser(profile: {
   email:    string;
@@ -86,7 +86,7 @@ async function findOrCreateGoogleUser(profile: {
   });
 }
 
-// ─── NextAuth config ──────────────────────────────────────────────────────────
+// ─── NextAuth config ───
 
 
 export const authOptions:NextAuthConfig = {
@@ -161,6 +161,17 @@ export const authOptions:NextAuthConfig = {
           token.picture       = dbUser.image ?? null;
           token.isEmailVerified = !!dbUser.emailVerified; // Google users are always verified
         }
+      }
+
+      // If the token still says unverified, re-check the DB so that users who
+      // verified their email after signing in aren't stuck with a stale JWT.
+      // This runs on update() calls and server-side auth() checks.
+      if (token.id && !token.isEmailVerified) {
+        const dbUser = await db.user.findUnique({
+          where:  { id: token.id as string },
+          select: { emailVerified: true },
+        });
+        token.isEmailVerified = !!dbUser?.emailVerified;
       }
 
       return token;
