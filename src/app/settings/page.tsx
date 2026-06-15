@@ -86,9 +86,9 @@ export default async function SettingsPage() {
           </section>
 
           {/* Danger zone */}
-          <section>
+          {/* <section>
             <DangerZoneCard />
-          </section>
+          </section> */}
 
         </div>
       </div>

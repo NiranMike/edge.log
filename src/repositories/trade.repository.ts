@@ -195,6 +195,10 @@ export const tradeRepository = {
     }));
   },
 
+  async count(userId: string): Promise<number> {
+    return db.trade.count({ where: { userId } });
+  },
+
   async create(input: CreateTradeRow): Promise<Trade> {
     const row = await db.trade.create({ data: input });
     return toTrade(row);

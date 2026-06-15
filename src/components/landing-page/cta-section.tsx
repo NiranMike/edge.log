@@ -176,7 +176,7 @@ export function CtaSection() {
           {[
             { value: "Free",  label: "to start" },
             { value: "30s",   label: "to log a trade" },
-            { value: "$19",   label: "/ mo for Pro" },
+            { value: "$12",   label: "/ mo for Pro" },
           ].map(({ value, label }) => (
             <div key={label} className="text-center">
               <p
