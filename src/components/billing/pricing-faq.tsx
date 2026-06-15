@@ -26,7 +26,7 @@ const FAQS = [
   },
   {
     q: "Can I upgrade mid-month?",
-    a: "Yes. Upgrading takes effect immediately. You'll be billed a prorated amount for the remainder of the current month, then $19/month on your regular billing date.",
+    a: "Yes. Upgrading takes effect immediately. You'll be billed a prorated amount for the remainder of the current month, then $12/month on your regular billing date.",
   },
 ];
 

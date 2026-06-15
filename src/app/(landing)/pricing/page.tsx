@@ -9,7 +9,7 @@ import { PricingCheckoutButton } from "@/components/billing/pricing-checkout-but
 export const metadata: Metadata = {
   title: "Pricing — EDGE.LOG",
   description:
-    "Free forever for core trade journaling. Upgrade to Pro for the full analytics suite — equity curve, session breakdown, pair analysis, and more. $19/month, cancel anytime.",
+    "Free forever for core trade journaling. Upgrade to Pro for the full analytics suite — equity curve, session breakdown, pair analysis, and more. $12/month, cancel anytime.",
 };
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
@@ -287,7 +287,7 @@ export default function PricingPage() {
                       textShadow: "0 0 50px rgba(45,212,191,0.3)",
                     }}
                   >
-                    $19
+                    $12
                   </span>
                   <span className="font-mono text-[12px] text-white/25 mb-2">/ month</span>
                 </div>
@@ -392,7 +392,7 @@ export default function PricingPage() {
               </div>
               <div className="flex flex-col items-center gap-0.5">
                 <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-teal-400/60">Pro</span>
-                <span className="font-mono text-[11px] font-bold text-teal-400">$19</span>
+                <span className="font-mono text-[11px] font-bold text-teal-400">$12</span>
               </div>
             </div>
 
@@ -536,7 +536,7 @@ export default function PricingPage() {
             {[
               { val: "Free",  sub: "forever"        },
               { val: "30s",   sub: "to log a trade" },
-              { val: "$19",   sub: "/ mo for Pro"   },
+              { val: "$12",   sub: "/ mo for Pro"   },
             ].map(({ val, sub }) => (
               <div key={sub} className="text-center">
                 <p className="font-display font-black text-white leading-none mb-1"

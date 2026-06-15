@@ -101,7 +101,7 @@ export default function TermsPage() {
               P&L tracking, R-multiple calculations, and basic metrics. The Free plan does not expire.
             </p>
             <p>
-              <strong className="text-white/60">Pro Plan:</strong> Available for $19/month, billed monthly.
+              <strong className="text-white/60">Pro Plan:</strong> Available for $12/month, billed monthly.
               Includes all Free features plus the full analytics dashboard, equity curve, session/pair breakdowns,
               and advanced performance insights. You can cancel at any time from your account settings.
             </p>

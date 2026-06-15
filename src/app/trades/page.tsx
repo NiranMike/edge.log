@@ -1,10 +1,12 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "#/auth";
+import { db } from "@/lib/db";
 import { tradeService } from "@/services/trade-service";
 import { AppShell } from "@/components/layout/app-shell";
 import { TradesList } from "@/components/trades/trades-list";
-import { TRADES_PAGE_SIZE } from "@/const/trades-const";
+import { UpgradeButton } from "@/components/billing/upgrade-button";
+import { TRADES_PAGE_SIZE, FREE_TRADE_LIMIT } from "@/const/trades-const";
 
 export default async function TradesPage({
   searchParams,
@@ -28,10 +30,13 @@ export default async function TradesPage({
     : params.outcome === "loss"              ? false
     : undefined;
 
-  const { trades, total } = await tradeService.getPage(session.user.id, page, {
-    pair: pairQuery, direction, won,
-  });
+  const [{ trades, total }, userMeta, totalCount] = await Promise.all([
+    tradeService.getPage(session.user.id, page, { pair: pairQuery, direction, won }),
+    db.user.findUnique({ where: { id: session.user.id }, select: { isPro: true } }),
+    tradeService.getTotalCount(session.user.id),
+  ]);
 
+  const isPro     = userMeta?.isPro ?? false;
   const pageCount = Math.ceil(total / TRADES_PAGE_SIZE);
   if (total > 0 && page > pageCount) redirect(`/trades?page=${pageCount}`);
 
@@ -67,13 +72,38 @@ export default async function TradesPage({
               <Link
                 href="/trades/new"
                 className="group relative overflow-hidden inline-flex items-center gap-1.5 px-3 sm:px-4 py-[9px] bg-emerald-400 rounded-lg text-[#07090d] font-mono text-[11px] font-medium no-underline hover:brightness-110 active:scale-[0.97] transition-all duration-150 tracking-[0.06em] uppercase whitespace-nowrap"
-              >
+              >   
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 New trade
                 <div className="absolute inset-0 bg-white/15 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12 pointer-events-none" />
               </Link>
             </div>
           </div>
+
+          {/* Free tier usage banner — shown at 30+ trades */}
+          {!isPro && totalCount >= 30 && (
+            <div className={[
+              "mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-3 rounded-lg border",
+              totalCount >= FREE_TRADE_LIMIT
+                ? "bg-red-500/[0.05] border-red-500/20"
+                : "bg-amber-400/[0.05] border-amber-400/20",
+            ].join(" ")}>
+              <div className="flex items-center gap-3">
+                <span className={[
+                  "font-mono text-[11px]",
+                  totalCount >= FREE_TRADE_LIMIT ? "text-red-400/80" : "text-amber-400/80",
+                ].join(" ")}>
+                  {totalCount >= FREE_TRADE_LIMIT
+                    ? "Trade limit reached"
+                    : `${FREE_TRADE_LIMIT - totalCount} trade${FREE_TRADE_LIMIT - totalCount === 1 ? "" : "s"} remaining`}
+                </span>
+                <span className="font-mono text-[10px] text-white/20">
+                  {totalCount} / {FREE_TRADE_LIMIT}
+                </span>
+              </div>
+              <UpgradeButton label="Upgrade to Pro" variant="ghost" className="py-1.5 text-[10px]" />
+            </div>
+          )}
 
           <TradesList
             trades={trades}

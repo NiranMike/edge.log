@@ -1,4 +1,5 @@
-export const TRADES_PAGE_SIZE = 10;
+export const TRADES_PAGE_SIZE  = 10;
+export const FREE_TRADE_LIMIT  = 40;
 
 export const DEFAULT_PAIRS = [
   // ── Forex Majors ────────────────────────────────────────────

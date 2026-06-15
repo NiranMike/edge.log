@@ -1,13 +1,14 @@
 
 import { Prisma } from "@prisma/client";
 import { tradeRepository } from "@/repositories/trade.repository";
+import { db }              from "@/lib/db";
 import type {
   Trade, TradeFormValues, TradeMetrics, Result,
   MarketSession, AnalyticsFilters, TradeAnalytics, AnalyticsOverview,
   PairStat, DirectionStat, RBucket, SessionStat, EquityPoint, WeekdayStat,
 } from "@/types";
 import { getWeekday } from "@/util";
-import { TRADES_PAGE_SIZE } from "@/const/trades-const";
+import { TRADES_PAGE_SIZE, FREE_TRADE_LIMIT } from "@/const/trades-const";
 
 // ─── Shared types ────────────────────────────────────────────────────────────
 
@@ -95,6 +96,19 @@ export const tradeService = {
     const errors = validate(values);
     if (errors) return { ok: false, error: Object.values(errors)[0]! };
 
+    // ── Free tier limit ────────────────────────────────────────────────────────
+    const [user, tradeCount] = await Promise.all([
+      db.user.findUnique({ where: { id: userId }, select: { isPro: true } }),
+      tradeRepository.count(userId),
+    ]);
+    if (!user?.isPro && tradeCount >= FREE_TRADE_LIMIT) {
+      return {
+        ok: false,
+        error: `Free plan is limited to ${FREE_TRADE_LIMIT} trades. Upgrade to Pro for unlimited logging.`,
+      };
+    }
+    // ──────────────────────────────────────────────────────────────────────────
+
     const entry = Number(values.entryPrice), stop = Number(values.stopLoss);
     const tp = Number(values.takeProfit), exit = Number(values.exitPrice);
     const r = calcRMultiple(values.direction, entry, stop, exit);
@@ -154,6 +168,10 @@ export const tradeService = {
     return tradeRepository.findAllByUser(userId);
   },
 
+  async getTotalCount(userId: string): Promise<number> {
+    return tradeRepository.count(userId);
+  },
+
   async getById(userId: string, id: string): Promise<Trade | null> {
     return tradeRepository.findById(id, userId);
   },
@@ -197,12 +215,17 @@ export const tradeService = {
     }
     const inFileDuplicates = rows.length - uniqueRows.length;
 
-    // ── 2. Check against existing DB trades in the same date range ───────────
+    // ── 2. Check against existing DB trades + user plan (parallel) ───────────
     const dates   = uniqueRows.map(r => new Date(r.tradedAt));
     const minDate = new Date(Math.min(...dates.map(d => d.getTime())));
     const maxDate = new Date(Math.max(...dates.map(d => d.getTime())));
 
-    const existing    = await tradeRepository.findInDateRange(userId, minDate, maxDate);
+    const [existing, user, currentCount] = await Promise.all([
+      tradeRepository.findInDateRange(userId, minDate, maxDate),
+      db.user.findUnique({ where: { id: userId }, select: { isPro: true } }),
+      tradeRepository.count(userId),
+    ]);
+
     const existingFps = new Set(
       existing.map(t => {
         const minute = t.tradedAt.slice(0, 16);
@@ -220,6 +243,24 @@ export const tradeService = {
         error: `All ${rows.length} trade${rows.length === 1 ? "" : "s"} already exist in your journal. Nothing imported.`,
       };
     }
+
+    // ── 3. Free tier limit check ──────────────────────────────────────────────
+    if (!user?.isPro) {
+      const available = Math.max(0, FREE_TRADE_LIMIT - currentCount);
+      if (newRows.length > available) {
+        if (available === 0) {
+          return {
+            ok: false,
+            error: `Free plan is limited to ${FREE_TRADE_LIMIT} trades. Upgrade to Pro to import more.`,
+          };
+        }
+        return {
+          ok: false,
+          error: `Free plan allows ${available} more trade${available === 1 ? "" : "s"} (${currentCount}/${FREE_TRADE_LIMIT} used). Upgrade to Pro to import all ${newRows.length}.`,
+        };
+      }
+    }
+    // ─────────────────────────────────────────────────────────────────────────
 
     const data = newRows.map(row => {
       const r = calcRMultiple(row.direction, row.entryPrice, row.stopLoss, row.exitPrice);
