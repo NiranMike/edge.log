@@ -55,13 +55,11 @@ async function findOrCreateGoogleUser(profile: {
   // 2. Existing credentials user with same email? → link account
   const existingUser = await db.user.findUnique({ where: { email } });
   if (existingUser) {
-    await db.account.create({
-      data: {
-        userId:            existingUser.id,
-        type:              "oauth",
-        provider:          "google",
-        providerAccountId: googleId,
-      },
+    // upsert avoids a unique-constraint race with PrismaAdapter's linkAccount
+    await db.account.upsert({
+      where:  { provider_providerAccountId: { provider: "google", providerAccountId: googleId } },
+      create: { userId: existingUser.id, type: "oauth", provider: "google", providerAccountId: googleId },
+      update: {},
     });
     if (!existingUser.image && image) {
       await db.user.update({ where: { id: existingUser.id }, data: { image } });
@@ -74,13 +72,16 @@ async function findOrCreateGoogleUser(profile: {
     const user = await tx.user.create({
       data: { email, name, image, emailVerified: new Date() },
     });
-    await tx.account.create({
-      data: {
+    // upsert avoids a unique-constraint race with PrismaAdapter's linkAccount
+    await tx.account.upsert({
+      where:  { provider_providerAccountId: { provider: "google", providerAccountId: googleId } },
+      create: {
         userId:            user.id,
         type:              "oauth" as const,
         provider:          "google" as const,
         providerAccountId: googleId,
       },
+      update: {},
     });
     return user;
   });
@@ -104,6 +105,7 @@ export const authOptions:NextAuthConfig = {
       authorization: {
         params: { prompt: "select_account" },
       },
+      allowDangerousEmailAccountLinking: true,
     }),
 
     Credentials({
