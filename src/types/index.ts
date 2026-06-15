@@ -68,7 +68,7 @@ export interface AnalyticsFilters {
 export interface PairStat {
   pair:      string;
   trades:    number;
-  wins:      number;
+  wins:      number; 
   losses:    number;
   winRate:   number;
   avgR:      number;
