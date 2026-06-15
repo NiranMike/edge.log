@@ -1,17 +1,30 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useSession }              from "next-auth/react";
-import Link                        from "next/link";
-import { resendVerificationAction } from "@/lib/actions/email-verify.action";
+import { useState, useTransition, useEffect } from "react";
+import { useSession }                          from "next-auth/react";
+import { useRouter }                           from "next/navigation";
+import Link                                    from "next/link";
+import { resendVerificationAction }            from "@/lib/actions/email-verify.action";
 
 export default function VerifyEmailPage() {
-  const { data: session }          = useSession();
+  const { data: session, update }  = useSession();
+  const router                     = useRouter();
   const [isPending, start]         = useTransition();
   const [sent, setSent]            = useState(false);
   const [error, setError]          = useState<string | null>(null);
 
   const email = session?.user?.email ?? "";
+
+  // When the user lands here with a stale JWT (signed in before verifying),
+  // force a token refresh. If the DB now shows verified, redirect to dashboard.
+  useEffect(() => {
+    if (!session) return; // session not loaded yet
+    if (session.user.isEmailVerified) { router.replace("/dashboard"); return; }
+    update().then((refreshed) => {
+      if (refreshed?.user?.isEmailVerified) router.replace("/dashboard");
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.user?.id]);
 
   function handleResend() {
     if (!email) return;
