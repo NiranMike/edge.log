@@ -69,7 +69,7 @@ export interface PairStat {
   pair:      string;
   trades:    number;
   wins:      number; 
-  losses:    number;
+  losses:    number; 
   winRate:   number;
   avgR:      number;
   totalR:    number;
