@@ -88,13 +88,6 @@ export async function registerAction(
     console.error("[registerAction] failed to send verification email:", err);
   });
 
-  // Auto sign-in so middleware can read the session and gate unverified users
-  try {
-    await signIn("credentials", { email, password, redirect: false });
-  } catch (err) {
-    console.error("[registerAction] auto sign-in failed after registration:", err);
-  }
-
   return { ok: true, data: { userId: user.id } };
 }
 

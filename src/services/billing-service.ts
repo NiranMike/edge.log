@@ -117,15 +117,30 @@ export const billingService = {
     const isPro = ACTIVE_STATUSES.has(event.status);
 
     try {
-      await db.$transaction(async (tx) => {
-        // Insert FIRST — unique constraint on eventId is the true idempotency
-        // gate. If two webhook deliveries race past the check above, one will
-        // hit a P2002 unique violation here and be caught below.
-        await tx.webhookEvent.create({
-          data: { eventId: event.eventId, eventName: event.eventName },
-        });
+      // Insert FIRST — unique constraint on eventId is the idempotency gate.
+      // If two webhook deliveries race, one will hit P2002 and be skipped below.
+      await db.webhookEvent.create({
+        data: { eventId: event.eventId, eventName: event.eventName },
+      });
+    } catch (err) {
+      // Unique constraint violation means a concurrent delivery already
+      // processed this event — not a real error, just skip silently.
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+        return { skipped: true };
+      }
+      await sendWebhookFailureAlert({
+        eventId:   event.eventId,
+        eventName: event.eventName,
+        error:     err instanceof Error ? err.message : String(err),
+      });
+      throw err;
+    }
 
-        await tx.subscription.upsert({
+    try {
+      // Neon HTTP adapter doesn't support transactions — run writes in parallel
+      // (idempotency is already guaranteed by the webhookEvent insert above).
+      await Promise.all([
+        db.subscription.upsert({
           where:  { lemonSqueezyId: event.lemonSqueezyId },
           create: {
             userId:                 event.userId,
@@ -144,22 +159,16 @@ export const billingService = {
             endsAt:      event.endsAt      ? new Date(event.endsAt)      : null,
             trialEndsAt: event.trialEndsAt ? new Date(event.trialEndsAt) : null,
           },
-        });
-
-        await tx.user.update({
+        }),
+        db.user.update({
           where: { id: event.userId },
           data:  {
             isPro,
             lemonSqueezyCustomerId: event.lemonSqueezyCustomerId,
           },
-        });
-      });
+        }),
+      ]);
     } catch (err) {
-      // Unique constraint violation means a concurrent delivery already
-      // processed this event — not a real error, just skip silently.
-      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
-        return { skipped: true };
-      }
       await sendWebhookFailureAlert({
         eventId:   event.eventId,
         eventName: event.eventName,

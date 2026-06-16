@@ -97,10 +97,8 @@ export const passwordResetService = {
 
     const passwordHash = await bcrypt.hash(newPassword, 12);
 
-    await db.$transaction([
-      db.user.update({ where: { id: record.userId }, data: { passwordHash } }),
-      db.passwordResetToken.delete({ where: { token } }),
-    ]);
+    await db.user.update({ where: { id: record.userId }, data: { passwordHash } });
+    await db.passwordResetToken.delete({ where: { token } });
 
     return { ok: true };
   },

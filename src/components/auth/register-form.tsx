@@ -96,7 +96,7 @@ export function RegisterForm({ defaultEmail }: RegisterFormProps) {
       if (result.ok) {
         setServerSuccess("Account created! Check your email to verify your address…");
         router.refresh();
-        setTimeout(() => router.push("/verify-email"), 900);
+        setTimeout(() => router.push(`/verify-email?email=${encodeURIComponent(data.email)}`), 900);
       } else {
         setServerError(result.error);
       }

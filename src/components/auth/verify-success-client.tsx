@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
-import { signOutThenRedirect } from "@/lib/actions/auth.action";
+import { useRouter } from "next/navigation";
 
 export function VerifySuccessClient() {
+  const router = useRouter();
+
   useEffect(() => {
-    signOutThenRedirect("/login?verified=1");
-  }, []);
+    router.replace("/login?verified=1");
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-[#07090d] flex items-center justify-center px-4">

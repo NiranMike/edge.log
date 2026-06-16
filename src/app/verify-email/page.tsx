@@ -1,30 +1,17 @@
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
-import { useSession }                          from "next-auth/react";
-import { useRouter }                           from "next/navigation";
-import Link                                    from "next/link";
-import { resendVerificationAction }            from "@/lib/actions/email-verify.action";
+import { useState, useTransition }    from "react";
+import { useSearchParams }            from "next/navigation";
+import Link                           from "next/link";
+import { resendVerificationAction }   from "@/lib/actions/email-verify.action";
 
 export default function VerifyEmailPage() {
-  const { data: session, update }  = useSession();
-  const router                     = useRouter();
-  const [isPending, start]         = useTransition();
-  const [sent, setSent]            = useState(false);
-  const [error, setError]          = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const email        = searchParams.get("email") ?? "";
 
-  const email = session?.user?.email ?? "";
-
-  // When the user lands here with a stale JWT (signed in before verifying),
-  // force a token refresh. If the DB now shows verified, redirect to dashboard.
-  useEffect(() => {
-    if (!session) return; // session not loaded yet
-    if (session.user.isEmailVerified) { router.replace("/dashboard"); return; }
-    update().then((refreshed) => {
-      if (refreshed?.user?.isEmailVerified) router.replace("/dashboard");
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session?.user?.id]);
+  const [isPending, start] = useTransition();
+  const [sent, setSent]    = useState(false);
+  const [error, setError]  = useState<string | null>(null);
 
   function handleResend() {
     if (!email) return;
@@ -73,11 +60,11 @@ export default function VerifyEmailPage() {
           </div>
         )}
 
-        {!sent && (
+        {!sent && email && (
           <button
             type="button"
             onClick={handleResend}
-            disabled={isPending || !email}
+            disabled={isPending}
             className="w-full py-3 rounded-lg border border-white/[0.08] font-mono text-[12px] text-white/50 hover:text-white/80 hover:border-white/15 transition-all duration-150 disabled:opacity-40 disabled:cursor-wait mb-3"
           >
             {isPending ? "Sending…" : "Resend verification email"}

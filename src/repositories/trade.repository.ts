@@ -93,7 +93,7 @@ export const tradeRepository = {
       ...(filters?.direction && { direction: filters.direction }),
       ...(filters?.won !== undefined && { won: filters.won }),
     };
-    const [rows, total] = await db.$transaction([
+    const [rows, total] = await Promise.all([
       db.trade.findMany({
         where,
         orderBy: { tradedAt: "desc" },
@@ -138,7 +138,7 @@ export const tradeRepository = {
 
   /** Aggregate metrics from the DB — avoids full in-memory table scan */
   async computeMetrics(userId: string): Promise<TradeMetrics> {
-    const [total, wins, losses] = await db.$transaction([
+    const [total, wins, losses] = await Promise.all([
       db.trade.aggregate({
         where: { userId },
         _count: { _all: true },

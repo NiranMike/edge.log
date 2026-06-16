@@ -72,13 +72,11 @@ export const emailVerifyService = {
     if (!record)                         return { ok: false, error: "Invalid or already used verification link." };
     if (record.expiresAt < new Date())   return { ok: false, error: "This link has expired. Request a new one." };
 
-    await db.$transaction([
-      db.user.update({
-        where: { id: record.userId },
-        data:  { emailVerified: new Date() },
-      }),
-      db.emailVerifyToken.delete({ where: { token } }),
-    ]);
+    await db.user.update({
+      where: { id: record.userId },
+      data:  { emailVerified: new Date() },
+    });
+    await db.emailVerifyToken.delete({ where: { token } });
 
     return { ok: true, userId: record.userId };
   },
