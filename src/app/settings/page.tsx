@@ -3,7 +3,7 @@ import type { Metadata }    from "next";
 import { auth }             from "#/auth";
 import { db }               from "@/lib/db";
 import { AppShell }         from "@/components/layout/app-shell";
-import { BillingCard }      from "@/components/billing/billing-card";
+// BILLING: import { BillingCard } from "@/components/billing/billing-card";
 import { ProfileCard }      from "@/components/settings/profile-card";
 import { SecurityCard }     from "@/components/settings/security-card";
 import { DangerZoneCard }   from "@/components/settings/danger-zone-card";
@@ -24,18 +24,18 @@ export default async function SettingsPage() {
       image:        true,
       createdAt:    true,
       passwordHash: true,
-      isPro:        true,
       accounts:     { select: { provider: true } },
-      subscription: { select: { status: true, endsAt: true } },
+      // BILLING: isPro: true,
+      // BILLING: subscription: { select: { status: true, endsAt: true } },
     },
   });
 
   if (!user) redirect("/login");
 
-  const isPro      = user.isPro;
-  const status     = user.subscription?.status  ?? null;
-  const endsAt     = user.subscription?.endsAt?.toISOString() ?? null;
-  const providers  = user.accounts.map(a => a.provider);
+  // BILLING: const isPro   = user.isPro;
+  // BILLING: const status  = user.subscription?.status ?? null;
+  // BILLING: const endsAt  = user.subscription?.endsAt?.toISOString() ?? null;
+  const providers   = user.accounts.map(a => a.provider);
   const hasPassword = !!user.passwordHash;
 
   return (
@@ -77,13 +77,14 @@ export default async function SettingsPage() {
             <SecurityCard hasPassword={hasPassword} providers={providers} />
           </section>
 
-          {/* Plan & Billing */}
+          {/* BILLING: re-enable Plan & Billing section
           <section>
             <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/30 mb-3">
               Plan &amp; Billing
             </h2>
             <BillingCard isPro={isPro} status={status} endsAt={endsAt} />
           </section>
+          */}
 
           {/* Danger zone */}
           {/* <section>

@@ -2,9 +2,9 @@ import Link from "next/link";
 import { cx, ds } from "@/style";
 
 const PRODUCT = [
-  { label: "Features",    href: "#features"   },
+  { label: "Features",     href: "#features"   },
   { label: "How it works", href: "#howItWorks" },
-  { label: "Pricing",     href: "/pricing"    },
+  // BILLING: { label: "Pricing", href: "/pricing" },
 ];
 
 const LEGAL = [

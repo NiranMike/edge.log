@@ -1,12 +1,13 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "#/auth";
-import { db } from "@/lib/db";
+// BILLING: import { db } from "@/lib/db";
 import { tradeService } from "@/services/trade-service";
 import { AppShell } from "@/components/layout/app-shell";
 import { TradesList } from "@/components/trades/trades-list";
-import { UpgradeButton } from "@/components/billing/upgrade-button";
-import { TRADES_PAGE_SIZE, FREE_TRADE_LIMIT } from "@/const/trades-const";
+// BILLING: import { UpgradeButton } from "@/components/billing/upgrade-button";
+// BILLING: import { FREE_TRADE_LIMIT } from "@/const/trades-const";
+import { TRADES_PAGE_SIZE } from "@/const/trades-const";
 
 export default async function TradesPage({
   searchParams,
@@ -30,13 +31,15 @@ export default async function TradesPage({
     : params.outcome === "loss"              ? false
     : undefined;
 
-  const [{ trades, total }, userMeta, totalCount] = await Promise.all([
-    tradeService.getPage(session.user.id, page, { pair: pairQuery, direction, won }),
-    db.user.findUnique({ where: { id: session.user.id }, select: { isPro: true } }),
-    tradeService.getTotalCount(session.user.id),
-  ]);
+  const { trades, total } = await tradeService.getPage(session.user.id, page, { pair: pairQuery, direction, won });
+  // BILLING: const [{ trades, total }, userMeta, totalCount] = await Promise.all([
+  // BILLING:   tradeService.getPage(session.user.id, page, { pair: pairQuery, direction, won }),
+  // BILLING:   db.user.findUnique({ where: { id: session.user.id }, select: { isPro: true } }),
+  // BILLING:   tradeService.getTotalCount(session.user.id),
+  // BILLING: ]);
+  // BILLING: const isPro     = userMeta?.isPro ?? false;
+  // BILLING: const totalCount = ...;
 
-  const isPro     = userMeta?.isPro ?? false;
   const pageCount = Math.ceil(total / TRADES_PAGE_SIZE);
   if (total > 0 && page > pageCount) redirect(`/trades?page=${pageCount}`);
 
@@ -80,30 +83,21 @@ export default async function TradesPage({
             </div>
           </div>
 
-          {/* Free tier usage banner — shown at 30+ trades */}
+          {/* BILLING: re-enable to show free tier usage banner
           {!isPro && totalCount >= 30 && (
-            <div className={[
-              "mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-3 rounded-lg border",
-              totalCount >= FREE_TRADE_LIMIT
-                ? "bg-red-500/[0.05] border-red-500/20"
-                : "bg-amber-400/[0.05] border-amber-400/20",
+            <div className={["mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-3 rounded-lg border",
+              totalCount >= FREE_TRADE_LIMIT ? "bg-red-500/[0.05] border-red-500/20" : "bg-amber-400/[0.05] border-amber-400/20",
             ].join(" ")}>
               <div className="flex items-center gap-3">
-                <span className={[
-                  "font-mono text-[11px]",
-                  totalCount >= FREE_TRADE_LIMIT ? "text-red-400/80" : "text-amber-400/80",
-                ].join(" ")}>
-                  {totalCount >= FREE_TRADE_LIMIT
-                    ? "Trade limit reached"
-                    : `${FREE_TRADE_LIMIT - totalCount} trade${FREE_TRADE_LIMIT - totalCount === 1 ? "" : "s"} remaining`}
+                <span className={["font-mono text-[11px]", totalCount >= FREE_TRADE_LIMIT ? "text-red-400/80" : "text-amber-400/80"].join(" ")}>
+                  {totalCount >= FREE_TRADE_LIMIT ? "Trade limit reached" : `${FREE_TRADE_LIMIT - totalCount} trade${FREE_TRADE_LIMIT - totalCount === 1 ? "" : "s"} remaining`}
                 </span>
-                <span className="font-mono text-[10px] text-white/20">
-                  {totalCount} / {FREE_TRADE_LIMIT}
-                </span>
+                <span className="font-mono text-[10px] text-white/20">{totalCount} / {FREE_TRADE_LIMIT}</span>
               </div>
               <UpgradeButton label="Upgrade to Pro" variant="ghost" className="py-1.5 text-[10px]" />
             </div>
           )}
+          */}
 
           <TradesList
             trades={trades}

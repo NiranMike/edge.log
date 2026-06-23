@@ -56,7 +56,10 @@ async function sendVerificationEmail(email: string, name: string | null, token: 
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new Error(`Resend API error ${res.status}: ${JSON.stringify(body)}`);
+    // Log but don't throw — email send failure is non-fatal.
+    // Users can still sign in without verifying; they can resend from the verify page.
+    // Common cause: Resend sandbox mode (domain not verified yet).
+    console.error(`[emailVerifyService] Resend API error ${res.status}:`, body);
   }
 }
 

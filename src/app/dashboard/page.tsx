@@ -1,13 +1,13 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "#/auth";
-import { db } from "@/lib/db";
+// BILLING: import { db } from "@/lib/db";
 import { tradeService } from "@/services/trade-service";
 import { RecentTrades } from "@/components/dashboard/recent-trades";
 import { MetricsGrid } from "@/components/dashboard/metrics-grid";
 import { EmptyDashboard } from "@/components/dashboard/empty-dashboard";
 import { AppShell } from "@/components/layout/app-shell";
-import { UpgradeButton } from "@/components/billing/upgrade-button";
+// BILLING: import { UpgradeButton } from "@/components/billing/upgrade-button";
 
 export default async function DashboardPage({
   searchParams,
@@ -20,16 +20,14 @@ export default async function DashboardPage({
   const params = await searchParams;
   const upgraded = params.upgraded === "1";
 
-  const [{ metrics, recent, rHistory }, user] = await Promise.all([
-    tradeService.getDashboardData(session.user.id),
-    db.user.findUnique({
-      where:  { id: session.user.id },
-      select: { isPro: true },
-    }),
-  ]);
+  const { metrics, recent, rHistory } = await tradeService.getDashboardData(session.user.id);
+  // BILLING: const [{ metrics, recent, rHistory }, user] = await Promise.all([
+  // BILLING:   tradeService.getDashboardData(session.user.id),
+  // BILLING:   db.user.findUnique({ where: { id: session.user.id }, select: { isPro: true } }),
+  // BILLING: ]);
+  // BILLING: const isPro = user?.isPro ?? false;
 
   const firstName = session.user.name?.split(" ")[0] ?? "Trader";
-  const isPro = user?.isPro ?? false;
 
   return (
     <AppShell>
@@ -88,19 +86,17 @@ export default async function DashboardPage({
                 className="animate-fade-up mb-8 sm:mb-10"
               />
 
+              {/* BILLING: re-enable to show upgrade prompt on dashboard
               {!isPro && (
                 <div className="animate-fade-up mb-8 sm:mb-10 flex items-center justify-between gap-4 px-5 py-4 rounded-xl bg-[#0d1117] border border-white/[0.065]">
                   <div className="min-w-0">
-                    <p className="font-mono text-[12px] text-white/70 mb-0.5">
-                      Unlock analytics
-                    </p>
-                    <p className="font-mono text-[11px] text-white/35">
-                      See your edge. Pair stats, equity curve, session breakdown.
-                    </p>
+                    <p className="font-mono text-[12px] text-white/70 mb-0.5">Unlock analytics</p>
+                    <p className="font-mono text-[11px] text-white/35">See your edge. Pair stats, equity curve, session breakdown.</p>
                   </div>
                   <UpgradeButton label="Upgrade to Pro" variant="ghost" className="shrink-0" />
                 </div>
               )}
+              */}
 
               <div className="animate-fade-up">
                 <div className="flex items-center justify-between mb-3 sm:mb-4">

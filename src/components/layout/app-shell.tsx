@@ -5,6 +5,7 @@ import { useSession, signOut } from "next-auth/react";
 import type { ReactNode } from "react";
 import { useState, useEffect } from "react";
 import { cx } from "@/style";
+import { SignOutModal } from "@/components/auth/sign-out-modal";
 
 function DashboardIcon() {
   return (
@@ -202,12 +203,13 @@ function NavLink({
 }
 
 function SidebarContent({
-  pathname, session: userSession, compact = false, onNavClick,
+  pathname, session: userSession, compact = false, onNavClick, onSignOutClick,
 }: {
   pathname: string;
   session: ReturnType<typeof useSession>["data"];
   compact?: boolean;
   onNavClick?: () => void;
+  onSignOutClick?: () => void;
 }) {
   return (
     <>
@@ -273,7 +275,7 @@ function SidebarContent({
                   {userSession.user.name?.split(" ")[0] || "Trader"}
                 </div>
                 <button
-                  onClick={() => signOut({ callbackUrl: "/login" })}
+                  onClick={onSignOutClick}
                   className="bg-transparent border-none cursor-pointer font-mono text-[9px] text-white/20 p-0 text-left hover:text-white/40 transition-colors duration-150 tracking-[0.06em] uppercase"
                 >
                   Sign out
@@ -292,6 +294,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const router   = useRouter();
   const { data: session } = useSession();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
 
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
 
@@ -322,11 +325,11 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen bg-[#07090d]">
       <aside className="hidden md:flex lg:hidden w-[64px] shrink-0 flex-col sticky top-0 h-screen border-r border-white/[0.06]" style={{ background: sidebarBg }}>
-        <SidebarContent pathname={pathname} session={session} compact={true} />
+        <SidebarContent pathname={pathname} session={session} compact={true} onSignOutClick={() => setShowSignOutModal(true)} />
       </aside>
 
       <aside className="hidden lg:flex w-[216px] shrink-0 flex-col sticky top-0 h-screen border-r border-white/[0.06]" style={{ background: sidebarBg }}>
-        <SidebarContent pathname={pathname} session={session} compact={false} />
+        <SidebarContent pathname={pathname} session={session} compact={false} onSignOutClick={() => setShowSignOutModal(true)} />
       </aside>
 
       <div className="md:hidden fixed top-0 inset-x-0 z-40 h-14 border-b border-white/[0.06] flex items-center px-4 gap-3" style={{ background: sidebarBg }}>
@@ -351,12 +354,19 @@ export function AppShell({ children }: { children: ReactNode }) {
         "md:hidden fixed top-14 left-0 bottom-0 z-40 w-[240px] flex flex-col border-r border-white/[0.06] transition-transform duration-250 ease-in-out",
         drawerOpen ? "translate-x-0" : "-translate-x-full",
       )} style={{ background: sidebarBg }}>
-        <SidebarContent pathname={pathname} session={session} compact={false} onNavClick={() => setDrawerOpen(false)} />
+        <SidebarContent pathname={pathname} session={session} compact={false} onNavClick={() => setDrawerOpen(false)} onSignOutClick={() => setShowSignOutModal(true)} />
       </aside>
 
       <main className="flex-1 overflow-auto min-w-0 md:pt-0 pt-14">
         {children}
       </main>
+
+      {showSignOutModal && (
+        <SignOutModal
+          onConfirm={() => signOut({ callbackUrl: "/login" })}
+          onCancel={() => setShowSignOutModal(false)}
+        />
+      )}
     </div>
   );
 }
