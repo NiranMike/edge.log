@@ -8,7 +8,8 @@ import type {
   PairStat, DirectionStat, RBucket, SessionStat, EquityPoint, WeekdayStat,
 } from "@/types";
 import { getWeekday } from "@/util";
-import { TRADES_PAGE_SIZE, FREE_TRADE_LIMIT } from "@/const/trades-const";
+import { TRADES_PAGE_SIZE } from "@/const/trades-const";
+// BILLING: import { FREE_TRADE_LIMIT } from "@/const/trades-const";
 
 // ─── Shared types ────────────────────────────────────────────────────────────
 
@@ -96,18 +97,17 @@ export const tradeService = {
     const errors = validate(values);
     if (errors) return { ok: false, error: Object.values(errors)[0]! };
 
-    // ── Free tier limit ────────────────────────────────────────────────────────
-    const [user, tradeCount] = await Promise.all([
-      db.user.findUnique({ where: { id: userId }, select: { isPro: true } }),
-      tradeRepository.count(userId),
-    ]);
-    if (!user?.isPro && tradeCount >= FREE_TRADE_LIMIT) {
-      return {
-        ok: false,
-        error: `Free plan is limited to ${FREE_TRADE_LIMIT} trades. Upgrade to Pro for unlimited logging.`,
-      };
-    }
-    // ──────────────────────────────────────────────────────────────────────────
+    // BILLING: re-enable this block to enforce the free trade limit
+    // const [user, tradeCount] = await Promise.all([
+    //   db.user.findUnique({ where: { id: userId }, select: { isPro: true } }),
+    //   tradeRepository.count(userId),
+    // ]);
+    // if (!user?.isPro && tradeCount >= FREE_TRADE_LIMIT) {
+    //   return {
+    //     ok: false,
+    //     error: `Free plan is limited to ${FREE_TRADE_LIMIT} trades. Upgrade to Pro for unlimited logging.`,
+    //   };
+    // }
 
     const entry = Number(values.entryPrice), stop = Number(values.stopLoss);
     const tp = Number(values.takeProfit), exit = Number(values.exitPrice);
@@ -215,15 +215,16 @@ export const tradeService = {
     }
     const inFileDuplicates = rows.length - uniqueRows.length;
 
-    // ── 2. Check against existing DB trades + user plan (parallel) ───────────
+    // ── 2. Check against existing DB trades (parallel) ──────────────────────
     const dates   = uniqueRows.map(r => new Date(r.tradedAt));
     const minDate = new Date(Math.min(...dates.map(d => d.getTime())));
     const maxDate = new Date(Math.max(...dates.map(d => d.getTime())));
 
-    const [existing, user, currentCount] = await Promise.all([
+    const [existing] = await Promise.all([
       tradeRepository.findInDateRange(userId, minDate, maxDate),
-      db.user.findUnique({ where: { id: userId }, select: { isPro: true } }),
-      tradeRepository.count(userId),
+      // BILLING: re-add these two to enforce the free limit:
+      // db.user.findUnique({ where: { id: userId }, select: { isPro: true } }),
+      // tradeRepository.count(userId),
     ]);
 
     const existingFps = new Set(
@@ -244,23 +245,16 @@ export const tradeService = {
       };
     }
 
-    // ── 3. Free tier limit check ──────────────────────────────────────────────
-    if (!user?.isPro) {
-      const available = Math.max(0, FREE_TRADE_LIMIT - currentCount);
-      if (newRows.length > available) {
-        if (available === 0) {
-          return {
-            ok: false,
-            error: `Free plan is limited to ${FREE_TRADE_LIMIT} trades. Upgrade to Pro to import more.`,
-          };
-        }
-        return {
-          ok: false,
-          error: `Free plan allows ${available} more trade${available === 1 ? "" : "s"} (${currentCount}/${FREE_TRADE_LIMIT} used). Upgrade to Pro to import all ${newRows.length}.`,
-        };
-      }
-    }
-    // ─────────────────────────────────────────────────────────────────────────
+    // BILLING: re-enable this block to enforce the free import limit
+    // if (!user?.isPro) {
+    //   const available = Math.max(0, FREE_TRADE_LIMIT - currentCount);
+    //   if (newRows.length > available) {
+    //     if (available === 0) {
+    //       return { ok: false, error: `Free plan is limited to ${FREE_TRADE_LIMIT} trades. Upgrade to Pro to import more.` };
+    //     }
+    //     return { ok: false, error: `Free plan allows ${available} more trade${available === 1 ? "" : "s"} (${currentCount}/${FREE_TRADE_LIMIT} used). Upgrade to Pro to import all ${newRows.length}.` };
+    //   }
+    // }
 
     const data = newRows.map(row => {
       const r = calcRMultiple(row.direction, row.entryPrice, row.stopLoss, row.exitPrice);

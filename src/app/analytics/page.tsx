@@ -1,10 +1,10 @@
 import { redirect }          from "next/navigation";
 import { auth }              from "#/auth";
-import { db }                from "@/lib/db";
 import { tradeRepository }   from "@/repositories/trade.repository";
 import { tradeService }      from "@/services/trade-service";
 import { AppShell }          from "@/components/layout/app-shell";
-import { UpgradePrompt }     from "@/components/billing/upgrade-prompt";
+// BILLING: import { db }           from "@/lib/db";
+// BILLING: import { UpgradePrompt } from "@/components/billing/upgrade-prompt";
 import { AnalyticsFilters }  from "@/components/analytics/analytics-filters";
 import { AnalyticsOverviewStrip } from "@/components/analytics/analytics-overview-strip";
 import { EquityCurve }       from "@/components/analytics/equity-curve";
@@ -56,26 +56,20 @@ export default async function AnalyticsPage({
   const session = await auth();
   if (!session) redirect("/login");
 
-  const user = await db.user.findUnique({
-    where:  { id: session.user.id },
-    select: { isPro: true },
-  });
-
-  if (!user?.isPro) {
-    return (
-      <AppShell>
-        <div className="w-full px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-9">
-          <div className="w-full max-w-[1200px] mx-auto">
-            <PageHeader />
-            <UpgradePrompt
-              feature="Analytics Dashboard"
-              description="Understand exactly where you make and lose money. Find your best session, worst day, and which pairs actually have edge."
-            />
-          </div>
-        </div>
-      </AppShell>
-    );
-  }
+  // BILLING: re-enable to gate analytics behind Pro
+  // const user = await db.user.findUnique({ where: { id: session.user.id }, select: { isPro: true } });
+  // if (!user?.isPro) {
+  //   return (
+  //     <AppShell>
+  //       <div className="w-full px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-9">
+  //         <div className="w-full max-w-[1200px] mx-auto">
+  //           <PageHeader />
+  //           <UpgradePrompt feature="Analytics Dashboard" description="Understand exactly where you make and lose money. Find your best session, worst day, and which pairs actually have edge." />
+  //         </div>
+  //       </div>
+  //     </AppShell>
+  //   );
+  // }
 
   const params    = await searchParams;
   const filters   = parseFilters(params);

@@ -58,7 +58,7 @@ export const ITEMS = [
 export const NAV_LINKS = [
   { label: "Features",     href: "#features"    },
   { label: "How it works", href: "#howItWorks"  },
-  { label: "Pricing",      href: "/pricing"     },
+  // BILLING: { label: "Pricing", href: "/pricing" },
 ];
 
 export const STEPS = [

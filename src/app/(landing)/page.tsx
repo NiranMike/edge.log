@@ -1,6 +1,6 @@
 
 import { auth } from "#/auth";
-import { PricingSection } from "@/components/billing/pricing-section";
+// BILLING: import { PricingSection } from "@/components/billing/pricing-section";
 import { CtaSection } from "@/components/landing-page/cta-section";
 import { FeaturesSection } from "@/components/landing-page/feature-section";
 import { HeroSection } from "@/components/landing-page/hero-section";
@@ -39,7 +39,7 @@ export default async function LandingPage() {
       <FeaturesSection />
       <HowItWorksSection />
       <TestimonialsSection />
-      <PricingSection />
+      {/* BILLING: <PricingSection /> */}
       <CtaSection />
       <LandingFooter />
     </div>

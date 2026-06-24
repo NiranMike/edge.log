@@ -94,9 +94,10 @@ export function RegisterForm({ defaultEmail }: RegisterFormProps) {
       const result = await registerAction(data);
 
       if (result.ok) {
-        setServerSuccess("Account created! Check your email to verify your address…");
+        setServerSuccess("Account created! Redirecting to dashboard…");
         router.refresh();
-        setTimeout(() => router.push(`/verify-email?email=${encodeURIComponent(data.email)}`), 900);
+        // EMAIL_VERIFY: setTimeout(() => router.push(`/verify-email?email=${encodeURIComponent(data.email)}`), 900);
+        setTimeout(() => router.push("/dashboard"), 900);
       } else {
         setServerError(result.error);
       }

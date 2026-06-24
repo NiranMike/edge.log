@@ -20,10 +20,10 @@ export default auth((req) => {
     path === "/" ||
     path.startsWith("/login") ||
     path.startsWith("/register") ||
-    path.startsWith("/verify-email") ||
+    // EMAIL_VERIFY: path.startsWith("/verify-email") ||
     path.startsWith("/forgot-password") ||
     path.startsWith("/reset-password") ||
-    path.startsWith("/pricing") ||
+    // BILLING: path.startsWith("/pricing") ||
     path.startsWith("/terms") ||
     path.startsWith("/privacy");
 

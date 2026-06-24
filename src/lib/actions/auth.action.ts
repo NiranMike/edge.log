@@ -12,7 +12,7 @@ import {
   type RegisterInput,
 } from "@/lib/validations/auth";
 import { signIn, signOut }        from "#/auth";
-import { emailVerifyService }     from "@/services/email-verify-service";
+// EMAIL_VERIFY: import { emailVerifyService } from "@/services/email-verify-service";
 import type { Result }            from "@/types";
 
 // ─── Map AuthError → user string ──────────────────────────────────────────────
@@ -83,10 +83,22 @@ export async function registerAction(
 
   const user = await db.user.create({ data: { name, email, passwordHash } });
 
-  // Send verification email (non-blocking — don't fail registration if email fails)
-  emailVerifyService.issue(user.id, email, name).catch(err => {
-    console.error("[registerAction] failed to send verification email:", err);
-  });
+  // EMAIL_VERIFY: re-enable to send verification email on registration
+  // emailVerifyService.issue(user.id, email, name).catch(err => {
+  //   console.error("[registerAction] failed to send verification email:", err);
+  // });
+
+  // Auto-sign in after registration
+  try {
+    await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+  } catch (err) {
+    // If sign-in fails, user can sign in manually from login page
+    console.error("[registerAction] auto sign-in failed:", err);
+  }
 
   return { ok: true, data: { userId: user.id } };
 }
