@@ -11,7 +11,8 @@
     "build:prod": "prisma migrate deploy && next build",
     "start": "next start",
     "lint": "biome check",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "sync-skills": "powershell -ExecutionPolicy Bypass -File .claude/sync-skills.ps1"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
