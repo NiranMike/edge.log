@@ -235,14 +235,23 @@ function EmptyState({ filtered }: { filtered: boolean }) {
           <p className="relative font-mono text-[11px] text-white/20 mb-6 leading-[1.6] max-w-[220px]">
             Every trade logged is a data point.<br />Start building your edge.
           </p>
-          <Link
-            href="/trades/new"
-            className="group relative overflow-hidden inline-flex items-center gap-2 px-5 py-[10px] bg-emerald-400 rounded-lg text-[#07090d] font-mono text-[11px] font-medium no-underline hover:brightness-110 active:scale-[0.97] transition-all duration-150 tracking-[0.06em] uppercase"
-          >
-            Log your first trade
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            <div className="absolute inset-0 bg-white/15 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12 pointer-events-none" />
-          </Link>
+          <div className="relative flex flex-col sm:flex-row items-center gap-2.5">
+            <Link
+              href="/trades/new"
+              className="group relative overflow-hidden inline-flex items-center gap-2 px-5 py-[10px] bg-emerald-400 rounded-lg text-[#07090d] font-mono text-[11px] font-medium no-underline hover:brightness-110 active:scale-[0.97] transition-all duration-150 tracking-[0.06em] uppercase"
+            >
+              Log your first trade
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              <div className="absolute inset-0 bg-white/15 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12 pointer-events-none" />
+            </Link>
+            <Link
+              href="/trades/import"
+              className="inline-flex items-center gap-2 px-5 py-[10px] bg-white/[0.04] border border-white/[0.08] rounded-lg font-mono text-[11px] text-white/40 no-underline hover:bg-white/[0.07] hover:border-white/[0.14] hover:text-white/60 transition-all duration-150 tracking-[0.06em] uppercase"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Import CSV
+            </Link>
+          </div>
         </>
       )}
     </div>
