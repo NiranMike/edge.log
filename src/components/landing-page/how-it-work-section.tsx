@@ -112,8 +112,8 @@ export function HowItWorksSection() {
                   <span className="font-mono text-[9px] text-emerald-400/50">● LIVE</span>
                 </div>
 
-                <div className="hidden sm:grid grid-cols-6 gap-2 px-5 py-2 border-b border-white/[0.05]">
-                  {["ASSET", "DIR", "SESSION", "STRATEGY", "P&L", "RESULT"].map(h => (
+                <div className="hidden sm:grid grid-cols-5 gap-2 px-5 py-2 border-b border-white/[0.05]">
+                  {["ASSET", "DIR", "SESSION", "R", "RESULT"].map(h => (
                     <span key={h} className="font-mono text-[8px] uppercase tracking-[0.12em] text-white/20">{h}</span>
                   ))}
                 </div>
@@ -123,19 +123,18 @@ export function HowItWorksSection() {
                   {TRADE_ROWS.map((t, i) => (
                     <div
                       key={i}
-                      className="grid grid-cols-3 sm:grid-cols-6 gap-2 px-2 py-2.5 sm:py-3 items-center hover:bg-white/[0.025] transition-colors rounded-sm"
+                      className="grid grid-cols-4 sm:grid-cols-5 gap-2 px-2 py-2.5 sm:py-3 items-center hover:bg-white/[0.025] transition-colors rounded-sm"
                     >
                       <span className="font-mono text-[11px] sm:text-[12px] font-bold text-white/80">{t.asset}</span>
                       <span className={cx("font-mono text-[10px] font-bold", t.dir === "Buy" ? "text-emerald-400" : "text-rose-400")}>
                         {t.dir === "Buy" ? "▲" : "▼"} {t.dir}
                       </span>
                       <span className="font-mono text-[9px] text-teal-400/70 hidden sm:block">{t.sess}</span>
-                      <span className="font-mono text-[9px] text-violet-400/70 hidden sm:block">{t.strat}</span>
                       <span
                         className={cx("font-mono text-[11px] sm:text-[12px] font-black", t.win ? "text-emerald-400" : "text-rose-400")}
                         style={{ textShadow: t.win ? "0 0 14px rgba(16,185,129,0.5)" : "0 0 14px rgba(239,68,68,0.5)" }}
                       >
-                        {t.pnl}
+                        {t.r}
                       </span>
                       <span className={cx(
                         "font-mono text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 border text-center",
@@ -155,34 +154,14 @@ export function HowItWorksSection() {
                     className="font-mono text-[13px] sm:text-[14px] font-black text-emerald-400"
                     style={{ textShadow: "0 0 18px rgba(16,185,129,0.55)" }}
                   >
-                    +$2,600 net
+                    +6.3R net
                   </span>
                 </div>
 
-                <div className="relative mx-3 mb-3 px-4 py-3 bg-black border border-white/[0.05] font-mono text-[10px] text-white/30 leading-relaxed">
-                  <span className="text-emerald-400/80 font-bold">🧠 </span>
-                  London session: 100% WR this week. FOMO trades: 0% WR. Eliminate FOMO, keep London.
+                <div className="relative mx-3 mb-4 px-4 py-3 bg-black border border-white/[0.05] font-mono text-[10px] text-white/30 leading-relaxed">
+                  <span className="text-emerald-400/80 font-bold">↗ </span>
+                  London session is your strongest by win rate. New York lags. The breakdown updates with every trade.
                 </div>
-
-                <div className="relative mx-3 mb-4 flex flex-wrap items-center gap-2">
-                  <span className="font-mono text-[8px] text-white/15 uppercase tracking-wider">Confidence</span>
-                  {[4, 1, 5, 4].map((c, i) => (
-                    <div key={i} className="flex gap-0.5">
-                      {[1, 2, 3, 4, 5].map(n => (
-                        <span key={n} className={cx("text-[10px]", n <= c ? "text-teal-400" : "text-white/10")}>★</span>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-3 border border-white/[0.05] bg-[#050505] p-4">
-                <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-white/20 mb-2">
-                  Weekly Reflection Prompt #3
-                </p>
-                <p className="font-mono text-[12px] text-white/45 italic">
-                  &ldquo;Were there any trades taken out of boredom or FOMO this week?&rdquo;
-                </p>
               </div>
             </div>
           </RevealOnScroll>
