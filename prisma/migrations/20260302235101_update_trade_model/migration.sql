@@ -15,7 +15,7 @@ DROP TABLE "Trade";
 
 -- CreateTable
 CREATE TABLE "trades" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "pair" TEXT NOT NULL,
     "direction" "Direction" NOT NULL,
