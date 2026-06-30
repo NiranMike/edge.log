@@ -1,10 +1,11 @@
 import { AccentKey, ds, palette } from "@/style";
 
+// Factual product metrics only — no fabricated results or user counts.
 export const METRICS = [
-  { prefix: "+", val: 68,   suffix: "%",   label: "Win Rate Increase",     textClass: ds.textAccent,  glowHex: palette.primaryGlow  },
-  { prefix: "",  val: 30,   suffix: "s",   label: "To Log a Trade",        textClass: ds.textAccent2, glowHex: palette.secondaryGlow },
-  { prefix: "",  val: 2,    suffix: ".4R", label: "R-Multiple Improvement",textClass: ds.textAccent3, glowHex: palette.tertiaryGlow  },
-  { prefix: "",  val: 1247, suffix: "+",   label: "Traders Journaling",    textClass: ds.textPrimary, glowHex: "rgba(255,255,255,0.15)" },
+  { prefix: "$", val: 0,  suffix: "",  label: "To start",         textClass: ds.textAccent,  glowHex: palette.primaryGlow   },
+  { prefix: "",  val: 30, suffix: "s", label: "To log a trade",   textClass: ds.textAccent2, glowHex: palette.secondaryGlow },
+  { prefix: "",  val: 6,  suffix: "",  label: "Analytics views",  textClass: ds.textAccent3, glowHex: palette.tertiaryGlow  },
+  { prefix: "",  val: 4,  suffix: "",  label: "Sessions tracked", textClass: ds.textPrimary, glowHex: "rgba(255,255,255,0.15)" },
 ] as const;
 
 export const TESTIMONIALS: {
@@ -64,31 +65,31 @@ export const NAV_LINKS = [
 export const STEPS = [
   {
     num: "01", title: "Log the Trade",     time: "30 seconds",
-    desc:   "Asset, direction, entry, stop, exit, size. Hit save. P&L, R-multiple, and result appear instantly, no math required.",
-    detail: "Quick mode captures 6 fields in under 30 seconds. Advanced mode adds session, strategy, emotion, and confidence for deep behavioural analysis.",
+    desc:   "Pair, direction, entry, stop, take-profit, exit. Hit save and your R-multiple and win/loss are calculated instantly, no math required.",
+    detail: "Six fields, under 30 seconds. The R-multiple, profit factor and result are worked out for you the moment you save.",
   },
   {
-    num: "02", title: "Tag Your State",    time: "Optional",
-    desc:   "Session, strategy, emotion, confidence. These 4 tags are the difference between data and behavioural edge.",
-    detail: "Traders who tag consistently identify their worst emotional states within 3 weeks. Most discover they're losing 40%+ of profits to 1–2 repeatable mistakes.",
+    num: "02", title: "Attach the Context", time: "Optional",
+    desc:   "Drop in a chart screenshot and a note on what you saw. Your journal becomes a record you can actually review, not just rows of numbers.",
+    detail: "A screenshot plus a short note turns a price entry into a story you'll still understand weeks later.",
   },
   {
     num: "03", title: "Read the Patterns", time: "Automatic",
-    desc:   "After 10 trades, your behavioural fingerprint emerges. Best session, worst emotion, strongest strategy, all surfaced.",
-    detail: "The insight engine cross-references session, emotion, strategy, and confidence to find your hidden edges and leaks simultaneously.",
+    desc:   "Best pair, strongest session, long vs short bias, R-distribution and weekday performance, all surfaced from your own trades.",
+    detail: "EdgeLog cross-references pair, direction, session and weekday to show exactly where you make and lose R.",
   },
   {
-    num: "04", title: "Review & Refine",   time: "Weekly",
-    desc:   "Auto-generated weekly summary. Five guided reflection questions. Behavioural warnings when revenge trading or streak danger appears.",
-    detail: "Traders who complete weekly reviews improve their win rate 2–3× faster than those who only track numbers. The journal becomes your second brain.",
+    num: "04", title: "Track the Curve",   time: "Real-time",
+    desc:   "Watch your equity curve compound in R and review every day on the calendar. See exactly where discipline held, or broke.",
+    detail: "The equity curve and daily calendar make a bad streak obvious long before it becomes a bad month.",
   },
 ] as const;
 
 export const TRADE_ROWS = [
-  { asset: "EURUSD",  dir: "Buy",  sess: "London", strat: "Breakout",    emo: "Calm",       conf: 4, pnl: "+$1,050", win: true  },
-  { asset: "BTCUSDT", dir: "Sell", sess: "NY",     strat: "FVG",         emo: "FOMO",       conf: 1, pnl: "−$400",   win: false },
-  { asset: "XAUUSD",  dir: "Buy",  sess: "NY",     strat: "Liq. Sweep",  emo: "Calm",       conf: 5, pnl: "+$750",   win: true  },
-  { asset: "GBPUSD",  dir: "Sell", sess: "London", strat: "Order Block", emo: "Confident",  conf: 4, pnl: "+$1,200", win: true  },
+  { asset: "EURUSD",  dir: "Buy",  sess: "London",   r: "+2.4R", win: true  },
+  { asset: "BTCUSDT", dir: "Sell", sess: "New York", r: "−1.0R", win: false },
+  { asset: "XAUUSD",  dir: "Buy",  sess: "New York", r: "+1.8R", win: true  },
+  { asset: "GBPUSD",  dir: "Sell", sess: "London",   r: "+3.1R", win: true  },
 ] as const;
 
 
@@ -100,10 +101,10 @@ export const FEATURES: {
   tag: string;
   accent: AccentKey;
 }[] = [
-  { iconId: "bolt",      num: "01", title: "30-Second Logging",  desc: "Quick mode: asset, direction, entry, stop, exit, size. P&L, R-multiple, win/loss, all instant.",                   tag: "< 30s to log",    accent: "emerald" },
-  { iconId: "chart-bar", num: "02", title: "Pattern Analytics",  desc: "Discover your best session, worst emotion, and which setups print vs which ones bleed you dry.",                     tag: "Analytics",       accent: "violet"  },
-  { iconId: "trending",  num: "03", title: "Equity Curve",       desc: "Every trade plotted. Watch your account compound, or see exactly where discipline broke down.",                      tag: "Real-time",       accent: "teal"    },
-  { iconId: "scale",     num: "04", title: "R Calculations",     desc: "Risk-to-reward, R-multiple, profit factor, expectancy, auto-calculated on every entry.",                            tag: "Automatic",       accent: "emerald" },
-  { iconId: "crosshair", num: "05", title: "Strategy Tracker",   desc: "Tag every trade. Your Breakout vs Reversal edge surfaces after 10 trades, not 10 months.",                           tag: "Per-setup stats", accent: "violet"  },
-  { iconId: "calendar",  num: "06", title: "Weekly Review",      desc: "Auto-generated summaries. Guided prompts. Revenge trading warnings before they destroy a week.",                     tag: "Behavioral",      accent: "teal"    },
+  { iconId: "bolt",      num: "01", title: "30-Second Logging",  desc: "Pair, direction, entry, stop, take-profit, exit. R-multiple and win/loss calculated the moment you save.",            tag: "< 30s to log",   accent: "emerald" },
+  { iconId: "chart-bar", num: "02", title: "Pattern Analytics",  desc: "Your best pair, strongest session and long vs short bias, pulled straight from the trades you've logged.",            tag: "Analytics",      accent: "violet"  },
+  { iconId: "trending",  num: "03", title: "Equity Curve",       desc: "Every trade plotted in R. Watch your account compound, or see exactly where discipline broke down.",                  tag: "In R-multiple",  accent: "teal"    },
+  { iconId: "scale",     num: "04", title: "R Calculations",     desc: "Risk-to-reward, R-multiple, profit factor and expectancy, auto-calculated on every entry.",                          tag: "Automatic",      accent: "emerald" },
+  { iconId: "crosshair", num: "05", title: "Session Breakdown",  desc: "Asia, London, New York and the overlaps, tagged automatically from each trade's time. See which session actually pays.", tag: "Auto-tagged",  accent: "violet"  },
+  { iconId: "upload",    num: "06", title: "CSV Import",         desc: "Bring your history from any broker or spreadsheet. Map the columns once and import in seconds.",                       tag: "Any broker",     accent: "teal"    },
 ];
