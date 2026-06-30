@@ -24,7 +24,7 @@ export const TOOLTIP_COPY = {
   equityCurve:
     "Cumulative R over time. A smooth upward curve with shallow drawdowns is the goal. Steep drops reveal emotional trading periods.",
   winRate:
-    "Percentage of trades that closed in profit. Higher is not always better — it depends on your average win vs average loss.",
+    "Percentage of trades that closed in profit. Higher is not always better. It depends on your average win vs average loss.",
   avgR:
     "Average R-multiple across all trades in this group. Positive means profitable on average.",
   totalR:

@@ -6,7 +6,7 @@ import { cx } from "@/style";
 const FAQS = [
   {
     q: "What's the difference between Free and Pro?",
-    a: "Free covers everything you need to journal — unlimited trade entries, P&L, R-multiple, win rate, and trade history. Pro unlocks the full analytics suite built on top of your data: equity curve, session breakdown, pair analysis, weekday heatmap, R distribution, and direction bias.",
+    a: "Free covers everything you need to journal: unlimited trade entries, P&L, R-multiple, win rate, and trade history. Pro unlocks the full analytics suite built on top of your data: equity curve, session breakdown, pair analysis, weekday heatmap, R distribution, and direction bias.",
   },
   {
     q: "Can I cancel anytime?",
@@ -18,11 +18,11 @@ const FAQS = [
   },
   {
     q: "Will I lose my trade data if I downgrade?",
-    a: "Never. All your logged trades, notes, and history stay intact. You simply lose access to the Pro analytics views — your data is always yours.",
+    a: "Never. All your logged trades, notes, and history stay intact. You simply lose access to the Pro analytics views. Your data is always yours.",
   },
   {
     q: "Is there a free trial for Pro?",
-    a: "The Free plan is the trial. Log your trades, build your history, then upgrade — the full analytics run instantly on every trade you've already logged.",
+    a: "The Free plan is the trial. Log your trades, build your history, then upgrade. The full analytics run instantly on every trade you've already logged.",
   },
   {
     q: "Can I upgrade mid-month?",

@@ -16,7 +16,7 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  title: "EDGE.LOG — Trading Journal",
+  title: "EDGE.LOG · Trading Journal",
   description:
     "A fast, insight-focused trading journal for discretionary traders.",
 };

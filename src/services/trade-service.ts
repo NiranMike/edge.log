@@ -86,6 +86,47 @@ function fingerprint(userId: string, row: ImportTradeRow): string {
   return `${userId}|${row.pair}|${row.direction}|${row.entryPrice}|${row.exitPrice}|${minute}`;
 }
 
+// Server-side guard for imported rows. The client maps + validates, but a
+// server action must never trust the wire: re-check every field and drop
+// anything malformed (returns null) so a bad row can't reach Prisma.
+function sanitizeImportRow(row: unknown): ImportTradeRow | null {
+  if (!row || typeof row !== "object") return null;
+  const r = row as Record<string, unknown>;
+
+  const pair = String(r.pair ?? "").trim().toUpperCase();
+  if (!pair || pair.length > 32) return null;
+
+  const direction = r.direction === "LONG" || r.direction === "SHORT" ? r.direction : null;
+  if (!direction) return null;
+
+  const entryPrice = Number(r.entryPrice);
+  const exitPrice  = Number(r.exitPrice);
+  if (!Number.isFinite(entryPrice) || entryPrice <= 0) return null;
+  if (!Number.isFinite(exitPrice)  || exitPrice  <= 0) return null;
+
+  const slRaw = r.stopLoss;
+  const stopLoss = slRaw === null || slRaw === undefined || slRaw === "" ? null : Number(slRaw);
+  if (stopLoss !== null && (!Number.isFinite(stopLoss) || stopLoss <= 0)) return null;
+
+  const tpRaw = r.takeProfit;
+  const takeProfit = tpRaw === null || tpRaw === undefined || tpRaw === "" ? null : Number(tpRaw);
+  if (takeProfit !== null && (!Number.isFinite(takeProfit) || takeProfit <= 0)) return null;
+
+  // Stop loss must sit on the correct side of entry when present.
+  if (stopLoss !== null) {
+    if (direction === "LONG"  && stopLoss >= entryPrice) return null;
+    if (direction === "SHORT" && stopLoss <= entryPrice) return null;
+  }
+
+  const ts = new Date(String(r.tradedAt));
+  if (Number.isNaN(ts.getTime())) return null;
+  if (ts.getTime() > Date.now() + 86_400_000) return null;       // not in the future
+
+  const notes = String(r.notes ?? "").trim().slice(0, 2000);
+
+  return { pair, direction, entryPrice, stopLoss, takeProfit, exitPrice, tradedAt: ts.toISOString(), notes };
+}
+
 function isPrismaNotFound(err: unknown): boolean {
   return err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025";
 }
@@ -203,25 +244,42 @@ export const tradeService = {
     userId: string,
     rows: ImportTradeRow[],
   ): Promise<Result<{ imported: number; duplicates: number }>> {
-    if (rows.length === 0)   return { ok: false, error: "No valid rows to import." };
+    if (!Array.isArray(rows) || rows.length === 0) return { ok: false, error: "No valid rows to import." };
     if (rows.length > 1000)  return { ok: false, error: "Maximum 1,000 trades per import." };
+
+    // ── 0. Re-validate every row server-side; drop anything malformed ────────
+    const clean: ImportTradeRow[] = [];
+    for (const row of rows) {
+      const safe = sanitizeImportRow(row);
+      if (safe) clean.push(safe);
+    }
+    if (clean.length === 0) {
+      return { ok: false, error: "No valid rows to import. Check your column mapping and try again." };
+    }
 
     // ── 1. Deduplicate within the file itself ────────────────────────────────
     const seenInFile = new Set<string>();
     const uniqueRows: ImportTradeRow[] = [];
-    for (const row of rows) {
+    for (const row of clean) {
       const fp = fingerprint(userId, row);
       if (!seenInFile.has(fp)) { seenInFile.add(fp); uniqueRows.push(row); }
     }
-    const inFileDuplicates = rows.length - uniqueRows.length;
+    const inFileDuplicates = clean.length - uniqueRows.length;
 
-    // ── 2. Check against existing DB trades (parallel) ──────────────────────
-    const dates   = uniqueRows.map(r => new Date(r.tradedAt));
-    const minDate = new Date(Math.min(...dates.map(d => d.getTime())));
-    const maxDate = new Date(Math.max(...dates.map(d => d.getTime())));
+    // ── 2. Check against existing DB trades over the row date range ─────────
+    // Compute min/max with a loop (spread on a large array can overflow the
+    // call stack, and a single NaN would poison Math.min/Math.max). Rows are
+    // already sanitized, so every tradedAt is a valid ISO string here.
+    let minT = Infinity;
+    let maxT = -Infinity;
+    for (const r of uniqueRows) {
+      const t = new Date(r.tradedAt).getTime();
+      if (t < minT) minT = t;
+      if (t > maxT) maxT = t;
+    }
 
     const [existing] = await Promise.all([
-      tradeRepository.findInDateRange(userId, minDate, maxDate),
+      tradeRepository.findInDateRange(userId, new Date(minT), new Date(maxT)),
       // BILLING: re-add these two to enforce the free limit:
       // db.user.findUnique({ where: { id: userId }, select: { isPro: true } }),
       // tradeRepository.count(userId),
@@ -241,7 +299,7 @@ export const tradeService = {
     if (newRows.length === 0) {
       return {
         ok:    false,
-        error: `All ${rows.length} trade${rows.length === 1 ? "" : "s"} already exist in your journal. Nothing imported.`,
+        error: `All ${clean.length} trade${clean.length === 1 ? "" : "s"} already exist in your journal. Nothing imported.`,
       };
     }
 

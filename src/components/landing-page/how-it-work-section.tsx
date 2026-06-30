@@ -161,7 +161,7 @@ export function HowItWorksSection() {
 
                 <div className="relative mx-3 mb-3 px-4 py-3 bg-black border border-white/[0.05] font-mono text-[10px] text-white/30 leading-relaxed">
                   <span className="text-emerald-400/80 font-bold">🧠 </span>
-                  London session: 100% WR this week. FOMO trades: 0% WR. Eliminate FOMO — keep London.
+                  London session: 100% WR this week. FOMO trades: 0% WR. Eliminate FOMO, keep London.
                 </div>
 
                 <div className="relative mx-3 mb-4 flex flex-wrap items-center gap-2">

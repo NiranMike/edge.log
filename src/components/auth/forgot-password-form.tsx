@@ -41,7 +41,7 @@ export function ForgotPasswordForm() {
   if (sent) {
     return (
       <div className="flex flex-col gap-5">
-        <FormSuccess message={`We've sent a reset link to ${getValues("email")}. Check your inbox — it expires in 1 hour.`} />
+        <FormSuccess message={`We've sent a reset link to ${getValues("email")}. Check your inbox. It expires in 1 hour.`} />
         <p className="font-mono text-[11px] text-center text-white/22">
           Didn't receive it?{" "}
           <button

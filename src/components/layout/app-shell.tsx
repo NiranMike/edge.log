@@ -57,6 +57,15 @@ function PlusIcon() {
     </svg>
   );
 }
+function ImportIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+      <polyline points="17 8 12 3 7 8" />
+      <line x1="12" y1="3" x2="12" y2="15" />
+    </svg>
+  );
+}
 
 const NAV_ICONS: Record<string, () => React.ReactNode> = {
   "/dashboard":  DashboardIcon,
@@ -73,7 +82,6 @@ const NAV = [
   { href: "/analytics",  label: "Analytics",  sub: "patterns"       },
   { href: "/calendar",   label: "Calendar",   sub: "daily p&l"      },
   { href: "/settings",   label: "Settings",   sub: "plan & billing" },
-  { href: "/trades/new", label: "New Trade",  sub: null             },
 ];
 
 function getGreeting(): string {
@@ -133,31 +141,6 @@ function NavLink({
   href: string; icon: React.ReactNode; label: string; sub: string | null;
   active: boolean; compact?: boolean; onClick?: () => void;
 }) {
-  const isNew = href === "/trades/new";
-
-  if (isNew) {
-    return (
-      <Link href={href} className="no-underline block mt-auto pt-2" onClick={onClick}>
-        <div className={cx(
-          "group/new relative overflow-hidden flex items-center gap-2 rounded-lg font-mono text-[11px] font-medium tracking-[0.08em] uppercase",
-          "bg-emerald-400 text-[#07090d]",
-          "hover:brightness-110 active:scale-[0.97]",
-          "transition-all duration-150 cursor-pointer",
-          compact ? "px-0 py-[10px] justify-center" : "px-3.5 py-[9px]",
-        )}>
-          <span className="shrink-0">{icon}</span>
-          {!compact && <span>New Trade</span>}
-          {!compact && (
-            <span className="ml-auto font-mono text-[8px] text-[#07090d]/40 border border-[#07090d]/15 rounded px-1 py-0.5 leading-none">
-              N
-            </span>
-          )}
-          <div className="absolute inset-0 bg-white/15 -translate-x-full group-hover/new:translate-x-full transition-transform duration-500 skew-x-12 pointer-events-none" />
-        </div>
-      </Link>
-    );
-  }
-
   return (
     <Link href={href} className="no-underline block" onClick={onClick}>
       <div className={cx(
@@ -237,17 +220,54 @@ function SidebarContent({
 
       <nav className={cx("py-4 flex-1 flex flex-col gap-[2px]", compact ? "px-2 relative" : "px-3")}>
         {NAV.map(({ href, label, sub }) => {
-          const isNew = href === "/trades/new";
-          const active = !isNew && (
+          const active =
             pathname === href ||
-            (href !== "/dashboard" && pathname.startsWith(href))
-          );
+            (href !== "/dashboard" &&
+              pathname.startsWith(href) &&
+              // /trades stays un-highlighted on its action sub-pages
+              !(href === "/trades" && (pathname.startsWith("/trades/new") || pathname.startsWith("/trades/import"))));
           const IconComp = NAV_ICONS[href];
           return (
             <NavLink key={href} href={href} icon={IconComp ? <IconComp /> : null} label={label} sub={sub}
               active={active} compact={compact} onClick={onNavClick} />
           );
         })}
+
+        {/* Bottom actions — always reachable from any page */}
+        <div className="mt-auto pt-3 flex flex-col gap-2">
+          <Link
+            href="/trades/import"
+            onClick={onNavClick}
+            title="Import trades from CSV"
+            className={cx(
+              "no-underline flex items-center gap-2 rounded-lg font-mono text-[11px] tracking-[0.06em] border transition-all duration-150",
+              compact ? "px-0 py-[9px] justify-center" : "px-3.5 py-[9px]",
+              pathname.startsWith("/trades/import")
+                ? "bg-white/[0.06] border-white/[0.1] text-white/80"
+                : "bg-white/[0.02] border-white/[0.07] text-white/45 hover:bg-white/[0.05] hover:border-white/[0.12] hover:text-white/65",
+            )}
+          >
+            <span className="shrink-0"><ImportIcon /></span>
+            {!compact && <span>Import CSV</span>}
+          </Link>
+
+          <Link href="/trades/new" onClick={onNavClick} className="no-underline block">
+            <div className={cx(
+              "group/new relative overflow-hidden flex items-center gap-2 rounded-lg font-mono text-[11px] font-medium tracking-[0.08em] uppercase",
+              "bg-emerald-400 text-[#07090d] hover:brightness-110 active:scale-[0.97] transition-all duration-150 cursor-pointer",
+              compact ? "px-0 py-[10px] justify-center" : "px-3.5 py-[9px]",
+            )}>
+              <span className="shrink-0"><PlusIcon /></span>
+              {!compact && <span>New Trade</span>}
+              {!compact && (
+                <span className="ml-auto font-mono text-[8px] text-[#07090d]/40 border border-[#07090d]/15 rounded px-1 py-0.5 leading-none">
+                  N
+                </span>
+              )}
+              <div className="absolute inset-0 bg-white/15 -translate-x-full group-hover/new:translate-x-full transition-transform duration-500 skew-x-12 pointer-events-none" />
+            </div>
+          </Link>
+        </div>
       </nav>
 
       {!compact && (
@@ -324,11 +344,11 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen bg-[#07090d]">
-      <aside className="hidden md:flex lg:hidden w-[64px] shrink-0 flex-col sticky top-0 h-screen border-r border-white/[0.06]" style={{ background: sidebarBg }}>
+      <aside className="hidden md:flex lg:hidden w-[64px] shrink-0 flex-col sticky top-0 h-screen overflow-y-auto border-r border-white/[0.06]" style={{ background: sidebarBg }}>
         <SidebarContent pathname={pathname} session={session} compact={true} onSignOutClick={() => setShowSignOutModal(true)} />
       </aside>
 
-      <aside className="hidden lg:flex w-[216px] shrink-0 flex-col sticky top-0 h-screen border-r border-white/[0.06]" style={{ background: sidebarBg }}>
+      <aside className="hidden lg:flex w-[216px] shrink-0 flex-col sticky top-0 h-screen overflow-y-auto border-r border-white/[0.06]" style={{ background: sidebarBg }}>
         <SidebarContent pathname={pathname} session={session} compact={false} onSignOutClick={() => setShowSignOutModal(true)} />
       </aside>
 
@@ -351,7 +371,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       )}
 
       <aside className={cx(
-        "md:hidden fixed top-14 left-0 bottom-0 z-40 w-[240px] flex flex-col border-r border-white/[0.06] transition-transform duration-250 ease-in-out",
+        "md:hidden fixed top-14 left-0 bottom-0 z-40 w-[240px] flex flex-col overflow-y-auto border-r border-white/[0.06] transition-transform duration-250 ease-in-out",
         drawerOpen ? "translate-x-0" : "-translate-x-full",
       )} style={{ background: sidebarBg }}>
         <SidebarContent pathname={pathname} session={session} compact={false} onNavClick={() => setDrawerOpen(false)} onSignOutClick={() => setShowSignOutModal(true)} />

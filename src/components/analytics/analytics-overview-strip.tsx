@@ -185,7 +185,7 @@ export function AnalyticsOverviewStrip({ overview }: Props) {
 
       <StatPill
         label="Most Active"
-        value={mostActivePair || "—"}
+        value={mostActivePair || "·"}
         sub={mostActiveSession}
         delay={300}
         tooltip={TOOLTIP_COPY.mostActive}

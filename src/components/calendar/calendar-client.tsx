@@ -199,7 +199,7 @@ function YearStrip({
                   {monthR >= 0 ? "+" : ""}{monthR}R
                 </span>
               ) : (
-                <span className="block text-[10px] opacity-30">—</span>
+                <span className="block text-[10px] opacity-30">·</span>
               )}
             </button>
           );
