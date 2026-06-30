@@ -56,6 +56,8 @@ function Counter({
 export function MetricsSection() {
   return (
     <section className={cx("relative bg-[#060606] border-y border-white/[0.04]")}>
+      {/* Top gradient accent */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-emerald-400/25 to-transparent z-10" />
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         {[25, 50, 75].map(pct => (
           <div

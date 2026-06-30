@@ -5,6 +5,8 @@ import Credentials             from "next-auth/providers/credentials";
 import Google                  from "next-auth/providers/google";
 
 export default {
+  trustHost: true,
+
   providers: [
     Google,    
     Credentials({

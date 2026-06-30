@@ -1,6 +1,4 @@
 "use client";
-// components/ui/DateTimePicker.tsx
-// Uses react-day-picker v9 + ReactDOM.createPortal to escape parent stacking contexts.
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
@@ -11,7 +9,6 @@ interface Props {
   onChange: (value: string) => void;
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
 function toDateAndTime(iso: string): { date: Date | undefined; time: string } {
   if (!iso) return { date: undefined, time: "00:00" };
   const [datePart, timePart] = iso.split("T");
@@ -43,7 +40,6 @@ const MONTHS = [
   "July","August","September","October","November","December",
 ];
 
-// ── Dropdown (portaled) ───────────────────────────────────────────────────────
 interface DropdownProps {
   anchorRect: DOMRect;
   selected: Date | undefined;
@@ -75,7 +71,6 @@ function Dropdown({
         style={{ backgroundColor: "#0d1117" }}
         className="rounded-[10px] border border-white/[0.1] shadow-[0_24px_80px_rgba(0,0,0,0.85),0_0_0_1px_rgba(255,255,255,0.05)]"
       >
-        {/* ── Month navigation ── */}
         <div className="flex items-center justify-between px-4 pt-4 pb-3 border-b border-white/[0.06]">
           <button
             type="button"
@@ -100,7 +95,6 @@ function Dropdown({
           </button>
         </div>
 
-        {/* ── Calendar ── */}
         <div className="px-3 pt-3 pb-2">
           <DayPicker
             mode="single"
@@ -129,7 +123,6 @@ function Dropdown({
           />
         </div>
 
-        {/* ── Time ── */}
         <div className="px-4 pb-3 pt-1 border-t border-white/[0.06]">
           <div className="flex items-center justify-between mb-2">
             <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/25">Time</span>
@@ -162,7 +155,6 @@ function Dropdown({
           </div>
         </div>
 
-        {/* ── Footer ── */}
         <div className="flex items-center justify-between px-4 py-3 border-t border-white/[0.06]">
           <button
             type="button" onClick={onNow}
@@ -183,7 +175,6 @@ function Dropdown({
   );
 }
 
-// ── Main component ────────────────────────────────────────────────────────────
 export function DateTimePicker({ value, onChange }: Props) {
   const { date: initDate, time: initTime } = toDateAndTime(value);
 

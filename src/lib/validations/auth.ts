@@ -1,6 +1,4 @@
-// lib/validations/auth.ts
-// Shared between Server Actions (server) and React Hook Form (client).
-// One source of truth — validation rules are never duplicated.
+
 
 import { z } from "zod";
 
@@ -40,3 +38,17 @@ export const registerSchema = z
     path:    ["confirmPassword"],
   });
 export type RegisterInput = z.infer<typeof registerSchema>;
+
+export const forgotPasswordSchema = z.object({ email: emailField });
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+
+export const resetPasswordSchema = z
+  .object({
+    password:        strongPassword,
+    confirmPassword: z.string().min(1, "Please confirm your password."),
+  })
+  .refine((d) => d.password === d.confirmPassword, {
+    message: "Passwords do not match.",
+    path:    ["confirmPassword"],
+  });
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;

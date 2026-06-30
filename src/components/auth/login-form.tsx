@@ -21,11 +21,13 @@ const URL_ERROR_MAP: Record<string, string> = {
 };
 
 interface LoginFormProps {
-  callbackUrl: string;
-  urlError?:   string;
+  callbackUrl:    string;
+  urlError?:      string;
+  emailVerified?: boolean;
+  passwordReset?: boolean;
 }
 
-export function LoginForm({ callbackUrl, urlError }: LoginFormProps) {
+export function LoginForm({ callbackUrl, urlError, emailVerified, passwordReset }: LoginFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(
@@ -47,7 +49,7 @@ export function LoginForm({ callbackUrl, urlError }: LoginFormProps) {
     setServerError(null);
     startTransition(async () => {
       const result = await loginAction(data);
-      if (result.success) {
+      if (result.ok) {
         router.push(callbackUrl);
         router.refresh();
       } else {
@@ -58,6 +60,24 @@ export function LoginForm({ callbackUrl, urlError }: LoginFormProps) {
 
   return (
     <div className="flex flex-col gap-5">
+
+      {emailVerified && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-teal-400/[0.08] border border-teal-400/20">
+          <span className="text-teal-400 text-[13px]">✓</span>
+          <p className="font-mono text-[12px] text-teal-400">
+            Email verified! You can now sign in.
+          </p>
+        </div>
+      )}
+
+      {passwordReset && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-emerald-400/[0.08] border border-emerald-400/20">
+          <span className="text-emerald-400 text-[13px]">✓</span>
+          <p className="font-mono text-[12px] text-emerald-400">
+            Password updated! Sign in with your new password.
+          </p>
+        </div>
+      )}
 
       <GoogleButton callbackUrl={callbackUrl} label="Continue with Google" />
 
@@ -98,14 +118,14 @@ export function LoginForm({ callbackUrl, urlError }: LoginFormProps) {
         </div>
 
         <AuthButton type="submit" loading={isLoading}>
-          → Sign In
+          Sign In
         </AuthButton>
       </form>
 
       <p className="font-mono text-[11px] text-center text-white/22">
         No account?{" "}
         <Link href="/register" className="text-emerald-400/80 hover:text-emerald-400 transition-colors">
-          Create one free →
+          Create one free
         </Link>
       </p>
 

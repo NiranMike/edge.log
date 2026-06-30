@@ -16,7 +16,7 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  title: "EDGE.LOG — Trading Journal",
+  title: "EDGE.LOG · Trading Journal",
   description:
     "A fast, insight-focused trading journal for discretionary traders.",
 };
@@ -31,7 +31,9 @@ export default function RootLayout({
       <body
         className={`${jetBrainsMono.variable} ${syne.variable} font-display antialiased`}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

@@ -3,19 +3,20 @@
 export type Direction = "LONG" | "SHORT";
 
 export interface Trade {
-  id:          number;
+  id:          string;
   userId:      string;
   pair:        string;
   direction:   Direction;
+  screenshotUrl?: string | null;
   entryPrice:  number;
   stopLoss:    number;
   takeProfit:  number;
   exitPrice:   number;
-  rMultiple:   number;   
+  rMultiple:   number;
   won:         boolean;
   notes:       string | null;
-  tradedAt:    string; 
-  createdAt:   string; 
+  tradedAt:    string;
+  createdAt:   string;
 }
 
 
@@ -29,14 +30,15 @@ export interface TradeMetrics {
 
 
 export interface TradeFormValues {
-  pair:        string;
-  direction:   Direction;
-  entryPrice:  string;
-  stopLoss:    string;
-  takeProfit:  string;
-  exitPrice:   string;
-  notes:       string;
-  tradedAt:    string;
+  pair:          string;
+  direction:     Direction;
+  entryPrice:    string;
+  screenshotUrl: string | null;
+  stopLoss:      string;
+  takeProfit:    string;
+  exitPrice:     string;
+  notes:         string;
+  tradedAt:      string;
 }
 
 export interface TradeFormErrors {
@@ -52,7 +54,7 @@ export interface TradeFormErrors {
 
 export type Result<T = void> =
   | { ok: true;  data: T }
-  | { ok: false; error: string };
+  | { ok: false; error: string; fieldErrors?: Record<string, string[]> };
 
 
 
@@ -66,8 +68,8 @@ export interface AnalyticsFilters {
 export interface PairStat {
   pair:      string;
   trades:    number;
-  wins:      number;
-  losses:    number;
+  wins:      number; 
+  losses:    number; 
   winRate:   number;
   avgR:      number;
   totalR:    number;

@@ -1,39 +1,58 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "#/auth";
+// BILLING: import { db } from "@/lib/db";
 import { tradeService } from "@/services/trade-service";
 import { AppShell } from "@/components/layout/app-shell";
 import { TradesList } from "@/components/trades/trades-list";
-
-const PAGE_SIZE = 10;
+// BILLING: import { UpgradeButton } from "@/components/billing/upgrade-button";
+// BILLING: import { FREE_TRADE_LIMIT } from "@/const/trades-const";
+import { TRADES_PAGE_SIZE } from "@/const/trades-const";
 
 export default async function TradesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{
+    page?:      string;
+    q?:         string;
+    direction?: string;
+    outcome?:   string;
+  }>;
 }) {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const { page: pageParam } = await searchParams;
-  const page = Math.max(1, parseInt(pageParam ?? "1", 10));
+  const params    = await searchParams;
+  const page      = Math.max(1, parseInt(params.page ?? "1", 10));
+  const pairQuery = params.q?.trim() || undefined;
+  const direction = (params.direction === "LONG" || params.direction === "SHORT")
+    ? params.direction : undefined;
+  const won       = params.outcome === "win" ? true
+    : params.outcome === "loss"              ? false
+    : undefined;
 
-  const { trades, total } = await tradeService.getPage(session.user.id, page);
+  const { trades, total } = await tradeService.getPage(session.user.id, page, { pair: pairQuery, direction, won });
+  // BILLING: const [{ trades, total }, userMeta, totalCount] = await Promise.all([
+  // BILLING:   tradeService.getPage(session.user.id, page, { pair: pairQuery, direction, won }),
+  // BILLING:   db.user.findUnique({ where: { id: session.user.id }, select: { isPro: true } }),
+  // BILLING:   tradeService.getTotalCount(session.user.id),
+  // BILLING: ]);
+  // BILLING: const isPro     = userMeta?.isPro ?? false;
+  // BILLING: const totalCount = ...;
 
-  const pageCount = Math.ceil(total / PAGE_SIZE);
+  const pageCount = Math.ceil(total / TRADES_PAGE_SIZE);
   if (total > 0 && page > pageCount) redirect(`/trades?page=${pageCount}`);
 
   return (
     <AppShell>
       <div className="w-full px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-9">
-
-        <div className="w-full max-w-[1120px] mx-auto">
+        <div className="w-full max-w-[1200px] mx-auto">
 
           <div className="animate-fade-up flex items-end justify-between mb-6 sm:mb-7 gap-4">
             <div className="min-w-0">
               <div className="flex items-center gap-3 mb-2 sm:mb-3">
-                <div className="w-5 h-px bg-white/15" />
-                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/25">
+
+                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-teal-400/60">
                   Journal
                 </span>
               </div>
@@ -45,15 +64,48 @@ export default async function TradesPage({
               </p>
             </div>
 
-            <Link
-              href="/trades/new"
-              className="shrink-0 inline-flex items-center gap-1.5 px-4 py-[9px] bg-teal-400/[0.08] border border-teal-400/20 rounded-lg text-teal-400 font-mono text-[11px] no-underline hover:bg-teal-400/[0.14] hover:border-teal-400/35 transition-all duration-150 tracking-[0.04em] whitespace-nowrap"
-            >
-              + New trade
-            </Link>
+            <div className="flex items-center gap-2 shrink-0">
+              <Link
+                href="/trades/import"
+                className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-[9px] bg-white/[0.04] border border-white/[0.08] rounded-lg font-mono text-[11px] text-white/40 no-underline hover:bg-white/[0.07] hover:border-white/[0.14] hover:text-white/60 transition-all duration-150 tracking-[0.04em] whitespace-nowrap"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span className="hidden sm:inline">Import</span>
+              </Link>
+              <Link
+                href="/trades/new"
+                className="group relative overflow-hidden inline-flex items-center gap-1.5 px-3 sm:px-4 py-[9px] bg-emerald-400 rounded-lg text-[#07090d] font-mono text-[11px] font-medium no-underline hover:brightness-110 active:scale-[0.97] transition-all duration-150 tracking-[0.06em] uppercase whitespace-nowrap"
+              >   
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                New trade
+                <div className="absolute inset-0 bg-white/15 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12 pointer-events-none" />
+              </Link>
+            </div>
           </div>
 
-          <TradesList trades={trades} total={total} page={page} pageCount={pageCount} />
+          {/* BILLING: re-enable to show free tier usage banner
+          {!isPro && totalCount >= 30 && (
+            <div className={["mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-3 rounded-lg border",
+              totalCount >= FREE_TRADE_LIMIT ? "bg-red-500/[0.05] border-red-500/20" : "bg-amber-400/[0.05] border-amber-400/20",
+            ].join(" ")}>
+              <div className="flex items-center gap-3">
+                <span className={["font-mono text-[11px]", totalCount >= FREE_TRADE_LIMIT ? "text-red-400/80" : "text-amber-400/80"].join(" ")}>
+                  {totalCount >= FREE_TRADE_LIMIT ? "Trade limit reached" : `${FREE_TRADE_LIMIT - totalCount} trade${FREE_TRADE_LIMIT - totalCount === 1 ? "" : "s"} remaining`}
+                </span>
+                <span className="font-mono text-[10px] text-white/20">{totalCount} / {FREE_TRADE_LIMIT}</span>
+              </div>
+              <UpgradeButton label="Upgrade to Pro" variant="ghost" className="py-1.5 text-[10px]" />
+            </div>
+          )}
+          */}
+
+          <TradesList
+            trades={trades}
+            total={total}
+            page={page}
+            pageCount={pageCount}
+            filters={{ q: params.q, direction: params.direction, outcome: params.outcome }}
+          />
 
         </div>
       </div>

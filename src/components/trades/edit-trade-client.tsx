@@ -21,7 +21,8 @@ export function EditTradeClient({ trade }: Props) {
         stopLoss:   String(trade.stopLoss),
         takeProfit: String(trade.takeProfit),
         exitPrice:  String(trade.exitPrice),
-        notes:      trade.notes ?? "",
+        notes: trade.notes ?? "",
+        screenshotUrl: trade?.screenshotUrl,
         tradedAt:   new Date(trade.tradedAt).toISOString().slice(0, 16),
       }}
       onSubmit={async (values) => {

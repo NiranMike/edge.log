@@ -16,8 +16,9 @@ import authConfig      from "./auth.config";
 declare module "next-auth" {
   interface Session {
     user: {
-      id:      string;
+      id:       string;
       picture?: string | null;
+      // EMAIL_VERIFY: isEmailVerified: boolean;
     } & DefaultSession["user"];
   }
 
@@ -26,12 +27,13 @@ declare module "next-auth" {
   }
 
   interface JWT {
-    id:       string;
+    id:      string;
     picture?: string | null;
+    // EMAIL_VERIFY: isEmailVerified: boolean;
   }
 }
 
-// ─── Google account helper ────────────────────────────────────────────────────
+// ─── Google account helper ───────
 
 async function findOrCreateGoogleUser(profile: {
   email:    string;
@@ -53,13 +55,11 @@ async function findOrCreateGoogleUser(profile: {
   // 2. Existing credentials user with same email? → link account
   const existingUser = await db.user.findUnique({ where: { email } });
   if (existingUser) {
-    await db.account.create({
-      data: {
-        userId:            existingUser.id,
-        type:              "oauth",
-        provider:          "google",
-        providerAccountId: googleId,
-      },
+    // upsert avoids a unique-constraint race with PrismaAdapter's linkAccount
+    await db.account.upsert({
+      where:  { provider_providerAccountId: { provider: "google", providerAccountId: googleId } },
+      create: { userId: existingUser.id, type: "oauth", provider: "google", providerAccountId: googleId },
+      update: {},
     });
     if (!existingUser.image && image) {
       await db.user.update({ where: { id: existingUser.id }, data: { image } });
@@ -68,23 +68,26 @@ async function findOrCreateGoogleUser(profile: {
   }
 
   // 3. Brand new user → create atomically
-  return db.$transaction(async (tx: { user: { create: (arg0: { data: { email: string; name: string | null | undefined; image: string | null | undefined; emailVerified: Date; }; }) => any; }; account: { create: (arg0: { data: { userId: any; type: "oauth"; provider: "google"; providerAccountId: string; }; }) => any; }; }) => {
+  return db.$transaction(async (tx) => {
     const user = await tx.user.create({
       data: { email, name, image, emailVerified: new Date() },
     });
-    await tx.account.create({
-      data: {
+    // upsert avoids a unique-constraint race with PrismaAdapter's linkAccount
+    await tx.account.upsert({
+      where:  { provider_providerAccountId: { provider: "google", providerAccountId: googleId } },
+      create: {
         userId:            user.id,
         type:              "oauth" as const,
         provider:          "google" as const,
         providerAccountId: googleId,
       },
+      update: {},
     });
     return user;
   });
 }
 
-// ─── NextAuth config ──────────────────────────────────────────────────────────
+// ─── NextAuth config ───
 
 
 export const authOptions:NextAuthConfig = {
@@ -102,6 +105,7 @@ export const authOptions:NextAuthConfig = {
       authorization: {
         params: { prompt: "select_account" },
       },
+      allowDangerousEmailAccountLinking: true,
     }),
 
     Credentials({
@@ -139,6 +143,7 @@ export const authOptions:NextAuthConfig = {
         });
         return true;
       }
+
       return true;
     },
 
@@ -147,6 +152,8 @@ export const authOptions:NextAuthConfig = {
       if (user?.id) {
         token.id      = user.id;
         token.picture = user.image ?? null;
+        // EMAIL_VERIFY: const dbUser = await db.user.findUnique({ where: { id: user.id }, select: { emailVerified: true } });
+        // EMAIL_VERIFY: token.isEmailVerified = !!dbUser?.emailVerified;
       }
 
       // Google first sign-in — look up by email since adapter may not populate user
@@ -155,6 +162,7 @@ export const authOptions:NextAuthConfig = {
         if (dbUser) {
           token.id      = dbUser.id;
           token.picture = dbUser.image ?? null;
+          // EMAIL_VERIFY: token.isEmailVerified = !!dbUser.emailVerified;
         }
       }
 
@@ -164,6 +172,7 @@ export const authOptions:NextAuthConfig = {
     async session({ session, token }) {
       if (token.id && typeof token.id === "string") session.user.id = token.id;
       if (token.picture && typeof token.picture === "string") session.user.image = token.picture;
+      // EMAIL_VERIFY: session.user.isEmailVerified = Boolean(token.isEmailVerified);
       return session;
     },
   },
