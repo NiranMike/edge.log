@@ -279,10 +279,10 @@ function MappingStep({
 
       <div className="space-y-2 mb-5">
         {headers.map(header => {
-          const field       = mapping[header] ?? "skip";
+          const field = mapping[header] ?? "skip";
           const autoMatched = initialMapping[header] !== "skip" && initialMapping[header] === field;
           const isDuplicate = field !== "skip" && duplicateFields.has(field);
-          const sample      = rawRows.find(r => (r[header] ?? "").trim())?.[header];
+          const sample = rawRows.find(r => (r[header] ?? "").trim())?.[header];
 
           return (
             <div

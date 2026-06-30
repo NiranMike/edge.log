@@ -67,24 +67,24 @@ async function findOrCreateGoogleUser(profile: {
     return existingUser;
   }
 
-  // 3. Brand new user → create atomically
-  return db.$transaction(async (tx) => {
-    const user = await tx.user.create({
-      data: { email, name, image, emailVerified: new Date() },
-    });
-    // upsert avoids a unique-constraint race with PrismaAdapter's linkAccount
-    await tx.account.upsert({
-      where:  { provider_providerAccountId: { provider: "google", providerAccountId: googleId } },
-      create: {
-        userId:            user.id,
-        type:              "oauth" as const,
-        provider:          "google" as const,
-        providerAccountId: googleId,
-      },
-      update: {},
-    });
-    return user;
+  // 3. Brand new user → create user, then link account.
+  // The Neon HTTP adapter doesn't support transactions, so these run
+  // sequentially. upsert keeps the account write idempotent if PrismaAdapter's
+  // linkAccount also fires for this sign-in.
+  const user = await db.user.create({
+    data: { email, name, image, emailVerified: new Date() },
   });
+  await db.account.upsert({
+    where:  { provider_providerAccountId: { provider: "google", providerAccountId: googleId } },
+    create: {
+      userId:            user.id,
+      type:              "oauth" as const,
+      provider:          "google" as const,
+      providerAccountId: googleId,
+    },
+    update: {},
+  });
+  return user;
 }
 
 // ─── NextAuth config ───
