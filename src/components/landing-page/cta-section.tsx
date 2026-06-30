@@ -7,9 +7,9 @@ import { useRouter } from "next/navigation";
 
 
 const TRUST_BADGES = [
-  { icon: "◈", label: "No credit card"   },
-  { icon: "◈", label: "Free forever plan"},
-  { icon: "◈", label: "Cancel anytime"   },
+  { icon: "◈", label: "No credit card"     },
+  { icon: "◈", label: "Free to use"        },
+  { icon: "◈", label: "Your data is yours" },
 ];
 
 export function CtaSection() {
@@ -176,7 +176,7 @@ export function CtaSection() {
           {[
             { value: "Free",  label: "to start" },
             { value: "30s",   label: "to log a trade" },
-            { value: "$12",   label: "/ mo for Pro" },
+            { value: "R",     label: "multiple scoring" },
           ].map(({ value, label }) => (
             <div key={label} className="text-center">
               <p

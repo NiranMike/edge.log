@@ -54,9 +54,9 @@ function MiniBarChart() {
 }
 
 const TRADES = [
-  { sym: "NQ",   side: "LONG",  entry: "18,420", exit: "18,611", pnl: "+$1,910", pct: "+1.04%", up: true,  spark: [20,35,28,45,38,52,61,55,70,75] },
-  { sym: "TSLA", side: "SHORT", entry: "248.40", exit: "241.20", pnl: "+$720",   pct: "+2.90%", up: true,  spark: [80,70,75,60,55,48,42,38,32,28] },
-  { sym: "SPY",  side: "LONG",  entry: "512.10", exit: "510.80", pnl: "−$130",   pct: "−0.25%", up: false, spark: [30,35,33,40,38,35,30,28,25,22] },
+  { sym: "EURUSD", side: "LONG",  entry: "1.0840", exit: "1.0902", pnl: "+2.4R", pct: "London",   up: true,  spark: [20,35,28,45,38,52,61,55,70,75] },
+  { sym: "XAUUSD", side: "SHORT", entry: "2348.0", exit: "2331.5", pnl: "+1.8R", pct: "New York", up: true,  spark: [80,70,75,60,55,48,42,38,32,28] },
+  { sym: "GBPUSD", side: "LONG",  entry: "1.2710", exit: "1.2698", pnl: "−1.0R", pct: "London",   up: false, spark: [30,35,33,40,38,35,30,28,25,22] },
 ];
 
 export function HeroSection() {
@@ -199,16 +199,16 @@ export function HeroSection() {
 
           <h1 className="a3 syne font-extrabold text-white leading-[1.06] tracking-tight mb-5" style={{ fontSize: "clamp(30px,4vw,50px)" }}>
             Stop losing trades<br />
-            <span style={{ color: "var(--g)", filter: "drop-shadow(0 0 20px rgba(16,185,129,0.4))" }}>to your emotions.</span>
+            <span style={{ color: "var(--g)", filter: "drop-shadow(0 0 20px rgba(16,185,129,0.4))" }}>to the same mistakes.</span>
           </h1>
 
           <p className="a3 mono text-[13px] leading-relaxed mb-7 max-w-md" style={{ color: "var(--muted)" }}>
-            EdgeLog is a 30-second trade journal that surfaces your hidden patterns, so you play your{" "}
-            <span style={{ color: "rgba(255,255,255,0.55)" }}>A-game every session.</span>
+            EdgeLog is a 30-second trade journal that surfaces the patterns in your own trades, so you know exactly{" "}
+            <span style={{ color: "rgba(255,255,255,0.55)" }}>where your edge lives.</span>
           </p>
 
           <div className="a4 flex flex-wrap gap-2 mb-7">
-            {["30-sec entry","Analytics dashboard","Emotion tagging","Risk analytics"].map(f => (
+            {["30-second logging","Pattern analytics","Session breakdown","R-multiple scoring"].map(f => (
               <span key={f} className="mono text-[10px] tracking-wide px-3 py-1.5 rounded-full text-white/35 hover:text-white/55 hover:border-white/[0.12] transition-colors duration-200 cursor-default" style={{ background: "var(--s)", border: "1px solid var(--br)" }}>
                 {f}
               </span>
@@ -231,7 +231,7 @@ export function HeroSection() {
           </div>
 
           <p className="a6 mono text-[10px] mt-4" style={{ color: "var(--muted)" }}>
-            Free forever · No credit card required
+            Free to use · No credit card required
           </p>
         </div>
 
@@ -275,19 +275,19 @@ export function HeroSection() {
               <div className="px-5 pt-5 pb-4" style={{ borderBottom: "1px solid var(--br)" }}>
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="mono text-[9px] tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--muted)" }}>Net P&L</p>
+                    <p className="mono text-[9px] tracking-[0.2em] uppercase mb-1.5" style={{ color: "var(--muted)" }}>Net R · 30d</p>
                     <p className="syne font-bold text-emerald-400 leading-none tabular-nums" style={{ fontSize: 42, filter: "drop-shadow(0 0 20px rgba(16,185,129,0.45))" }}>
-                      +$2,840
+                      +18.4R
                     </p>
                     <div className="flex items-center gap-2 mt-2">
-                      <span className="mono text-[10px] text-emerald-400/70">▲ +4.2% today</span>
-                      <span className="mono text-[10px]" style={{ color: "var(--muted)" }}>· 3 trades · 6h</span>
+                      <span className="mono text-[10px] text-emerald-400/70">▲ 62% win rate</span>
+                      <span className="mono text-[10px]" style={{ color: "var(--muted)" }}>· 47 trades</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-4">
-                  <p className="mono text-[9px] tracking-[0.18em] uppercase mb-2" style={{ color: "var(--muted)" }}>Win/Loss by Hour</p>
+                  <p className="mono text-[9px] tracking-[0.18em] uppercase mb-2" style={{ color: "var(--muted)" }}>R per trade · last 12</p>
                   <MiniBarChart />
                 </div>
               </div>
@@ -309,7 +309,7 @@ export function HeroSection() {
                     >
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2 min-w-0">
-                          <span className="mono font-medium text-[11px] text-white/80 w-9 shrink-0">{t.sym}</span>
+                          <span className="mono font-medium text-[11px] text-white/80 w-14 shrink-0">{t.sym}</span>
                           <span className={`mono text-[8px] px-1.5 py-0.5 rounded font-medium tracking-wider shrink-0 ${t.side === "LONG" ? "text-emerald-400 bg-emerald-500/10" : "text-red-400 bg-red-500/10"}`}>
                             {t.side}
                           </span>

@@ -8,7 +8,7 @@ import { HowItWorksSection } from "@/components/landing-page/how-it-work-section
 import { LandingFooter } from "@/components/landing-page/landing-footer";
 import { LandingNav } from "@/components/landing-page/landing-nav";
 import { MetricsSection } from "@/components/landing-page/matric-section";
-import { TestimonialsSection } from "@/components/landing-page/testimonials-section";
+// Testimonials removed until we have real users and real, attributable results.
 import { TickerTape } from "@/components/landing-page/ticker-tape";
 import type { Metadata, Viewport } from "next";
 import { redirect } from "next/navigation";
@@ -16,7 +16,7 @@ import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "EDGE.LOG: Stop Losing to Yourself. Start Trading With Edge.",
-  description: "A 30-second trade journal that turns your behavioral patterns into an unfair advantage. Know your best sessions, worst emotions, and exactly where your edge lives.",
+  description: "A 30-second trade journal that turns your trades into an edge. See your best pairs, strongest sessions, and exactly where your R adds up.",
 };
 
 export const viewport: Viewport = {
@@ -38,7 +38,7 @@ export default async function LandingPage() {
       <MetricsSection />
       <FeaturesSection />
       <HowItWorksSection />
-      <TestimonialsSection />
+      {/* Testimonials section removed: no real users/results yet. Restore when authentic ones exist. */}
       {/* BILLING: <PricingSection /> */}
       <CtaSection />
       <LandingFooter />
