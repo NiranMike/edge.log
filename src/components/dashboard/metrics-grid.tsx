@@ -34,7 +34,7 @@ function getExpectancyMood(e: number): { color: string; label: string; desc: str
   if (e > 1)    return { color: "text-emerald-400", label: "Strong edge",    desc: "You have a real statistical advantage.", accent: "emerald" };
   if (e > 0.3)  return { color: "text-emerald-400", label: "Positive edge",  desc: "Keep refining. It's working.",          accent: "emerald" };
   if (e > 0)    return { color: "text-teal-400",    label: "Marginal edge",  desc: "Positive, but thin. Stay disciplined.", accent: "teal"    };
-  if (e > -0.3) return { color: "text-teal-400",    label: "Near breakeven", desc: "Almost there — review your exits.",     accent: "teal"    };
+  if (e > -0.3) return { color: "text-teal-400",    label: "Near breakeven", desc: "Almost there. Review your exits.",     accent: "teal"    };
   return             { color: "text-red-400",       label: "Losing edge",    desc: "Don't increase size. Diagnose first.",  accent: "red"     };
 }
 
@@ -111,7 +111,6 @@ function StreakBadge({ rHistory }: { rHistory: number[] }) {
   );
 }
 
-// ─── Metric card ──────────────────────────────────────────────────────────────
 
 function MetricCard({
   label, sub, large, delay, accent = "neutral", children,

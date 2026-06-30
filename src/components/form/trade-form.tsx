@@ -38,14 +38,14 @@ function getRComment(r: number): { text: string; sub: string } {
 
 function getPairMood(pair: string): string {
   const p = pair.toUpperCase();
-  if (p.includes("XAU") || p.includes("GOLD")) return "Gold — the market's oldest emotion.";
-  if (p.includes("BTC"))  return "Bitcoin — conviction required.";
-  if (p.includes("ETH"))  return "Ethereum — more volatile than it looks.";
-  if (p.includes("JPY"))  return "Yen — watch the BOJ carefully.";
-  if (p.includes("NAS") || p.includes("NDX")) return "Nasdaq — tech sentiment rules here.";
-  if (p.includes("SPX") || p.includes("SP5")) return "S&P — the benchmark. Respect it.";
-  if (p.includes("GBP"))  return "Cable — news-sensitive. Keep size reasonable.";
-  if (p.includes("EUR"))  return "Euro — liquid, but ECB surprises happen.";
+  if (p.includes("XAU") || p.includes("GOLD")) return "Gold: the market's oldest emotion.";
+  if (p.includes("BTC"))  return "Bitcoin: conviction required.";
+  if (p.includes("ETH"))  return "Ethereum: more volatile than it looks.";
+  if (p.includes("JPY"))  return "Yen: watch the BOJ carefully.";
+  if (p.includes("NAS") || p.includes("NDX")) return "Nasdaq: tech sentiment rules here.";
+  if (p.includes("SPX") || p.includes("SP5")) return "S&P: the benchmark. Respect it.";
+  if (p.includes("GBP"))  return "Cable: news-sensitive. Keep size reasonable.";
+  if (p.includes("EUR"))  return "Euro: liquid, but ECB surprises happen.";
   return "";
 }
 
@@ -91,7 +91,7 @@ function SectionLabel({ label, optional }: { label: string; optional?: boolean }
       <div className="w-5 h-px bg-emerald-400/40 shrink-0" />
       <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-emerald-400/60">
         {label}
-        {optional && <span className="ml-[6px] text-white/20 normal-case tracking-normal"> — optional</span>}
+        {optional && <span className="ml-[6px] text-white/20 normal-case tracking-normal"> (optional)</span>}
       </span>
       <div className="flex-1 h-px bg-white/[0.04]" />
     </div>
@@ -286,7 +286,7 @@ function ScreenshotUploader({
                   Drop screenshot here or <span className="text-emerald-400/70">browse</span>
                 </p>
                 <p className="font-mono text-[10px] text-white/20 mt-[3px]">
-                  PNG, JPG, WEBP — max 8MB
+                  PNG, JPG, WEBP · max 8MB
                 </p>
               </div>
             </>
@@ -525,7 +525,7 @@ export function TradeForm({ initialValues, onSubmit, submitLabel = "Save Trade",
             <Textarea
               value={values.notes}
               onChange={e => set("notes", e.target.value)}
-              placeholder="What did you follow or break? Be honest — you're the only one reading this."
+              placeholder="What did you follow or break? Be honest. You're the only one reading this."
               rows={3}
             />
           </Field>

@@ -47,7 +47,6 @@ export default async function DashboardPage({
           <div className="animate-fade-up mb-6 sm:mb-8 flex items-end justify-between gap-4">
             <div className="min-w-0">
               <div className="flex items-center gap-3 mb-2 sm:mb-3">
-                <div className="w-5 h-px bg-teal-400/50" />
                 <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-teal-400/60">
                   Overview
                 </span>

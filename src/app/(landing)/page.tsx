@@ -15,7 +15,7 @@ import { redirect } from "next/navigation";
 
 
 export const metadata: Metadata = {
-  title: "EDGE.LOG — Stop Losing to Yourself. Start Trading With Edge.",
+  title: "EDGE.LOG: Stop Losing to Yourself. Start Trading With Edge.",
   description: "A 30-second trade journal that turns your behavioral patterns into an unfair advantage. Know your best sessions, worst emotions, and exactly where your edge lives.",
 };
 

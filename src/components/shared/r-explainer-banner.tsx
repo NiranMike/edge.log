@@ -64,7 +64,7 @@ export function RExplainerBanner() {
             Understanding R-multiples
           </p>
           <p className="font-mono text-[12px] text-white/40 leading-relaxed mb-3">
-            Every result is shown as a multiple of your initial risk — so you can
+            Every result is shown as a multiple of your initial risk, so you can
             compare trades regardless of account size or position size.
           </p>
 

@@ -5,7 +5,7 @@ import { LandingNav } from "@/components/landing-page/landing-nav";
 import { LandingFooter } from "@/components/landing-page/landing-footer";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — EDGE.LOG",
+  title: "Privacy Policy · EDGE.LOG",
   description: "Privacy Policy for Edge.Log. Learn how we collect, use, and protect your data.",
 };
 
@@ -155,14 +155,14 @@ export default function PrivacyPage() {
             </p>
             <ul className="list-disc pl-5 space-y-1.5">
               <li>
-                <strong className="text-white/50">Lemon Squeezy</strong> — Payment processing.
+                <strong className="text-white/50">Lemon Squeezy</strong>: Payment processing.
                 Handles credit card data directly; we never see or store your full card number.
               </li>
               <li>
-                <strong className="text-white/50">Vercel</strong> — Hosting and infrastructure.
+                <strong className="text-white/50">Vercel</strong>: Hosting and infrastructure.
               </li>
               <li>
-                <strong className="text-white/50">Authentication provider</strong> — Secure login (OAuth / email-based).
+                <strong className="text-white/50">Authentication provider</strong>: Secure login (OAuth / email-based).
               </li>
             </ul>
             <p>
@@ -187,11 +187,11 @@ export default function PrivacyPage() {
           <Section id="your-rights" title="6. Your Rights">
             <p>You have the right to:</p>
             <ul className="list-disc pl-5 space-y-1.5">
-              <li><strong className="text-white/50">Access</strong> — View all data we hold about you</li>
-              <li><strong className="text-white/50">Export</strong> — Download your trade data at any time</li>
-              <li><strong className="text-white/50">Correct</strong> — Update your account information</li>
-              <li><strong className="text-white/50">Delete</strong> — Request deletion of your account and all associated data</li>
-              <li><strong className="text-white/50">Withdraw consent</strong> — Stop using the Service at any time</li>
+              <li><strong className="text-white/50">Access</strong>: View all data we hold about you</li>
+              <li><strong className="text-white/50">Export</strong>: Download your trade data at any time</li>
+              <li><strong className="text-white/50">Correct</strong>: Update your account information</li>
+              <li><strong className="text-white/50">Delete</strong>: Request deletion of your account and all associated data</li>
+              <li><strong className="text-white/50">Withdraw consent</strong>: Stop using the Service at any time</li>
             </ul>
             <p>
               To exercise any of these rights, contact us at{" "}
@@ -207,8 +207,8 @@ export default function PrivacyPage() {
               We use only essential cookies required for the Service to function:
             </p>
             <ul className="list-disc pl-5 space-y-1.5">
-              <li><strong className="text-white/50">Session cookie</strong> — Keeps you logged in. Expires when you sign out or after 30 days of inactivity.</li>
-              <li><strong className="text-white/50">CSRF token</strong> — Prevents cross-site request forgery attacks.</li>
+              <li><strong className="text-white/50">Session cookie</strong>: Keeps you logged in. Expires when you sign out or after 30 days of inactivity.</li>
+              <li><strong className="text-white/50">CSRF token</strong>: Prevents cross-site request forgery attacks.</li>
             </ul>
             <p>
               We do not use tracking cookies, analytics cookies, or advertising cookies.

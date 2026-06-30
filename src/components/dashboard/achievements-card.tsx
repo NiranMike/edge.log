@@ -181,7 +181,7 @@ function AchievementBadge({ achievement }: { achievement: Achievement }) {
         style.ring, style.bg,
         "hover:scale-[1.04] hover:shadow-lg", style.glow,
       )}
-      title={`${achievement.title} — ${achievement.description}`}
+      title={`${achievement.title}: ${achievement.description}`}
     >
       <div className={cx("transition-transform duration-200 group-hover/badge:scale-110", style.text)}>
         <AchievementIcon icon={achievement.icon} />

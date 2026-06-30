@@ -48,6 +48,23 @@
   --r-sm:  4px;
   --r-md:  8px;
   --r-lg:  14px;
+
+  /* ── Semantic aliases ─────────────────────────────────────────────
+     Short tokens used by the trades table, trade badges and the import
+     flow. Mapped onto the palette above so there is a single source of
+     truth. (Previously referenced but never defined → broken colours.) */
+  /* Cool, neutral white-opacity ramp (matches the `text-white/NN` the rest
+     of the app uses — deliberately NOT the warm cream/brown palette above). */
+  --tx-1: rgba(255,255,255,0.92);  /* primary text   */
+  --tx-2: rgba(255,255,255,0.60);  /* secondary text */
+  --tx-3: rgba(255,255,255,0.34);  /* muted text     */
+  --tx-4: rgba(255,255,255,0.17);  /* faintest text  */
+
+  --bd:    var(--border);         /* base border    */
+  --bd-hi: var(--border-hover);   /* stronger border */
+
+  --ac-1: var(--accent);          /* emerald accent */
+  --ac-2: var(--accent-2);        /* teal accent    */
 }
 
 @layer utilities {

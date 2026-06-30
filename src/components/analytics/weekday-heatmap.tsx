@@ -51,7 +51,7 @@ export function WeekdayHeatmap({ weekdays }: Props) {
               </p>
 
               {day.trades === 0 ? (
-                <span className="font-mono text-[18px] text-white/15 leading-none">—</span>
+                <span className="font-mono text-[18px] text-white/15 leading-none">·</span>
               ) : (
                 <RLabel value={day.avgR} size="md" showRatio={false} muted={false} />
               )}

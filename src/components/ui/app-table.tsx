@@ -23,7 +23,7 @@ interface ShellProps {
 export function TableShell({ children, scrollX = true, className }: ShellProps) {
   return (
     <div className={cx(
-      "bg-[var(--bg-surface)] border border-[var(--bd)] rounded-xl overflow-hidden",
+      "bg-gradient-to-b from-[#10141a] to-[#0d1117] border border-[var(--bd)] rounded-xl overflow-hidden",
       className,
     )}>
       {scrollX ? (

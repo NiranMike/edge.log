@@ -203,7 +203,7 @@ export function HeroSection() {
           </h1>
 
           <p className="a3 mono text-[13px] leading-relaxed mb-7 max-w-md" style={{ color: "var(--muted)" }}>
-            EdgeLog is a 30-second trade journal that surfaces your hidden patterns — so you play your{" "}
+            EdgeLog is a 30-second trade journal that surfaces your hidden patterns, so you play your{" "}
             <span style={{ color: "rgba(255,255,255,0.55)" }}>A-game every session.</span>
           </p>
 

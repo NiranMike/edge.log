@@ -5,7 +5,7 @@ import { LandingNav } from "@/components/landing-page/landing-nav";
 import { LandingFooter } from "@/components/landing-page/landing-footer";
 
 export const metadata: Metadata = {
-  title: "Terms of Service — EDGE.LOG",
+  title: "Terms of Service · EDGE.LOG",
   description: "Terms of Service for Edge.Log, the trading journal platform.",
 };
 
@@ -156,7 +156,7 @@ export default function TermsPage() {
             </ul>
           </Section>
 
-          <Section id="disclaimer" title="8. Disclaimer — Not Financial Advice">
+          <Section id="disclaimer" title="8. Disclaimer: Not Financial Advice">
             <p className="text-amber-400/60 border-l-2 border-amber-400/20 pl-4">
               Edge.Log is a journaling and analytics tool only. The Service does not provide financial advice,
               investment recommendations, trading signals, or any form of advisory service.

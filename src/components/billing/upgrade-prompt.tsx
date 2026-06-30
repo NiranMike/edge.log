@@ -55,7 +55,7 @@ export function UpgradePrompt({ feature, description, className, bullets = DEFAU
         ))}
       </ul>
 
-      <UpgradeButton label="Upgrade to Pro — $12/mo" />
+      <UpgradeButton label="Upgrade to Pro · $12/mo" />
 
       <p className="font-mono text-[10px] text-white/20 mt-3">
         Cancel anytime · Instant access

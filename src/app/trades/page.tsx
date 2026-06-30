@@ -51,8 +51,8 @@ export default async function TradesPage({
           <div className="animate-fade-up flex items-end justify-between mb-6 sm:mb-7 gap-4">
             <div className="min-w-0">
               <div className="flex items-center gap-3 mb-2 sm:mb-3">
-                <div className="w-5 h-px bg-white/15" />
-                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/25">
+
+                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-teal-400/60">
                   Journal
                 </span>
               </div>
