@@ -82,7 +82,7 @@ function RStatPill({
   sub?:    string;
   delay?:  number;
   tooltip: string;
-  accent?: Accent;
+  accent?: Accent; 
 }) {
   return (
     <TiltCard
