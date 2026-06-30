@@ -164,7 +164,8 @@ export const tradeService = {
         tradedAt: values.tradedAt ? new Date(values.tradedAt) : new Date(),
       });
       return { ok: true, data: trade };
-    } catch {
+    } catch (err) {
+      console.error("[tradeService.create]", err);
       return { ok: false, error: "Failed to save trade. Please try again." };
     }
   },
