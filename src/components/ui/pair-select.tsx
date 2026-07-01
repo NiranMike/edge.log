@@ -58,7 +58,7 @@ function Dropdown({
         className="rounded-[10px] border border-white/[0.1] shadow-[0_24px_80px_rgba(0,0,0,0.85),0_0_0_1px_rgba(255,255,255,0.05)] overflow-hidden"
       >
         <div className="px-3 pt-3 pb-2 border-b border-white/[0.06]">
-          <div className="flex items-center gap-2 px-3 py-[9px] rounded-[6px] bg-white/[0.04] border border-white/[0.07]">
+          <div className="flex items-center gap-2 px-3 py-[9px] rounded-[6px] bg-white/[0.04] border border-white/[0.07] focus-within:border-white/20 transition-colors duration-150">
             <svg width="11" height="11" viewBox="0 0 11 11" fill="none" className="shrink-0 opacity-30">
               <circle cx="4.5" cy="4.5" r="3.5" stroke="currentColor" strokeWidth="1.2"/>
               <path d="M7.5 7.5L10 10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
@@ -68,7 +68,7 @@ function Dropdown({
               value={query}
               onChange={e => onQueryChange(e.target.value.toUpperCase())}
               placeholder="Search pairs…"
-              className="flex-1 bg-transparent font-mono text-[12px] text-white/80 outline-none placeholder:text-white/20 tracking-[0.04em]"
+              className="flex-1 bg-transparent font-mono text-[12px] text-white/80 outline-none focus:outline-none focus-visible:outline-none placeholder:text-white/20 tracking-[0.04em]"
               onKeyDown={e => {
                 if (e.key === "ArrowDown") { e.preventDefault(); onActiveChange(Math.min(activeIndex + 1, filteredPairs.length - 1 + (hasCustom ? 1 : 0))); }
                 if (e.key === "ArrowUp")   { e.preventDefault(); onActiveChange(Math.max(activeIndex - 1, 0)); }
