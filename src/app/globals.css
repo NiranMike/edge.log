@@ -162,6 +162,15 @@ body {
   outline-offset: 2px;
 }
 
+/* Form fields already signal focus via the caret and their own border,
+   so skip the accent ring on them (buttons/links keep it for a11y). */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  outline-offset: 0;
+}
+
 
 ::selection {
   background: var(--accent-dim);
