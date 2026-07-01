@@ -3,6 +3,7 @@
 import { DEFAULT_PAIRS, GROUP_ORDER } from "@/const/trades-const";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
+import { SearchIcon } from "@/components/icons";
 
 interface Props {
   value: string;
@@ -59,10 +60,7 @@ function Dropdown({
       >
         <div className="px-3 pt-3 pb-2 border-b border-white/[0.06]">
           <div className="flex items-center gap-2 px-3 py-[9px] rounded-[6px] bg-white/[0.04] border border-white/[0.07] focus-within:border-white/20 transition-colors duration-150">
-            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" className="shrink-0 opacity-30">
-              <circle cx="4.5" cy="4.5" r="3.5" stroke="currentColor" strokeWidth="1.2"/>
-              <path d="M7.5 7.5L10 10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
-            </svg>
+            <SearchIcon size={12} className="shrink-0 opacity-30" />
             <input
               ref={inputRef}
               value={query}
