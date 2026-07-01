@@ -22,13 +22,13 @@ export default async function TradesPage({
   const session = await auth();
   if (!session) redirect("/login");
 
-  const params    = await searchParams;
-  const page      = Math.max(1, parseInt(params.page ?? "1", 10));
+  const params= await searchParams;
+  const page = Math.max(1, parseInt(params.page ?? "1", 10));
   const pairQuery = params.q?.trim() || undefined;
   const direction = (params.direction === "LONG" || params.direction === "SHORT")
     ? params.direction : undefined;
-  const won       = params.outcome === "win" ? true
-    : params.outcome === "loss"              ? false
+  const won = params.outcome === "win" ? true
+    : params.outcome === "loss" ? false
     : undefined;
 
   const { trades, total } = await tradeService.getPage(session.user.id, page, { pair: pairQuery, direction, won });
